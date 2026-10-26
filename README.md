@@ -6,12 +6,18 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — repository bootstrap in progress.**
+**Early alpha — `0.1.0a1` Repository Bootstrap qualified. Supplier Core is next.**
 
-Current milestone:
+Qualified milestone:
 
 ```text
 0.1.0a1 — Repository Bootstrap
+```
+
+Next milestone:
+
+```text
+0.1.0a2 — Supplier Core
 ```
 
 The bootstrap deliberately creates the development foundation before implementing the business domain.
@@ -27,11 +33,7 @@ repeatable
 green
 ```
 
-Once `0.1.0a1` is green, generic scaffolding stops and implementation moves to:
-
-```text
-0.1.0a2 — Supplier Core
-```
+`0.1.0a1` is green. Generic scaffolding is now frozen and implementation moves to `0.1.0a2 — Supplier Core`.
 
 ## Architecture
 
