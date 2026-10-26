@@ -27,31 +27,79 @@ repeatable
 green
 ```
 
-The repository will progressively establish:
-
-- a `src/` package layout;
-- Domain / Application / Ports / Adapters boundaries;
-- linting and formatting with Ruff;
-- static typing with Pyright;
-- tests with Pytest;
-- executable architecture checks;
-- GitHub Actions CI;
-- the pre-implementation specification baseline.
-
 Once `0.1.0a1` is green, generic scaffolding stops and implementation moves to:
 
 ```text
 0.1.0a2 — Supplier Core
 ```
 
-## Development
+## Architecture
 
-Local setup commands will be finalized during the bootstrap milestone.
+The bootstrap exposes four explicit package boundaries:
+
+- `domain` — business model and business truth;
+- `application` — use-case orchestration;
+- `ports` — replaceable contracts required by the core;
+- `adapters` — implementations of ports when they become necessary.
+
+At `0.1.0a1`, these boundaries exist structurally but contain no speculative business abstractions.
+
+## Requirements
+
+- Python 3.11 or newer
+- Git
+
+## Local setup
+
+```bash
+git clone https://github.com/tawounfouet/pysrmkit.git
+cd pysrmkit
+
+python -m venv .venv
+source .venv/bin/activate
+
+python -m pip install -e ".[dev]"
+```
+
+On Windows PowerShell, activate the environment with:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+## Quality gates
+
+Run the same baseline checks used by CI:
+
+```bash
+ruff check .
+ruff format --check .
+pyright
+pytest --cov=pysrmkit --cov-report=term-missing
+```
+
+The bootstrap target is currently **80% minimum coverage**. The threshold is expected to rise as real domain behavior appears.
 
 ## Documentation
 
-The pre-implementation specifications will live under:
+The frozen pre-implementation baseline is stored under:
 
 ```text
 docs/specifications/
+```
+
+It contains specifications `00 → 14` plus the software-design learning convention and the iterative documentation strategy.
+
+## Roadmap
+
+The first implementation cycle is defined in:
+
+```text
+docs/specifications/13_PYSRMKIT_IMPLEMENTATION_ROADMAP.md
+```
+
+The operational bootstrap is defined in:
+
+```text
+docs/specifications/14_PYSRMKIT_IMPLEMENTATION_BOOTSTRAP_PLAN.md
 ```
