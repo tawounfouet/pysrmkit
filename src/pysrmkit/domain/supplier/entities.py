@@ -14,14 +14,25 @@ from pysrmkit.domain.supplier.events import SupplierCreated
 from pysrmkit.domain.supplier.value_objects import ExternalIdentifier, SupplierId, SupplierIdentity
 
 
+def _external_identifier_list() -> list[ExternalIdentifier]:
+    return []
+
+
+def _domain_event_list() -> list[DomainEvent]:
+    return []
+
+
 @dataclass(slots=True, eq=False)
 class Supplier:
     """Aggregate Root representing the canonical supplier identity."""
 
     supplier_id: SupplierId
     identity: SupplierIdentity
-    _external_identifiers: list[ExternalIdentifier] = field(default_factory=list, repr=False)
-    _events: list[DomainEvent] = field(default_factory=list, repr=False)
+    _external_identifiers: list[ExternalIdentifier] = field(
+        default_factory=_external_identifier_list,
+        repr=False,
+    )
+    _events: list[DomainEvent] = field(default_factory=_domain_event_list, repr=False)
 
     @classmethod
     def create(
