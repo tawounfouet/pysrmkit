@@ -37,6 +37,7 @@ fail_under = 80
 target-version = "py311"
 line-length = 100
 src = ["src", "tests"]
+extend-exclude = ["docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
