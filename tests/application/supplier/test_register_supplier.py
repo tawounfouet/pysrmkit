@@ -93,9 +93,7 @@ def test_register_supplier_rejects_cross_supplier_duplicate_external_identifier(
         handler.handle(
             RegisterSupplier(
                 legal_name="Conflicting Supplier",
-                external_identifiers=(
-                    ExternalIdentifierInput(kind="SIREN", value="123456789"),
-                ),
+                external_identifiers=(ExternalIdentifierInput(kind="SIREN", value="123456789"),),
             )
         )
 
