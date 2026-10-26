@@ -31,10 +31,7 @@ def _imported_modules(tree: ast.AST) -> list[str]:
 
 
 def _is_forbidden(module: str, forbidden_prefixes: tuple[str, ...]) -> bool:
-    return any(
-        module == prefix or module.startswith(f"{prefix}.")
-        for prefix in forbidden_prefixes
-    )
+    return any(module == prefix or module.startswith(f"{prefix}.") for prefix in forbidden_prefixes)
 
 
 def test_package_dependency_rules() -> None:
