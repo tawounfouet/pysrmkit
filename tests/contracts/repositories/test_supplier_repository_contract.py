@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from pysrmkit.domain.supplier.entities import Supplier
 from pysrmkit.domain.supplier.value_objects import ExternalIdentifier, SupplierId, SupplierIdentity
 from pysrmkit.ports.repositories.supplier import SupplierRepository
 
-NOW = datetime(2026, 10, 27, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 
 
 def make_supplier(

@@ -1,6 +1,6 @@
 """Supplier Aggregate tests."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -9,7 +9,7 @@ from pysrmkit.domain.supplier.errors import DuplicateExternalIdentifier
 from pysrmkit.domain.supplier.events import SupplierCreated
 from pysrmkit.domain.supplier.value_objects import ExternalIdentifier, SupplierId, SupplierIdentity
 
-NOW = datetime(2026, 10, 27, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 
 
 def test_supplier_create_records_supplier_created_and_preserves_stable_identity() -> None:

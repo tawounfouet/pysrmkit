@@ -32,13 +32,18 @@ class RegisterSupplierHandler:
         self._event_dispatcher = event_dispatcher
 
     def handle(self, command: RegisterSupplier) -> RegisterSupplierResult:
+        country = (
+            CountryCode(command.country_code) if command.country_code is not None else None
+        )
         identity = SupplierIdentity(
             legal_name=command.legal_name,
             trading_name=command.trading_name,
             supplier_type=command.supplier_type,
-            country=(CountryCode(command.country_code) if command.country_code is not None else None),
+            country=country,
         )
-        identifiers = tuple(self._external_identifier(item) for item in command.external_identifiers)
+        identifiers = tuple(
+            self._external_identifier(item) for item in command.external_identifiers
+        )
 
         for identifier in identifiers:
             existing = self._repository.find_by_external_identifier(identifier)
