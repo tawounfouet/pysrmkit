@@ -83,7 +83,11 @@ class RecordingQualificationPolicy(QualificationPolicy):
         evaluated_at: datetime,
     ) -> QualificationDecision:
         self.contexts.append(context)
-        return super().evaluate(context, evaluated_at=evaluated_at)
+        return QualificationPolicy.evaluate(
+            self,
+            context,
+            evaluated_at=evaluated_at,
+        )
 
 
 def save_relationship(repository: InMemorySupplierRelationshipRepository) -> SupplierRelationshipId:
