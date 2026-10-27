@@ -58,9 +58,7 @@ def run_public_qualification(
         relationship_id=relationship.relationship_id,
         requirements=(OnboardingRequirementInput(code="KYC"),),
     )
-    onboarding = srm.onboardings.get_for_relationship(
-        relationship_id=relationship.relationship_id
-    )
+    onboarding = srm.onboardings.get_for_relationship(relationship_id=relationship.relationship_id)
     srm.onboardings.satisfy_requirement(
         onboarding_id=onboarding.onboarding_id,
         requirement_code="KYC",
@@ -91,9 +89,7 @@ def run_public_qualification(
         relationship_id=relationship.relationship_id
     )
     assessment_view = srm.assessments.get(assessment_id=assessment.assessment_id)
-    qualification_view = srm.qualifications.get(
-        qualification_id=requested.qualification_id
-    )
+    qualification_view = srm.qualifications.get(qualification_id=requested.qualification_id)
 
     assert assessment_view.score is not None
     assert qualification_view.approved is not None
