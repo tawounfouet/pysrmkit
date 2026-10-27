@@ -5,7 +5,6 @@ import os
 import pytest
 
 from examples.persistent_qualification import run_persistent_qualification
-
 from pysrmkit.adapters.sqlalchemy.engine import create_persistence_engine
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
 from pysrmkit.domain.qualification.value_objects import QualificationStatus
