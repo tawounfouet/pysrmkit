@@ -5,6 +5,7 @@ from dataclasses import FrozenInstanceError
 import pytest
 
 from pysrmkit import PySRMKit
+from pysrmkit.domain.supplier.value_objects import CountryCode
 from pysrmkit.public import (
     AssessmentQuestionInput,
     OnboardingRequirementInput,
@@ -12,7 +13,6 @@ from pysrmkit.public import (
     SupplierId,
     SupplierNotFound,
 )
-from pysrmkit.domain.supplier.value_objects import CountryCode
 
 
 def test_public_views_expose_complete_qualified_supplier_state() -> None:
