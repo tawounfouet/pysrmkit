@@ -17,9 +17,7 @@ from tests.contracts.repositories.test_qualification_repository_contract import 
 )
 
 
-class TestSqlAlchemySupplierQualificationRepository(
-    SupplierQualificationRepositoryContract
-):
+class TestSqlAlchemySupplierQualificationRepository(SupplierQualificationRepositoryContract):
     engine: Engine
     session: Session
     repository: SqlAlchemySupplierQualificationRepository
