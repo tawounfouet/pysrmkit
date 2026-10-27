@@ -1,4 +1,4 @@
-"""Tests for the 0.3.0a2 public Python API foundation."""
+"""Tests for the 0.3.0a3 public Python API foundation."""
 
 from pysrmkit import PySRMKit, RelationshipsAPI, SuppliersAPI
 from pysrmkit.application.relationship.commands import CreateSupplierRelationship
@@ -87,5 +87,5 @@ def test_facade_exposes_capabilities_without_runtime_magic() -> None:
     suppliers = SuppliersAPI(register_supplier=RegisterSupplierSpy(supplier_result))
 
     assert "in_memory" in PySRMKit.__dict__
-    assert "sql" not in PySRMKit.__dict__
+    assert "sql" in PySRMKit.__dict__
     assert suppliers.register(legal_name="ACME") is supplier_result
