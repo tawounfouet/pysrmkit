@@ -1676,7 +1676,10 @@ RegisterSupplier
 CreateSupplierRelationship
 InviteSupplierRelationship
 StartSupplierOnboarding
+SatisfyOnboardingRequirement
+CompleteSupplierOnboarding
 CreateSupplierAssessment
+RecordAssessmentAnswer
 CompleteSupplierAssessment
 RequestSupplierQualification
 EvaluateSupplierQualification
@@ -1712,6 +1715,7 @@ The example may print:
 [EVENT] SupplierRelationshipCreated
 [EVENT] SupplierInvited
 [EVENT] SupplierOnboardingStarted
+[EVENT] SupplierOnboardingCompleted
 [EVENT] SupplierAssessmentCompleted
 [EVENT] SupplierQualificationRequested
 [EVENT] SupplierQualified
@@ -1729,6 +1733,7 @@ At minimum verify:
 Supplier exists
 Relationship exists
 Relationship reached expected stage
+Onboarding is completed
 Assessment is completed
 Qualification exists
 Qualification scope correct

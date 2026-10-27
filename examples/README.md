@@ -1,7 +1,45 @@
 # PySRMKit Examples
 
-Executable business examples will be introduced only when their corresponding implementation milestones exist.
+## Local Core qualification
 
-The first end-to-end local qualification example is intentionally deferred until the roadmap reaches the local Core qualification milestone.
+The first executable end-to-end Core scenario is:
 
-No placeholder business example is maintained during `0.1.0a1 — Repository Bootstrap`.
+```bash
+python examples/local_qualification.py
+```
+
+It manually assembles the local composition root:
+
+```text
+InMemorySupplierRepository
+InMemorySupplierRelationshipRepository
+InMemorySupplierOnboardingRepository
+InMemorySupplierAssessmentRepository
+InMemorySupplierQualificationRepository
+FixedClock
+InProcessDomainEventDispatcher
+QualificationPolicy
+Application Handlers
+```
+
+No dependency-injection container, database, network service, broker, or framework runtime is required.
+
+The scenario performs:
+
+```text
+RegisterSupplier
+CreateSupplierRelationship
+InviteSupplierRelationship
+StartSupplierOnboarding
+SatisfyOnboardingRequirement
+CompleteSupplierOnboarding
+CreateSupplierAssessment
+RecordAssessmentAnswer
+CompleteSupplierAssessment
+RequestSupplierQualification
+EvaluateSupplierQualification
+```
+
+The explicit onboarding completion steps refine the original roadmap sequence because the implemented QualificationPolicy now consumes `onboarding_complete` as a real prerequisite.
+
+The default example produces a final `QUALIFIED` SupplierQualification and prints the observed Domain Event trace.
