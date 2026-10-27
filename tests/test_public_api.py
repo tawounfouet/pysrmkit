@@ -1,12 +1,15 @@
-"""Tests for the 0.3.0a3 public Python API foundation."""
+"""Tests for the 0.3.0a4 public Python API foundation."""
 
 from pysrmkit import PySRMKit, RelationshipsAPI, SuppliersAPI
+from pysrmkit.adapters.memory.relationship_repository import InMemorySupplierRelationshipRepository
+from pysrmkit.adapters.memory.supplier_repository import InMemorySupplierRepository
 from pysrmkit.application.relationship.commands import CreateSupplierRelationship
 from pysrmkit.application.relationship.results import CreateSupplierRelationshipResult
 from pysrmkit.application.supplier.commands import RegisterSupplier
 from pysrmkit.application.supplier.results import RegisterSupplierResult
 from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
 from pysrmkit.domain.supplier.value_objects import SupplierId
+from pysrmkit.public.query_handlers import GetSupplierHandler, GetSupplierRelationshipHandler
 
 
 class RegisterSupplierSpy:
@@ -40,7 +43,10 @@ class CreateRelationshipSpy:
 def test_suppliers_api_translates_primitives_to_register_command() -> None:
     expected = RegisterSupplierResult(supplier_id=SupplierId.new())
     handler = RegisterSupplierSpy(expected)
-    api = SuppliersAPI(register_supplier=handler)
+    api = SuppliersAPI(
+        register_supplier=handler,
+        get_supplier=GetSupplierHandler(InMemorySupplierRepository()),
+    )
 
     result = api.register(
         legal_name=" ACME SAS ",
@@ -69,6 +75,9 @@ def test_relationships_api_builds_internal_organization_id() -> None:
         create_relationship=handler,
         invite_relationship=NoOpHandler(),
         start_onboarding=NoOpHandler(),
+        get_relationship=GetSupplierRelationshipHandler(
+            InMemorySupplierRelationshipRepository()
+        ),
     )
 
     result = api.create(
@@ -84,7 +93,10 @@ def test_relationships_api_builds_internal_organization_id() -> None:
 
 def test_facade_exposes_capabilities_without_runtime_magic() -> None:
     supplier_result = RegisterSupplierResult(supplier_id=SupplierId.new())
-    suppliers = SuppliersAPI(register_supplier=RegisterSupplierSpy(supplier_result))
+    suppliers = SuppliersAPI(
+        register_supplier=RegisterSupplierSpy(supplier_result),
+        get_supplier=GetSupplierHandler(InMemorySupplierRepository()),
+    )
 
     assert "in_memory" in PySRMKit.__dict__
     assert "sql" in PySRMKit.__dict__
