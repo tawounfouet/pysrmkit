@@ -4,6 +4,40 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a3 - 2026-10-27
+
+### Added
+
+- `SupplierRelationship` Aggregate Root as a distinct association between a canonical Supplier and an internal organization.
+- Strong IDs `SupplierRelationshipId` and `InternalOrganizationId`.
+- Initial relationship state `DISCOVERED`, without pre-implementing the lifecycle State Machine reserved for `0.1.0a4`.
+- `SupplierRelationshipCreated` Domain Event.
+- `SupplierRelationshipRepository` Protocol with `get`, `save`, and `find_for_supplier_and_organization`.
+- Persistence-like `InMemorySupplierRelationshipRepository`.
+- `CreateSupplierRelationship`, `CreateSupplierRelationshipHandler`, and result model.
+- Application errors `SupplierNotFound` and `RelationshipAlreadyExists`.
+- Shared SupplierRelationship repository contract tests.
+- Multi-organization isolation tests.
+
+### Qualified
+
+- Relationship creation requires an existing Supplier.
+- A Relationship references exactly one `SupplierId` and one `InternalOrganizationId`.
+- Duplicate Supplier/organization relationships are rejected.
+- The same Supplier can have independent Relationships with different organizations.
+- Relationships belonging to different Suppliers remain isolated.
+- `SupplierRelationshipCreated` is recorded and dispatched after successful creation.
+- InMemory repository passes the shared contract.
+- Ruff, formatting, Pyright strict, architecture tests, and Pytest are green.
+- 48 tests pass with 99.57% total coverage on PR validation CI #29.
+
+### Deferred
+
+- Relationship lifecycle transitions remain in `0.1.0a4`.
+- Invitation, onboarding transition, qualification, activation, suspension, blocking, and offboarding are not implemented in this milestone.
+- Database persistence and query projections remain out of scope.
+
+
 ## 0.1.0a2 - 2026-10-27
 
 ### Added
