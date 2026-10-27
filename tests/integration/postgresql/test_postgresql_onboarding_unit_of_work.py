@@ -1,7 +1,7 @@
 """PostgreSQL integration tests for transactional Supplier onboarding."""
 
-from datetime import UTC, datetime
 import os
+from datetime import UTC, datetime
 
 import pytest
 from sqlalchemy.orm import Session, sessionmaker
