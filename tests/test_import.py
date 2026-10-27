@@ -11,6 +11,7 @@ BOOTSTRAP_MODULES = (
     "pysrmkit.ports",
     "pysrmkit.adapters",
     "pysrmkit.adapters.sqlalchemy",
+    "pysrmkit.public",
 )
 
 
@@ -21,4 +22,10 @@ def test_bootstrap_packages_import() -> None:
 
 
 def test_package_version() -> None:
-    assert pysrmkit.__version__ == "0.2.0a7"
+    assert pysrmkit.__version__ == "0.3.0a1"
+
+
+def test_public_facade_is_exported_from_package_root() -> None:
+    from pysrmkit import PySRMKit
+
+    assert PySRMKit.__name__ == "PySRMKit"
