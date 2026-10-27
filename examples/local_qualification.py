@@ -16,6 +16,7 @@ from pysrmkit.adapters.memory.relationship_repository import (
     InMemorySupplierRelationshipRepository,
 )
 from pysrmkit.adapters.memory.supplier_repository import InMemorySupplierRepository
+from pysrmkit.adapters.memory.unit_of_work import InMemorySupplierOnboardingUnitOfWork
 from pysrmkit.application.assessment.commands import (
     AssessmentQuestionInput,
     CompleteSupplierAssessment,
@@ -177,8 +178,10 @@ def run_local_qualification(*, assessment_score: int = 90) -> LocalQualification
     ).handle(InviteSupplierRelationship(relationship_id=relationship.relationship_id))
 
     StartSupplierOnboardingHandler(
-        relationship_repository=relationships,
-        onboarding_repository=onboardings,
+        unit_of_work=InMemorySupplierOnboardingUnitOfWork(
+            relationship_repository=relationships,
+            onboarding_repository=onboardings,
+        ),
         clock=clock,
         event_dispatcher=dispatcher,
     ).handle(

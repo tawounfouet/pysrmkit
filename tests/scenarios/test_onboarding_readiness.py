@@ -7,6 +7,7 @@ from pysrmkit.adapters.memory.onboarding_repository import InMemorySupplierOnboa
 from pysrmkit.adapters.memory.relationship_repository import (
     InMemorySupplierRelationshipRepository,
 )
+from pysrmkit.adapters.memory.unit_of_work import InMemorySupplierOnboardingUnitOfWork
 from pysrmkit.application.onboarding.commands import (
     CompleteSupplierOnboarding,
     OnboardingRequirementInput,
@@ -71,8 +72,10 @@ def test_relationship_reaches_domain_valid_onboarding_readiness() -> None:
     ).handle(InviteSupplierRelationship(relationship_id=relationship.id))
 
     StartSupplierOnboardingHandler(
-        relationship_repository=relationships,
-        onboarding_repository=onboardings,
+        unit_of_work=InMemorySupplierOnboardingUnitOfWork(
+            relationship_repository=relationships,
+            onboarding_repository=onboardings,
+        ),
         clock=FixedClock(ONBOARDING_AT),
         event_dispatcher=dispatcher,
     ).handle(

@@ -43,6 +43,18 @@ class InMemorySupplierOnboardingRepository:
             completed_at=onboarding.completed_at,
         )
 
+    def snapshot_state(self) -> tuple[SupplierOnboarding, ...]:
+        """Capture Domain state for in-memory transactional rollback."""
+
+        return tuple(self._restore(stored) for stored in self._onboardings.values())
+
+    def restore_state(self, snapshot: tuple[SupplierOnboarding, ...]) -> None:
+        """Restore Domain state captured by snapshot_state()."""
+
+        self._onboardings.clear()
+        for onboarding in snapshot:
+            self.save(onboarding)
+
     def find_for_relationship(
         self,
         relationship_id: SupplierRelationshipId,

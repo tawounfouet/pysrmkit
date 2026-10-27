@@ -24,9 +24,9 @@ from pysrmkit.domain.relationship.entities import SupplierRelationship
 from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
 from pysrmkit.ports.clock import Clock
 from pysrmkit.ports.events import DomainEventDispatcher
-from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.relationship import SupplierRelationshipRepository
 from pysrmkit.ports.repositories.supplier import SupplierRepository
+from pysrmkit.ports.unit_of_work import SupplierOnboardingUnitOfWork
 
 
 class CreateSupplierRelationshipHandler:
@@ -109,46 +109,55 @@ class StartSupplierOnboardingHandler:
     def __init__(
         self,
         *,
-        relationship_repository: SupplierRelationshipRepository,
-        onboarding_repository: SupplierOnboardingRepository,
+        unit_of_work: SupplierOnboardingUnitOfWork,
         clock: Clock,
         event_dispatcher: DomainEventDispatcher,
     ) -> None:
-        self._relationship_repository = relationship_repository
-        self._onboarding_repository = onboarding_repository
+        self._unit_of_work = unit_of_work
         self._clock = clock
         self._event_dispatcher = event_dispatcher
 
     def handle(self, command: StartSupplierOnboarding) -> None:
-        relationship = self._load(command.relationship_id)
-        existing = self._onboarding_repository.find_for_relationship(relationship.id)
-        if existing is not None:
-            raise SupplierOnboardingAlreadyExists(
-                f"SupplierRelationship {relationship.id} already has onboarding"
+        with self._unit_of_work as unit_of_work:
+            relationship = self._load(
+                unit_of_work.relationship_repository,
+                command.relationship_id,
+            )
+            existing = unit_of_work.onboarding_repository.find_for_relationship(relationship.id)
+            if existing is not None:
+                raise SupplierOnboardingAlreadyExists(
+                    f"SupplierRelationship {relationship.id} already has onboarding"
+                )
+
+            occurred_at = self._clock.now()
+            requirements = tuple(
+                OnboardingRequirement(
+                    code=OnboardingRequirementCode(item.code),
+                    mandatory=item.mandatory,
+                )
+                for item in command.requirements
+            )
+            relationship.start_onboarding(occurred_at=occurred_at)
+            onboarding = SupplierOnboarding.create(
+                onboarding_id=OnboardingId.new(),
+                relationship_id=relationship.id,
+                started_at=occurred_at,
+                requirements=requirements,
             )
 
-        occurred_at = self._clock.now()
-        requirements = tuple(
-            OnboardingRequirement(
-                code=OnboardingRequirementCode(item.code),
-                mandatory=item.mandatory,
-            )
-            for item in command.requirements
-        )
-        relationship.start_onboarding(occurred_at=occurred_at)
-        onboarding = SupplierOnboarding.create(
-            onboarding_id=OnboardingId.new(),
-            relationship_id=relationship.id,
-            started_at=occurred_at,
-            requirements=requirements,
-        )
+            unit_of_work.relationship_repository.save(relationship)
+            unit_of_work.onboarding_repository.save(onboarding)
+            events = relationship.pull_events()
+            unit_of_work.commit()
 
-        self._relationship_repository.save(relationship)
-        self._onboarding_repository.save(onboarding)
-        self._event_dispatcher.dispatch(relationship.pull_events())
+        self._event_dispatcher.dispatch(events)
 
-    def _load(self, relationship_id: SupplierRelationshipId) -> SupplierRelationship:
-        relationship = self._relationship_repository.get(relationship_id)
+    @staticmethod
+    def _load(
+        repository: SupplierRelationshipRepository,
+        relationship_id: SupplierRelationshipId,
+    ) -> SupplierRelationship:
+        relationship = repository.get(relationship_id)
         if relationship is None:
             raise SupplierRelationshipNotFound(
                 f"SupplierRelationship {relationship_id} does not exist"

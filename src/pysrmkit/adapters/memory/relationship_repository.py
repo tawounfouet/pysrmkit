@@ -44,6 +44,18 @@ class InMemorySupplierRelationshipRepository:
             stage=relationship.stage,
         )
 
+    def snapshot_state(self) -> tuple[SupplierRelationship, ...]:
+        """Capture Domain state for in-memory transactional rollback."""
+
+        return tuple(self._restore(stored) for stored in self._relationships.values())
+
+    def restore_state(self, snapshot: tuple[SupplierRelationship, ...]) -> None:
+        """Restore Domain state captured by snapshot_state()."""
+
+        self._relationships.clear()
+        for relationship in snapshot:
+            self.save(relationship)
+
     def find_for_supplier_and_organization(
         self,
         supplier_id: SupplierId,
