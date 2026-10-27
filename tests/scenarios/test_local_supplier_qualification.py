@@ -48,6 +48,7 @@ def test_local_supplier_qualification_rejection() -> None:
     assert outcome.observed_events[-1] == "SupplierQualificationRejected"
     assert "SupplierQualified" not in outcome.observed_events
 
+
 def test_local_example_entrypoint_prints_success_trace(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
