@@ -56,10 +56,7 @@ class QualificationPolicy:
             reasons.append("Completed assessment must provide a score")
         elif context.assessment_score < self.minimum_assessment_score:
             failed_requirements.append("ASSESSMENT_MINIMUM_SCORE")
-            reasons.append(
-                "Assessment score must be at least "
-                f"{self.minimum_assessment_score}"
-            )
+            reasons.append(f"Assessment score must be at least {self.minimum_assessment_score}")
 
         if not context.required_answers_complete:
             failed_requirements.append("REQUIRED_ANSWERS_COMPLETE")
