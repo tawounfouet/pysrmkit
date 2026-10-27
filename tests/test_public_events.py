@@ -11,8 +11,8 @@ from pysrmkit import (
     SupplierInvited,
     SupplierRelationshipCreated,
 )
-from pysrmkit.public import PersistenceError
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
+from pysrmkit.public import PersistenceError
 
 
 def test_in_memory_runtime_exposes_typed_public_subscription_in_order() -> None:
