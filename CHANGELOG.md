@@ -25,8 +25,8 @@ All notable changes to PySRMKit will be documented in this file.
 - Existing Domain Event trace semantics remain observable without publishing single-repository events before SQL commit.
 - Domain, Application, and Repository Ports remain unchanged and persistence-framework agnostic.
 - No global UnitOfWork was introduced.
-- Quality CI #141: 239 passed, 44 PostgreSQL-marked tests skipped, 98.11% coverage.
-- PostgreSQL CI #141: 44 selected tests passed against PostgreSQL 18.6.
+- Final PR CI #144 quality job: 239 passed, 44 PostgreSQL-marked tests skipped, 98.11% coverage.
+- Final PR CI #144 PostgreSQL job: 44 selected tests passed against PostgreSQL 18.6.
 - Ruff, Ruff format, Pyright strict, architecture gates, migrations, Repository Contracts, UnitOfWork tests, and persistent scenarios are green.
 
 ### Refined
