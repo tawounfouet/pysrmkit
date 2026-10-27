@@ -1,8 +1,11 @@
 """SQLite qualification for the Alembic Persistent Core baseline."""
 
+from pathlib import Path
+
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import CheckConstraint, Engine, UniqueConstraint, inspect
+from sqlalchemy import CheckConstraint, UniqueConstraint, inspect
+from sqlalchemy.engine import Engine
 
 from pysrmkit.adapters.sqlalchemy.engine import create_persistence_engine
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
@@ -62,7 +65,7 @@ def _assert_migrated_schema_matches_metadata(engine: Engine) -> None:
         assert actual_indexes == expected_indexes
 
 
-def test_empty_sqlite_database_can_upgrade_to_persistent_core_head(tmp_path) -> None:
+def test_empty_sqlite_database_can_upgrade_to_persistent_core_head(tmp_path: Path) -> None:
     database_path = tmp_path / "pysrmkit.db"
     database_url = f"sqlite:///{database_path}"
     config = _alembic_config(database_url)
@@ -76,7 +79,7 @@ def test_empty_sqlite_database_can_upgrade_to_persistent_core_head(tmp_path) -> 
         engine.dispose()
 
 
-def test_sqlite_baseline_can_downgrade_and_reupgrade(tmp_path) -> None:
+def test_sqlite_baseline_can_downgrade_and_reupgrade(tmp_path: Path) -> None:
     database_path = tmp_path / "pysrmkit-replay.db"
     database_url = f"sqlite:///{database_path}"
     config = _alembic_config(database_url)
