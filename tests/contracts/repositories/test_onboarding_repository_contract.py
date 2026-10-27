@@ -37,10 +37,14 @@ class SupplierOnboardingRepositoryContract(ABC):
     def make_repository(self) -> SupplierOnboardingRepository:
         raise NotImplementedError
 
+    def prepare_onboarding(self, onboarding: SupplierOnboarding) -> None:
+        """Prepare external Aggregate preconditions required by an adapter."""
+
     def test_save_then_get_returns_same_logical_onboarding(self) -> None:
         repository = self.make_repository()
         onboarding = make_onboarding()
 
+        self.prepare_onboarding(onboarding)
         repository.save(onboarding)
         loaded = repository.get(onboarding.id)
 
@@ -58,6 +62,7 @@ class SupplierOnboardingRepositoryContract(ABC):
         repository = self.make_repository()
         relationship_id = SupplierRelationshipId.new()
         onboarding = make_onboarding(relationship_id=relationship_id)
+        self.prepare_onboarding(onboarding)
         repository.save(onboarding)
 
         loaded = repository.find_for_relationship(relationship_id)
@@ -73,6 +78,7 @@ class SupplierOnboardingRepositoryContract(ABC):
     def test_satisfied_requirements_survive_explicit_save_and_reload(self) -> None:
         repository = self.make_repository()
         onboarding = make_onboarding()
+        self.prepare_onboarding(onboarding)
         repository.save(onboarding)
 
         loaded = repository.get(onboarding.id)
@@ -91,6 +97,7 @@ class SupplierOnboardingRepositoryContract(ABC):
         onboarding.satisfy_requirement(OnboardingRequirementCode("LEGAL_NAME"))
         onboarding.complete(occurred_at=LATER)
         onboarding.pull_events()
+        self.prepare_onboarding(onboarding)
         repository.save(onboarding)
 
         reloaded = repository.get(onboarding.id)
@@ -103,6 +110,7 @@ class SupplierOnboardingRepositoryContract(ABC):
     def test_unsaved_requirement_change_does_not_leak_into_repository_state(self) -> None:
         repository = self.make_repository()
         onboarding = make_onboarding()
+        self.prepare_onboarding(onboarding)
         repository.save(onboarding)
 
         loaded = repository.get(onboarding.id)
@@ -117,7 +125,9 @@ class SupplierOnboardingRepositoryContract(ABC):
         repository = self.make_repository()
         first = make_onboarding()
         second = make_onboarding()
+        self.prepare_onboarding(first)
         repository.save(first)
+        self.prepare_onboarding(second)
         repository.save(second)
 
         loaded_first = repository.find_for_relationship(first.relationship_id)

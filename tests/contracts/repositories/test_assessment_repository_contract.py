@@ -40,10 +40,14 @@ class SupplierAssessmentRepositoryContract(ABC):
     def make_repository(self) -> SupplierAssessmentRepository:
         raise NotImplementedError
 
+    def prepare_assessment(self, assessment: SupplierAssessment) -> None:
+        """Prepare external Aggregate preconditions required by an adapter."""
+
     def test_save_then_get_returns_same_logical_assessment(self) -> None:
         repository = self.make_repository()
         assessment = make_assessment()
 
+        self.prepare_assessment(assessment)
         repository.save(assessment)
         loaded = repository.get(assessment.id)
 
@@ -62,7 +66,9 @@ class SupplierAssessmentRepositoryContract(ABC):
         relationship_id = SupplierRelationshipId.new()
         first = make_assessment(relationship_id=relationship_id)
         second = make_assessment(relationship_id=relationship_id, created_at=LATER)
+        self.prepare_assessment(first)
         repository.save(first)
+        self.prepare_assessment(second)
         repository.save(second)
 
         loaded = repository.find_latest_for_relationship(relationship_id)
@@ -76,6 +82,7 @@ class SupplierAssessmentRepositoryContract(ABC):
         assessment.record_answer(AssessmentAnswer(question_code="LEGAL", score=90))
         assessment.complete(occurred_at=LATER)
         assessment.pull_events()
+        self.prepare_assessment(assessment)
         repository.save(assessment)
 
         loaded = repository.get(assessment.id)
@@ -89,6 +96,7 @@ class SupplierAssessmentRepositoryContract(ABC):
     def test_unsaved_answer_does_not_leak_into_repository_state(self) -> None:
         repository = self.make_repository()
         assessment = make_assessment()
+        self.prepare_assessment(assessment)
         repository.save(assessment)
 
         loaded = repository.get(assessment.id)
@@ -103,7 +111,9 @@ class SupplierAssessmentRepositoryContract(ABC):
         repository = self.make_repository()
         first = make_assessment()
         second = make_assessment()
+        self.prepare_assessment(first)
         repository.save(first)
+        self.prepare_assessment(second)
         repository.save(second)
 
         loaded_first = repository.find_latest_for_relationship(first.relationship_id)

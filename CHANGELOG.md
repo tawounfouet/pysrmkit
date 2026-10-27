@@ -4,6 +4,44 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a3 - 2026-10-27
+
+### Added
+
+- SQLAlchemy persistence records for SupplierOnboarding and owned requirements.
+- SQLAlchemy persistence records for SupplierAssessment, question snapshots, and answers.
+- Explicit Onboarding and Assessment Domain ↔ persistence mappers.
+- SqlAlchemySupplierOnboardingRepository and SqlAlchemySupplierAssessmentRepository.
+- Portable UTCDateTime SQLAlchemy type preserving timezone-aware UTC semantics across SQLite and PostgreSQL.
+- SQLite and PostgreSQL execution of existing Onboarding and Assessment Repository Contracts.
+- Explicit persistence ordering for owned requirements, questions, and answers.
+- SQLite relational constraint tests for Relationship FKs, one Onboarding per Relationship, and Answer → Question integrity.
+
+### Qualified
+
+- Existing Domain and Repository Port APIs remain unchanged.
+- Onboarding requirement satisfaction and completion state survive SQL round trips.
+- Assessment questions, answers, score, decision, and completion state survive SQL round trips.
+- Reconstitution creates no historical Domain Events.
+- SQLite restores business timestamps as timezone-aware UTC datetimes.
+- PostgreSQL 18 executes the same Onboarding and Assessment repository contracts.
+- Quality CI: 213 passed, 29 PostgreSQL-marked tests skipped, 98.49% coverage.
+- PostgreSQL CI: 29 selected tests passed against PostgreSQL 18.6.
+
+### Refined
+
+- Onboarding and Assessment shared contracts gained no-op preparation hooks so relational adapters can prepare required Relationship parents without teaching child repositories to create parent Aggregates.
+- PostgreSQL exposed that a composite Answer → Question FK alone did not give SQLAlchemy enough object-level ordering information. The persistence model now uses a technical question_id FK and explicit ORM relationship while the Domain remains question-code based.
+- SQLite UTC persistence required an explicit UTCDateTime adapter type because SQLite does not preserve timezone information natively.
+
+### Deferred
+
+- Qualification SQL persistence remains in 0.2.0a4.
+- UnitOfWork and post-commit event dispatch remain in 0.2.0a5.
+- Alembic migration history remains deferred.
+- Async persistence remains deferred.
+
+
 ## 0.2.0a2 - 2026-10-27
 
 ### Added

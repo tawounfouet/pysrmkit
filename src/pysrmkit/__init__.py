@@ -1,5 +1,5 @@
 """PySRMKit public package."""
 
-__version__ = "0.2.0a2"
+__version__ = "0.2.0a3"
 
 __all__ = ["__version__"]
