@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a5` Transaction Boundary / UnitOfWork qualified on `main`.**
+**Early alpha — `0.2.0a6` Alembic Migration Baseline qualified on PR #18.**
 
 Qualified milestones:
 
@@ -25,12 +25,13 @@ Qualified milestones:
 0.2.0a3 — Onboarding + Assessment SQL Persistence
 0.2.0a4 — Qualification SQL Persistence
 0.2.0a5 — Transaction Boundary / UnitOfWork
+0.2.0a6 — Alembic Migration Baseline
 ```
 
 Next milestone:
 
 ```text
-0.2.0a6 — Alembic Migration Baseline
+0.2.0a7 — Persistent Local Qualification
 ```
 
 The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now validates the same architecture against optional relational persistence infrastructure.
@@ -46,7 +47,7 @@ repeatable
 green
 ```
 
-`0.2.0a5` is green. Starting onboarding commits SupplierRelationship and SupplierOnboarding atomically through a capability-specific UnitOfWork and dispatches Domain Events only after successful commit.
+`0.2.0a6` is green on PR #18. Empty SQLite and PostgreSQL databases can now be migrated reproducibly to the complete Persistent Core schema through the versioned Alembic baseline, while Domain, Application, and Repository Ports remain persistence-framework agnostic.
 
 ## Architecture
 
@@ -112,7 +113,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a5` quality suite reaches **97.73%** total coverage, while the PostgreSQL CI job executes 41 persistence/transaction tests against PostgreSQL 18.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a6` PR qualification reaches **97.74%** total coverage with **235 tests passed** in the quality job, while the PostgreSQL CI job executes **42 selected tests** against PostgreSQL 18.6.
 
 ## Documentation
 
