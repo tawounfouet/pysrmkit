@@ -27,6 +27,32 @@ def _requirement_records(
     ]
 
 
+def _synchronize_requirement_records(
+    record: SupplierOnboardingRecord,
+    onboarding: SupplierOnboarding,
+) -> list[OnboardingRequirementRecord]:
+    existing_by_code = {item.code: item for item in record.requirements}
+    synchronized: list[OnboardingRequirementRecord] = []
+
+    for position, requirement in enumerate(onboarding.requirements):
+        code = requirement.code.value
+        item = existing_by_code.get(code)
+        if item is None:
+            item = OnboardingRequirementRecord(
+                position=position,
+                code=code,
+                mandatory=requirement.mandatory,
+                satisfied=requirement.satisfied,
+            )
+        else:
+            item.position = position
+            item.mandatory = requirement.mandatory
+            item.satisfied = requirement.satisfied
+        synchronized.append(item)
+
+    return synchronized
+
+
 def new_onboarding_record(onboarding: SupplierOnboarding) -> SupplierOnboardingRecord:
     """Create a new persistence record from current Onboarding state."""
 
@@ -48,7 +74,7 @@ def apply_onboarding_state(
     record.relationship_id = onboarding.relationship_id.value
     record.started_at = onboarding.started_at
     record.completed_at = onboarding.completed_at
-    record.requirements = _requirement_records(onboarding)
+    record.requirements = _synchronize_requirement_records(record, onboarding)
 
 
 def onboarding_from_record(record: SupplierOnboardingRecord) -> SupplierOnboarding:
