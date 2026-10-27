@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from pysrmkit.domain.relationship.entities import SupplierRelationship
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
+    SupplierLifecycleStage,
     SupplierRelationshipId,
 )
 from pysrmkit.domain.supplier.value_objects import SupplierId
@@ -141,3 +142,41 @@ class SupplierRelationshipRepositoryContract(ABC):
         assert loaded_first is not None
         assert loaded_second is not None
         assert loaded_first.id != loaded_second.id
+
+    def test_updated_lifecycle_persists_after_save(self) -> None:
+        repository = self.make_repository()
+        relationship = make_relationship()
+        relationship.pull_events()
+        repository.save(relationship)
+
+        loaded = repository.get(relationship.id)
+        assert loaded is not None
+        loaded.invite(occurred_at=NOW)
+        loaded.pull_events()
+        repository.save(loaded)
+
+        invited = repository.get(relationship.id)
+        assert invited is not None
+        assert invited.stage is SupplierLifecycleStage.INVITED
+
+        invited.start_onboarding(occurred_at=NOW)
+        invited.pull_events()
+        repository.save(invited)
+
+        onboarding = repository.get(relationship.id)
+        assert onboarding is not None
+        assert onboarding.stage is SupplierLifecycleStage.ONBOARDING
+
+    def test_unsaved_lifecycle_transition_does_not_leak_into_repository_state(self) -> None:
+        repository = self.make_repository()
+        relationship = make_relationship()
+        relationship.pull_events()
+        repository.save(relationship)
+
+        loaded = repository.get(relationship.id)
+        assert loaded is not None
+        loaded.invite(occurred_at=NOW)
+
+        unchanged = repository.get(relationship.id)
+        assert unchanged is not None
+        assert unchanged.stage is SupplierLifecycleStage.DISCOVERED
