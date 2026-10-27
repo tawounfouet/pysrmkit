@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.1.0a8` Local Core Qualification qualified on `main`.**
+**Early alpha — `0.2.0a1` Persistence Foundation qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -19,18 +19,19 @@ Qualified milestones:
 0.1.0a6 — Qualification Domain
 0.1.0a7 — Qualification Application Flow
 0.1.0a8 — Local Core Qualification
+
+0.2.0a1 — Persistence Foundation
 ```
 
-Next decision point:
+Next milestone:
 
 ```text
-Post-Core architecture / product review
-No next capability is preselected.
+0.2.0a2 — Supplier + Relationship SQL Persistence
 ```
 
-The first local Core implementation cycle now covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification using only local InMemory adapters.
+The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now begins validating the same architecture against optional relational persistence infrastructure.
 
-Production infrastructure remains intentionally absent: no database, API framework, message broker, cloud service, or external SRM connector is required by the Core.
+SQLAlchemy remains optional: the pure Core still requires no database, API framework, message broker, cloud service, or external SRM connector.
 
 ## Core principles
 
@@ -41,7 +42,7 @@ repeatable
 green
 ```
 
-`0.1.0a8` is green. The complete local journey can now produce either `QUALIFIED` or `NOT_QUALIFIED` through Domain and Application layers with an explicit Domain Event trace.
+`0.2.0a1` is green. PySRMKit now has an isolated SQLAlchemy persistence foundation with explicit Engine/Session construction, SQLite foreign-key enforcement, and architecture gates preventing persistence frameworks from leaking into Domain, Application, or Ports.
 
 ## Architecture
 
@@ -71,6 +72,12 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 ```
 
+For consumers who need the optional relational persistence foundation without the development toolchain:
+
+```bash
+python -m pip install -e ".[persistence]"
+```
+
 On Windows PowerShell, activate the environment with:
 
 ```powershell
@@ -88,7 +95,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The qualified first local Core currently reaches **99.17%** total coverage; the threshold itself can be revisited during the post-Core review.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a1` qualification suite currently reaches **99.12%** total coverage.
 
 ## Documentation
 
@@ -112,4 +119,11 @@ The operational bootstrap is defined in:
 
 ```text
 docs/specifications/14_PYSRMKIT_IMPLEMENTATION_BOOTSTRAP_PLAN.md
+```
+
+The post-Core review and persistence-cycle architecture are defined in:
+
+```text
+docs/specifications/15_PYSRMKIT_POST_CORE_ARCHITECTURE_REVIEW.md
+docs/specifications/16_PYSRMKIT_PERSISTENCE_ARCHITECTURE.md
 ```
