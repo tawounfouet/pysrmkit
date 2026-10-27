@@ -251,7 +251,7 @@ def run_local_qualification(*, assessment_score: int = 90) -> LocalQualification
             scope=scope,
         )
     )
-    evaluation = EvaluateSupplierQualificationHandler(
+    EvaluateSupplierQualificationHandler(
         qualification_repository=qualifications,
         assessment_repository=assessments,
         onboarding_repository=onboardings,
