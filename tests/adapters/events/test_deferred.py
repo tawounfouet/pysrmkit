@@ -1,6 +1,8 @@
 """Tests for deferred Domain Event dispatch."""
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
+from uuid import UUID, uuid4
 
 from pysrmkit.adapters.events.deferred import DeferredDomainEventDispatcher
 from pysrmkit.domain.common.events import DomainEvent
@@ -8,8 +10,12 @@ from pysrmkit.domain.common.events import DomainEvent
 NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 
 
-class SampleEvent(DomainEvent):
-    """Minimal event used to exercise deferred dispatch."""
+@dataclass(frozen=True, slots=True)
+class SampleEvent:
+    """Minimal structural implementation of the DomainEvent Protocol."""
+
+    occurred_at: datetime
+    event_id: UUID
 
 
 class RecordingDispatcher:
@@ -23,7 +29,7 @@ class RecordingDispatcher:
 def test_events_remain_buffered_until_publish() -> None:
     downstream = RecordingDispatcher()
     dispatcher = DeferredDomainEventDispatcher(downstream)
-    event = SampleEvent(occurred_at=NOW)
+    event = SampleEvent(occurred_at=NOW, event_id=uuid4())
 
     dispatcher.dispatch((event,))
 
@@ -37,7 +43,7 @@ def test_events_remain_buffered_until_publish() -> None:
 def test_discard_prevents_publication() -> None:
     downstream = RecordingDispatcher()
     dispatcher = DeferredDomainEventDispatcher(downstream)
-    event = SampleEvent(occurred_at=NOW)
+    event = SampleEvent(occurred_at=NOW, event_id=uuid4())
 
     dispatcher.dispatch((event,))
     dispatcher.discard()
