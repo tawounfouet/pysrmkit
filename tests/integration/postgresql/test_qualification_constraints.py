@@ -7,6 +7,7 @@ import pytest
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from tests.contracts.repositories.sqlalchemy_context import prepare_relationship_context
 
 from pysrmkit.adapters.sqlalchemy.engine import create_persistence_engine
 from pysrmkit.adapters.sqlalchemy.metadata import PersistenceBase
@@ -22,7 +23,6 @@ from pysrmkit.domain.qualification.value_objects import (
 )
 from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
 from pysrmkit.domain.supplier.value_objects import CategoryCode
-from tests.contracts.repositories.sqlalchemy_context import prepare_relationship_context
 
 pytestmark = pytest.mark.postgresql
 DATABASE_URL = os.environ.get("PYSRMKIT_POSTGRESQL_TEST_URL")
