@@ -148,4 +148,5 @@ The post-Core review and persistence-cycle architecture are defined in:
 docs/specifications/15_PYSRMKIT_POST_CORE_ARCHITECTURE_REVIEW.md
 docs/specifications/16_PYSRMKIT_PERSISTENCE_ARCHITECTURE.md
 docs/specifications/17_PYSRMKIT_PERSISTENT_CORE_MILESTONE.md
+docs/specifications/18_PYSRMKIT_POST_PERSISTENCE_ARCHITECTURE_REVIEW.md
 ```
