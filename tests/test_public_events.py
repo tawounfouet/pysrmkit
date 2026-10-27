@@ -1,6 +1,9 @@
 """Compatibility tests for the 0.3.0a5 public Domain Event surface."""
 
-from sqlalchemy import create_engine
+import pytest
+from sqlalchemy import create_engine, event
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 from pysrmkit import (
     PySRMKit,
@@ -8,6 +11,7 @@ from pysrmkit import (
     SupplierInvited,
     SupplierRelationshipCreated,
 )
+from pysrmkit.public import PersistenceError
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
 
 
@@ -64,3 +68,24 @@ def test_public_event_contract_exposes_stable_identity_and_timestamp() -> None:
     assert event.supplier_id == result.supplier_id
     assert event.event_id is not None
     assert event.occurred_at.tzinfo is not None
+
+
+def test_failed_sql_commit_publishes_no_public_event() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    load_persistence_metadata().create_all(engine)
+    srm = PySRMKit.sql(engine)
+    observed: list[SupplierCreated] = []
+    srm.events.subscribe(SupplierCreated, observed.append)
+
+    def fail_commit(session: Session) -> None:
+        del session
+        raise SQLAlchemyError("forced commit failure")
+
+    event.listen(Session, "before_commit", fail_commit)
+    try:
+        with pytest.raises(PersistenceError):
+            srm.suppliers.register(legal_name="Must Roll Back")
+    finally:
+        event.remove(Session, "before_commit", fail_commit)
+
+    assert observed == []
