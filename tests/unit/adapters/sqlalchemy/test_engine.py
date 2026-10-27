@@ -22,7 +22,7 @@ def test_sqlite_engine_enables_foreign_key_enforcement() -> None:
 def test_sqlite_engine_enforces_foreign_key_constraints() -> None:
     engine = create_persistence_engine("sqlite:///:memory:")
     metadata = MetaData()
-    parent = Table(
+    Table(
         "parent",
         metadata,
         Column("id", Integer, primary_key=True),
