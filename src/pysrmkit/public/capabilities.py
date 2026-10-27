@@ -53,6 +53,21 @@ from pysrmkit.domain.relationship.value_objects import (
 )
 from pysrmkit.domain.supplier.value_objects import SupplierId
 from pysrmkit.public._handler import Handler
+from pysrmkit.public._queries import (
+    GetAssessment,
+    GetCurrentQualificationForScope,
+    GetOnboardingForRelationship,
+    GetQualification,
+    GetSupplier,
+    GetSupplierRelationship,
+)
+from pysrmkit.public.views import (
+    AssessmentView,
+    OnboardingView,
+    QualificationView,
+    SupplierRelationshipView,
+    SupplierView,
+)
 
 
 class SuppliersAPI:
@@ -62,8 +77,10 @@ class SuppliersAPI:
         self,
         *,
         register_supplier: Handler[RegisterSupplier, RegisterSupplierResult],
+        get_supplier: Handler[GetSupplier, SupplierView],
     ) -> None:
         self._register_supplier = register_supplier
+        self._get_supplier = get_supplier
 
     def register(
         self,
@@ -86,6 +103,11 @@ class SuppliersAPI:
         )
 
 
+    def get(self, *, supplier_id: SupplierId) -> SupplierView:
+        """Return an immutable Supplier snapshot or raise SupplierNotFound."""
+        return self._get_supplier.handle(GetSupplier(supplier_id=supplier_id))
+
+
 class RelationshipsAPI:
     """Public entry points for SupplierRelationship lifecycle use cases."""
 
@@ -98,10 +120,12 @@ class RelationshipsAPI:
         ],
         invite_relationship: Handler[InviteSupplierRelationship, None],
         start_onboarding: Handler[StartSupplierOnboarding, None],
+        get_relationship: Handler[GetSupplierRelationship, SupplierRelationshipView],
     ) -> None:
         self._create_relationship = create_relationship
         self._invite_relationship = invite_relationship
         self._start_onboarding = start_onboarding
+        self._get_relationship = get_relationship
 
     def create(
         self,
@@ -138,6 +162,11 @@ class RelationshipsAPI:
         )
 
 
+    def get(self, *, relationship_id: SupplierRelationshipId) -> SupplierRelationshipView:
+        """Return an immutable SupplierRelationship snapshot."""
+        return self._get_relationship.handle(GetSupplierRelationship(relationship_id))
+
+
 class OnboardingsAPI:
     """Public entry points for Supplier Onboarding use cases."""
 
@@ -147,10 +176,12 @@ class OnboardingsAPI:
         satisfy_requirement: Handler[SatisfyOnboardingRequirement, None],
         complete_onboarding: Handler[CompleteSupplierOnboarding, None],
         get_progress: Handler[GetOnboardingProgress, OnboardingProgress],
+        get_for_relationship: Handler[GetOnboardingForRelationship, OnboardingView],
     ) -> None:
         self._satisfy_requirement = satisfy_requirement
         self._complete_onboarding = complete_onboarding
         self._get_progress = get_progress
+        self._get_for_relationship = get_for_relationship
 
     def satisfy_requirement(
         self,
@@ -175,6 +206,11 @@ class OnboardingsAPI:
         return self._get_progress.handle(GetOnboardingProgress(onboarding_id=onboarding_id))
 
 
+    def get_for_relationship(self, *, relationship_id: SupplierRelationshipId) -> OnboardingView:
+        """Return the relationship onboarding snapshot."""
+        return self._get_for_relationship.handle(GetOnboardingForRelationship(relationship_id))
+
+
 class AssessmentsAPI:
     """Public entry points for Supplier Assessment use cases."""
 
@@ -190,10 +226,12 @@ class AssessmentsAPI:
             CompleteSupplierAssessment,
             CompleteSupplierAssessmentResult,
         ],
+        get_assessment: Handler[GetAssessment, AssessmentView],
     ) -> None:
         self._create_assessment = create_assessment
         self._record_answer = record_answer
         self._complete_assessment = complete_assessment
+        self._get_assessment = get_assessment
 
     def create(
         self,
@@ -242,6 +280,11 @@ class AssessmentsAPI:
         )
 
 
+    def get(self, *, assessment_id: AssessmentId) -> AssessmentView:
+        """Return an immutable SupplierAssessment snapshot."""
+        return self._get_assessment.handle(GetAssessment(assessment_id))
+
+
 class QualificationsAPI:
     """Public entry points for Supplier Qualification use cases."""
 
@@ -256,9 +299,13 @@ class QualificationsAPI:
             EvaluateSupplierQualification,
             EvaluateSupplierQualificationResult,
         ],
+        get_qualification: Handler[GetQualification, QualificationView],
+        get_current_for_scope: Handler[GetCurrentQualificationForScope, QualificationView],
     ) -> None:
         self._request_qualification = request_qualification
         self._evaluate_qualification = evaluate_qualification
+        self._get_qualification = get_qualification
+        self._get_current_for_scope = get_current_for_scope
 
     def request(
         self,
@@ -283,3 +330,19 @@ class QualificationsAPI:
         return self._evaluate_qualification.handle(
             EvaluateSupplierQualification(qualification_id=qualification_id)
         )
+
+    def get(self, *, qualification_id: QualificationId) -> QualificationView:
+        """Return an immutable SupplierQualification snapshot."""
+        return self._get_qualification.handle(GetQualification(qualification_id))
+
+    def get_current_for_scope(
+        self,
+        *,
+        relationship_id: SupplierRelationshipId,
+        scope: QualificationScope,
+    ) -> QualificationView:
+        """Return the current qualification for a Relationship and Scope."""
+        return self._get_current_for_scope.handle(
+            GetCurrentQualificationForScope(relationship_id=relationship_id, scope=scope)
+        )
+
