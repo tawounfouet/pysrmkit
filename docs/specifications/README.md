@@ -20,9 +20,15 @@ This directory contains the frozen pre-implementation baseline used to bootstrap
 - `13_PYSRMKIT_IMPLEMENTATION_ROADMAP.md`
 - `14_PYSRMKIT_IMPLEMENTATION_BOOTSTRAP_PLAN.md`
 
+## Post-Core iterative reviews
+
+The frozen baseline above is followed by targeted documents created only from implementation pressure.
+
+- `15_PYSRMKIT_POST_CORE_ARCHITECTURE_REVIEW.md` - review of the qualified `0.1.0a1 -> 0.1.0a8` Core and Cycle 2 decision point.
+
 ## Transverse conventions
 
 - `PYSRMKIT_SOFTWARE_DESIGN_LEARNING_CONVENTION.md`
 - `PYSRMKIT_PRE_IMPLEMENTATION_SPECIFICATION_CUTOFF_AND_ITERATIVE_DOCUMENTATION_STRATEGY.md`
 
-Once the bootstrap Definition of Done is satisfied, general specification stops and implementation continues with `0.1.0a2 — Supplier Core`.
+General specification stopped after the bootstrap baseline. Documents numbered `15+` are iterative post-implementation deep dives and must be justified by real code, test, product, or infrastructure pressure.
