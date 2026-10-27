@@ -15,8 +15,22 @@ class PySRMKit:
     """Stable facade grouping the public Supplier Domain capability APIs.
 
     Runtime factories are intentionally not defined in 0.3.0a1. The InMemory and
-    SQL composition roots belong to the following Cycle 3 milestones.
+    SQL composition root belongs to the following Cycle 3 milestone.
     """
+
+    @classmethod
+    def in_memory(cls) -> "PySRMKit":
+        """Build a complete local runtime backed by in-memory repositories."""
+        from pysrmkit.public.composition import compose_in_memory
+
+        suppliers, relationships, onboardings, assessments, qualifications = compose_in_memory()
+        return cls(
+            suppliers=suppliers,
+            relationships=relationships,
+            onboardings=onboardings,
+            assessments=assessments,
+            qualifications=qualifications,
+        )
 
     def __init__(
         self,
