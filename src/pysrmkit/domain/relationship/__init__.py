@@ -1,0 +1,1 @@
+"""Supplier Relationship domain capability."""

@@ -1,0 +1,14 @@
+"""Commands for Supplier Relationship application use cases."""
+
+from dataclasses import dataclass
+
+from pysrmkit.domain.relationship.value_objects import InternalOrganizationId
+from pysrmkit.domain.supplier.value_objects import SupplierId
+
+
+@dataclass(frozen=True, slots=True)
+class CreateSupplierRelationship:
+    """Intent to create a relationship between a Supplier and an internal organization."""
+
+    supplier_id: SupplierId
+    organization_id: InternalOrganizationId
