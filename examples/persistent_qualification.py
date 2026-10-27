@@ -341,9 +341,9 @@ def run_persistent_qualification(
                 reloaded_onboarding = SqlAlchemySupplierOnboardingRepository(
                     reload_session
                 ).find_for_relationship(relationship_id)
-                reloaded_assessment = SqlAlchemySupplierAssessmentRepository(
-                    reload_session
-                ).get(assessment_id)
+                reloaded_assessment = SqlAlchemySupplierAssessmentRepository(reload_session).get(
+                    assessment_id
+                )
                 reloaded_qualification = SqlAlchemySupplierQualificationRepository(
                     reload_session
                 ).get(qualification_id)
