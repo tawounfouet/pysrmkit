@@ -27,9 +27,7 @@ class SupplierQualificationRecord(PersistenceBase):
     __tablename__ = "supplier_qualifications"
     __table_args__ = (
         CheckConstraint(
-            "scope_organization_id <> '' "
-            "OR scope_category_code <> '' "
-            "OR scope_country_code <> ''",
+            "scope_organization_id <> '' OR scope_category_code <> '' OR scope_country_code <> ''",
             name="ck_supplier_qualification_non_empty_scope",
         ),
         CheckConstraint(
