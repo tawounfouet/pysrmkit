@@ -8,6 +8,10 @@ from sqlalchemy import select
 from pysrmkit.adapters.sqlalchemy.engine import create_persistence_engine
 from pysrmkit.adapters.sqlalchemy.metadata import PersistenceBase
 from pysrmkit.adapters.sqlalchemy.models.onboarding import SupplierOnboardingRecord
+from pysrmkit.adapters.sqlalchemy.repositories.relationship import (
+    SqlAlchemySupplierRelationshipRepository,
+)
+from pysrmkit.adapters.sqlalchemy.repositories.supplier import SqlAlchemySupplierRepository
 from pysrmkit.adapters.sqlalchemy.session import create_session_factory
 from pysrmkit.adapters.sqlalchemy.types import UTCDateTime
 from pysrmkit.domain.onboarding.value_objects import OnboardingId
@@ -18,10 +22,6 @@ from pysrmkit.domain.relationship.value_objects import (
 )
 from pysrmkit.domain.supplier.entities import Supplier
 from pysrmkit.domain.supplier.value_objects import SupplierId, SupplierIdentity
-from pysrmkit.adapters.sqlalchemy.repositories.relationship import (
-    SqlAlchemySupplierRelationshipRepository,
-)
-from pysrmkit.adapters.sqlalchemy.repositories.supplier import SqlAlchemySupplierRepository
 
 NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 

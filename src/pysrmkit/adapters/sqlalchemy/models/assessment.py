@@ -8,7 +8,6 @@ from uuid import UUID
 from sqlalchemy import (
     Boolean,
     ForeignKey,
-    ForeignKeyConstraint,
     Integer,
     String,
     UniqueConstraint,
@@ -86,17 +85,8 @@ class AssessmentAnswerRecord(PersistenceBase):
     __table_args__ = (
         UniqueConstraint(
             "assessment_id",
-            "question_code",
+            "question_id",
             name="uq_supplier_assessment_answer_question",
-        ),
-        ForeignKeyConstraint(
-            ["assessment_id", "question_code"],
-            [
-                "supplier_assessment_questions.assessment_id",
-                "supplier_assessment_questions.code",
-            ],
-            ondelete="CASCADE",
-            name="fk_supplier_assessment_answer_question",
         ),
     )
 
@@ -107,8 +97,13 @@ class AssessmentAnswerRecord(PersistenceBase):
         nullable=False,
         index=True,
     )
+    question_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("supplier_assessment_questions.question_id", ondelete="CASCADE"),
+        nullable=False,
+    )
     position: Mapped[int] = mapped_column(Integer, nullable=False)
-    question_code: Mapped[str] = mapped_column(String(100), nullable=False)
     score: Mapped[int] = mapped_column(Integer, nullable=False)
 
     assessment: Mapped[SupplierAssessmentRecord] = relationship(back_populates="answers")
+    question: Mapped[AssessmentQuestionRecord] = relationship(lazy="joined")

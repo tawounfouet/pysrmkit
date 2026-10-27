@@ -33,12 +33,14 @@ def _question_records(
 
 def _answer_records(
     assessment: SupplierAssessment,
+    questions: list[AssessmentQuestionRecord],
 ) -> list[AssessmentAnswerRecord]:
+    questions_by_code = {question.code: question for question in questions}
     return [
         AssessmentAnswerRecord(
             position=position,
-            question_code=answer.question_code,
             score=answer.score,
+            question=questions_by_code[answer.question_code],
         )
         for position, answer in enumerate(assessment.answers)
     ]
@@ -47,6 +49,7 @@ def _answer_records(
 def new_assessment_record(assessment: SupplierAssessment) -> SupplierAssessmentRecord:
     """Create a new persistence record from current Assessment state."""
 
+    questions = _question_records(assessment)
     return SupplierAssessmentRecord(
         assessment_id=assessment.id.value,
         relationship_id=assessment.relationship_id.value,
@@ -55,8 +58,8 @@ def new_assessment_record(assessment: SupplierAssessment) -> SupplierAssessmentR
         completed_at=assessment.completed_at,
         score=assessment.score.value if assessment.score is not None else None,
         decision=assessment.decision.value if assessment.decision is not None else None,
-        questions=_question_records(assessment),
-        answers=_answer_records(assessment),
+        questions=questions,
+        answers=_answer_records(assessment, questions),
     )
 
 
@@ -72,8 +75,9 @@ def apply_assessment_state(
     record.completed_at = assessment.completed_at
     record.score = assessment.score.value if assessment.score is not None else None
     record.decision = assessment.decision.value if assessment.decision is not None else None
-    record.questions = _question_records(assessment)
-    record.answers = _answer_records(assessment)
+    questions = _question_records(assessment)
+    record.questions = questions
+    record.answers = _answer_records(assessment, questions)
 
 
 def assessment_from_record(record: SupplierAssessmentRecord) -> SupplierAssessment:
@@ -94,7 +98,7 @@ def assessment_from_record(record: SupplierAssessmentRecord) -> SupplierAssessme
         ),
         answers=tuple(
             AssessmentAnswer(
-                question_code=item.question_code,
+                question_code=item.question.code,
                 score=item.score,
             )
             for item in record.answers
