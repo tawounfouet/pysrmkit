@@ -22,13 +22,13 @@ Qualified milestones:
 
 0.2.0a1 — Persistence Foundation
 0.2.0a2 — Supplier + Relationship SQL Persistence
-0.2.0a4 — Qualification SQL Persistence
+0.2.0a3 — Onboarding + Assessment SQL Persistence
 ```
 
 Next milestone:
 
 ```text
-0.2.0a3 — Onboarding + Assessment SQL Persistence
+0.2.0a4 — Qualification SQL Persistence
 ```
 
 The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now begins validating the same architecture against optional relational persistence infrastructure.
