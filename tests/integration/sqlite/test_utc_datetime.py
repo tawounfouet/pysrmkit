@@ -51,6 +51,7 @@ def test_sqlite_round_trip_restores_timezone_aware_utc_datetime() -> None:
     try:
         SqlAlchemySupplierRepository(session).save(supplier)
         SqlAlchemySupplierRelationshipRepository(session).save(relationship)
+        session.flush()
         session.add(
             SupplierOnboardingRecord(
                 onboarding_id=OnboardingId.new().value,
