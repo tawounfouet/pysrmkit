@@ -37,9 +37,7 @@ def test_public_views_expose_complete_qualified_supplier_state() -> None:
         requirements=(OnboardingRequirementInput(code="KYC"),),
     )
 
-    relationship = srm.relationships.get(
-        relationship_id=relationship_result.relationship_id
-    )
+    relationship = srm.relationships.get(relationship_id=relationship_result.relationship_id)
     assert relationship.stage.value == "ONBOARDING"
 
     onboarding = srm.onboardings.get_for_relationship(
@@ -77,20 +75,19 @@ def test_public_views_expose_complete_qualified_supplier_state() -> None:
         relationship_id=relationship_result.relationship_id,
         scope=scope,
     )
-    srm.qualifications.evaluate(
-        qualification_id=qualification_result.qualification_id
-    )
-    qualification = srm.qualifications.get(
-        qualification_id=qualification_result.qualification_id
-    )
+    srm.qualifications.evaluate(qualification_id=qualification_result.qualification_id)
+    qualification = srm.qualifications.get(qualification_id=qualification_result.qualification_id)
 
     assert qualification.status.value == "QUALIFIED"
     assert qualification.approved is True
     assert qualification.failed_requirements == ()
-    assert srm.qualifications.get_current_for_scope(
-        relationship_id=relationship_result.relationship_id,
-        scope=scope,
-    ) == qualification
+    assert (
+        srm.qualifications.get_current_for_scope(
+            relationship_id=relationship_result.relationship_id,
+            scope=scope,
+        )
+        == qualification
+    )
 
 
 def test_public_views_are_immutable() -> None:
