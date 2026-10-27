@@ -4,12 +4,12 @@ from dataclasses import dataclass
 
 from pysrmkit.public import (
     AssessmentQuestionInput,
+    InternalOrganizationId,
     OnboardingRequirementInput,
     PySRMKit,
     QualificationId,
     QualificationScope,
     QualificationStatus,
-    InternalOrganizationId,
     SupplierId,
     SupplierLifecycleStage,
     SupplierQualificationRejected,
