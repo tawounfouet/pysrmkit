@@ -96,9 +96,9 @@ def test_handler_commits_both_aggregates_before_dispatch(tmp_path: Path) -> None
             relationship = SqlAlchemySupplierRelationshipRepository(verification).get(
                 relationship_id
             )
-            onboarding = SqlAlchemySupplierOnboardingRepository(
-                verification
-            ).find_for_relationship(relationship_id)
+            onboarding = SqlAlchemySupplierOnboardingRepository(verification).find_for_relationship(
+                relationship_id
+            )
 
         assert relationship is not None
         assert relationship.stage is SupplierLifecycleStage.ONBOARDING
@@ -136,9 +136,9 @@ def test_commit_failure_rolls_back_both_aggregates_and_dispatches_nothing(
             relationship = SqlAlchemySupplierRelationshipRepository(verification).get(
                 relationship_id
             )
-            onboarding = SqlAlchemySupplierOnboardingRepository(
-                verification
-            ).find_for_relationship(relationship_id)
+            onboarding = SqlAlchemySupplierOnboardingRepository(verification).find_for_relationship(
+                relationship_id
+            )
 
         assert relationship is not None
         assert relationship.stage is SupplierLifecycleStage.INVITED
