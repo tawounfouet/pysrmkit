@@ -58,6 +58,7 @@ from pysrmkit.public.capabilities import (
     RelationshipsAPI,
     SuppliersAPI,
 )
+from pysrmkit.public.events import EventsAPI
 from pysrmkit.public.query_handlers import (
     GetAssessmentHandler,
     GetCurrentQualificationForScopeHandler,
@@ -101,10 +102,12 @@ def compose_sql(
     OnboardingsAPI,
     AssessmentsAPI,
     QualificationsAPI,
+    EventsAPI,
 ]:
     """Wire the public runtime to SQLAlchemy with operation-scoped transactions."""
     runtime_clock = clock or SystemClock()
-    runtime_events = event_dispatcher or InProcessDomainEventDispatcher()
+    public_events = InProcessDomainEventDispatcher()
+    runtime_events = event_dispatcher or public_events
     runtime_policy = qualification_policy or QualificationPolicy()
     sessions = create_session_factory(engine)
 
@@ -258,4 +261,5 @@ def compose_sql(
         onboardings_api,
         assessments_api,
         qualifications_api,
+        EventsAPI(public_events),
     )
