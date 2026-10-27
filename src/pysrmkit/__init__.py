@@ -19,7 +19,7 @@ from pysrmkit.public import (
     SuppliersAPI,
 )
 
-__version__ = "0.3.0a5"
+__version__ = "0.3.0a6"
 
 __all__ = [
     "AssessmentsAPI",
