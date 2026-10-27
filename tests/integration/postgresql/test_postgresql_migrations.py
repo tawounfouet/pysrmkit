@@ -73,9 +73,7 @@ def test_postgresql_empty_database_can_upgrade_to_persistent_core_head() -> None
                 if isinstance(constraint, CheckConstraint)
             }
 
-            actual_index_names = {
-                index["name"] for index in inspector.get_indexes(table_name)
-            }
+            actual_index_names = {index["name"] for index in inspector.get_indexes(table_name)}
             expected_explicit_indexes = {index.name for index in table.indexes}
             assert expected_explicit_indexes <= actual_index_names
     finally:
