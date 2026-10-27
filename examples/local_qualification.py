@@ -174,9 +174,7 @@ def run_local_qualification(*, assessment_score: int = 90) -> LocalQualification
         relationship_repository=relationships,
         clock=clock,
         event_dispatcher=dispatcher,
-    ).handle(
-        InviteSupplierRelationship(relationship_id=relationship.relationship_id)
-    )
+    ).handle(InviteSupplierRelationship(relationship_id=relationship.relationship_id))
 
     StartSupplierOnboardingHandler(
         relationship_repository=relationships,
