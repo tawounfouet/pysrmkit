@@ -4,6 +4,7 @@ import os
 
 import pytest
 from sqlalchemy import create_engine
+from tests.public_runtime_consumer import run_public_qualification
 
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
 from pysrmkit.public import (
@@ -12,7 +13,6 @@ from pysrmkit.public import (
     SupplierQualificationRejected,
     SupplierQualified,
 )
-from tests.public_runtime_consumer import run_public_qualification
 
 pytestmark = pytest.mark.postgresql
 DATABASE_URL = os.environ.get("PYSRMKIT_POSTGRESQL_TEST_URL")
