@@ -44,7 +44,7 @@ def test_sql_public_event_is_delivered_after_commit() -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:")
     load_persistence_metadata().create_all(engine)
     srm = PySRMKit.sql(engine)
-    committed_supplier_ids = []
+    committed_supplier_ids: list[object] = []
 
     def observe(event: SupplierCreated) -> None:
         view = srm.suppliers.get(supplier_id=event.supplier_id)
