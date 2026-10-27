@@ -86,9 +86,7 @@ def test_invite_handler_raises_not_found_without_dispatch() -> None:
     )
 
     with pytest.raises(SupplierRelationshipNotFound):
-        handler.handle(
-            InviteSupplierRelationship(relationship_id=SupplierRelationshipId.new())
-        )
+        handler.handle(InviteSupplierRelationship(relationship_id=SupplierRelationshipId.new()))
 
     assert dispatcher.events == []
 
