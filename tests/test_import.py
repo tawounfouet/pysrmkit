@@ -20,4 +20,4 @@ def test_bootstrap_packages_import() -> None:
 
 
 def test_package_version() -> None:
-    assert pysrmkit.__version__ == "0.1.0a5"
+    assert pysrmkit.__version__ == "0.1.0a6"
