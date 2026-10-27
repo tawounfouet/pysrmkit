@@ -6,40 +6,42 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a7` Persistent Local Qualification qualified on `main`.**
+**Early alpha - `0.3.0a6` Public Runtime Qualification completed on `main`.**
 
-Qualified milestones:
+Three implementation cycles are qualified:
 
-```text
-0.1.0a1 — Repository Bootstrap
-0.1.0a2 — Supplier Core
-0.1.0a3 — Supplier Relationships
-0.1.0a4 — Relationship Lifecycle
-0.1.0a5 — Onboarding Core
-0.1.0a6 — Qualification Domain
-0.1.0a7 — Qualification Application Flow
-0.1.0a8 — Local Core Qualification
+- **Cycle 1 - `0.1.0a1 → 0.1.0a8`:** Supplier Domain Core, relationships, lifecycle, onboarding, assessment, scoped qualification and InMemory end-to-end journey.
+- **Cycle 2 - `0.2.0a1 → 0.2.0a7`:** SQLAlchemy persistence, SQLite/PostgreSQL repository contracts, explicit transactions and UnitOfWork, Alembic migrations and durable restart/reload qualification.
+- **Cycle 3 - `0.3.0a1 → 0.3.0a6`:** public facade and capability APIs, InMemory/SQL runtime composition, immutable Views, public error boundary, typed Domain Events and public-only runtime qualification.
 
-0.2.0a1 — Persistence Foundation
-0.2.0a2 — Supplier + Relationship SQL Persistence
-0.2.0a3 — Onboarding + Assessment SQL Persistence
-0.2.0a4 — Qualification SQL Persistence
-0.2.0a5 — Transaction Boundary / UnitOfWork
-0.2.0a6 — Alembic Migration Baseline
-0.2.0a7 — Persistent Local Qualification
+All three cycles are **complete**. The next implementation milestone has not been selected here.
+
+PySRMKit is a reusable **Supplier Domain Engine**, not a complete SRM application. It remains independent of API frameworks, cloud platforms, message brokers and external SRM products. SQLAlchemy is optional.
+
+## Public Python API
+
+```python
+from pysrmkit import PySRMKit, SupplierCreated
+
+srm = PySRMKit.in_memory()
+srm.events.subscribe(SupplierCreated, lambda event: print(event.supplier_id))
+
+supplier = srm.suppliers.register(legal_name="Example Supplier", country_code="FR")
+relationship = srm.relationships.create(
+    supplier_id=supplier.supplier_id,
+    organization_id="HQ",
+)
+srm.relationships.invite(relationship_id=relationship.relationship_id)
+
+supplier_view = srm.suppliers.get(supplier_id=supplier.supplier_id)
+relationship_view = srm.relationships.get(relationship_id=relationship.relationship_id)
 ```
 
-Persistent Core cycle:
+Five business capabilities are available under `srm.suppliers`, `srm.relationships`, `srm.onboardings`, `srm.assessments` and `srm.qualifications`. The separate `srm.events` surface supports typed, synchronous, in-process subscriptions.
 
-```text
-COMPLETE
-```
+To use SQL persistence, install the optional `persistence` extra, provision the schema explicitly with Alembic, then construct `PySRMKit.sql(engine)` using an externally managed SQLAlchemy Engine. SQL operations use short-lived transactions; public events are delivered after successful commit. **Event delivery is not durable** and does not provide replay or broker semantics.
 
-No next implementation milestone is preselected. The next step is a post-persistence architecture review driven by the evidence collected across `0.2.0a1 → 0.2.0a7`.
-
-The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle has now validated the same architecture against optional relational persistence infrastructure.
-
-SQLAlchemy remains optional: the pure Core still requires no database, API framework, message broker, cloud service, or external SRM connector.
+Public reads return immutable Views rather than SQLAlchemy records. Domain, Application and Repository Port layers remain persistence-framework agnostic.
 
 ## Core principles
 
@@ -50,18 +52,19 @@ repeatable
 green
 ```
 
-`0.2.0a7` is green on `main`. The complete Supplier qualification journey now survives Alembic bootstrap, SQL commits, destruction of the original Engine/Session/repositories, and reload through a fresh persistence context on SQLite and PostgreSQL.
+`0.3.0a6` qualifies the public Supplier journey on InMemory, SQLite and PostgreSQL, including success/rejection, public Views, Domain Events and SQLite runtime restart/reload. The earlier Persistent Core cycle separately qualifies Alembic bootstrap and durable SQL persistence.
 
 ## Architecture
 
-The bootstrap exposes four explicit package boundaries:
+The architecture preserves four Core package boundaries and adds a public consumer-facing facade:
 
 - `domain` — business model and business truth;
 - `application` — use-case orchestration;
 - `ports` — replaceable contracts required by the core;
-- `adapters` — implementations of ports when they become necessary.
+- `adapters` — implementations of ports when they become necessary;
+- `public` — facade, capability APIs, Views, errors, events and runtime composition.
 
-These boundaries were established at `0.1.0a1` and are now exercised by the complete first vertical slice without introducing infrastructure dependencies into the Domain.
+The Core boundaries were established in Cycle 1, qualified against SQL persistence in Cycle 2, and exposed through a typed public runtime in Cycle 3.
 
 ## Requirements
 
@@ -116,7 +119,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a7` final PR qualification (CI #144) reaches **98.11%** total coverage with **239 tests passed** in the quality job, while the PostgreSQL CI job executes **44 selected tests** against PostgreSQL 18.6.
+The CI threshold remains **80% minimum coverage**. The historical `0.2.0a7` final PR qualification (CI #144) reached **98.11%** coverage with **239 tests passed** in its quality job and **44 PostgreSQL tests**. These are historical Cycle 2 metrics, not the current Cycle 3 totals. Cycle 3's final qualification was validated in CI #188, including the PostgreSQL job.
 
 ## Documentation
 
@@ -151,3 +154,10 @@ docs/specifications/17_PYSRMKIT_PERSISTENT_CORE_MILESTONE.md
 docs/specifications/18_PYSRMKIT_POST_PERSISTENCE_ARCHITECTURE_REVIEW.md
 docs/specifications/19_PYSRMKIT_PUBLIC_API_AND_RUNTIME_COMPOSITION_ARCHITECTURE.md
 ```
+
+## Cycle 3 qualification evidence
+
+- [Public Runtime qualification report](docs/cycle-3-public-runtime-qualification.md)
+- [Public Domain Event contract](docs/public-events.md)
+- [Cycle 3 qualification PR #28](https://github.com/tawounfouet/pysrmkit/pull/28)
+- [Cycle 2 historical milestone](docs/specifications/17_PYSRMKIT_PERSISTENT_CORE_MILESTONE.md)
