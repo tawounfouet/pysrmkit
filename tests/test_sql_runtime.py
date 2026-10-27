@@ -96,6 +96,6 @@ def test_sql_runtime_rolls_back_failed_public_operation() -> None:
     assessment = srm.assessments.create(
         relationship_id=relationship.relationship_id,
         assessment_type="RISK",
-        questions=(),
+        questions=(AssessmentQuestionInput(code="R1"),),
     )
     assert assessment.assessment_id is not None
