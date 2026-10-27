@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -29,7 +30,7 @@ NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 LATER = datetime(2026, 10, 27, 13, 0, tzinfo=UTC)
 
 
-def _session() -> tuple[Session, object]:
+def _session() -> tuple[Session, Engine]:
     engine = create_persistence_engine("sqlite:///:memory:")
     PersistenceBase.metadata.create_all(engine)
     return create_session_factory(engine)(), engine
