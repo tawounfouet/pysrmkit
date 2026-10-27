@@ -4,6 +4,54 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a4 - 2026-10-27
+
+### Added
+
+- SQLAlchemy persistence records for SupplierQualification.
+- Owned persistence rows for ordered QualificationDecision reasons.
+- Owned persistence rows for ordered failed requirements.
+- Explicit SupplierQualification Domain ↔ persistence mapper.
+- SqlAlchemySupplierQualificationRepository.
+- SQLite execution of the existing SupplierQualification Repository Contract.
+- PostgreSQL execution of the same SupplierQualification Repository Contract.
+- Qualification → SupplierRelationship foreign-key constraint.
+- Database check constraint preventing an empty Qualification scope.
+- Database check constraint requiring persisted QualificationDecision columns to be all-present or all-absent.
+- Portable partial unique index enforcing one current Qualification per Relationship + normalized Scope.
+- SQLite/PostgreSQL tests proving expired history can coexist with a new current Qualification.
+- SQLite test proving requested/decision timestamps and explainable decision collections survive SQL round trip.
+
+### Qualified
+
+- Existing Domain and Repository Port APIs remain unchanged.
+- QualificationId, RelationshipId, scope dimensions, requested timestamp, status and decision survive SQL round trips.
+- Explainable reasons and failed requirements preserve ordering.
+- Reconstitution emits no historical Domain Events.
+- Optional scope dimensions remain `None` in the Domain even though persistence uses normalized non-null strings.
+- `find_current_for_scope(...)` preserves the Domain definition of currentness: statuses other than REVOKED/EXPIRED.
+- SQLite enforces non-empty scope, Relationship FK, decision completeness and current-scope uniqueness.
+- PostgreSQL 18 executes the same Qualification Repository Contract and current-scope uniqueness behavior.
+- One SQLAlchemy Qualification repository implementation serves SQLite and PostgreSQL.
+- Quality CI #100: 229 passed, 39 PostgreSQL-marked tests skipped, 98.49% coverage.
+- PostgreSQL CI #100: 39 selected tests passed against PostgreSQL 18.6.
+
+### Refined
+
+- Qualification Repository Contract gained a no-op preparation hook so SQL adapters can prepare the required Relationship parent without teaching the repository to create Relationships.
+- Optional scope dimensions are normalized to empty persistence strings so uniqueness semantics do not depend on database NULL behavior; mappers restore `None` at the Domain boundary.
+- Current-scope uniqueness is represented by a partial unique index excluding REVOKED and EXPIRED rows, matching `SupplierQualification.is_current`.
+- PostgreSQL CI now uses ephemeral container-local trust authentication instead of a hardcoded test password.
+- PostgreSQL Qualification constraint tests use a unique module basename to avoid Pytest import-file collisions.
+
+### Deferred
+
+- Transaction Boundary / UnitOfWork and post-commit Domain Event dispatch remain in 0.2.0a5.
+- Alembic migration history remains deferred to 0.2.0a6.
+- Persistent end-to-end qualification remains deferred to 0.2.0a7.
+- Async persistence remains deferred.
+
+
 ## 0.2.0a3 - 2026-10-27
 
 ### Added
