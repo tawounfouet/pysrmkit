@@ -33,6 +33,8 @@ from pysrmkit.application.relationship.handlers import (
 )
 from pysrmkit.application.supplier.handlers import RegisterSupplierHandler
 from pysrmkit.domain.qualification.policies import QualificationPolicy
+from pysrmkit.ports.clock import Clock
+from pysrmkit.ports.events import DomainEventDispatcher
 from pysrmkit.public.capabilities import (
     AssessmentsAPI,
     OnboardingsAPI,
@@ -40,8 +42,6 @@ from pysrmkit.public.capabilities import (
     RelationshipsAPI,
     SuppliersAPI,
 )
-from pysrmkit.ports.clock import Clock
-from pysrmkit.ports.events import DomainEventDispatcher
 
 
 def compose_in_memory(
