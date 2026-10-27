@@ -37,10 +37,14 @@ class SupplierRelationshipRepositoryContract(ABC):
     def make_repository(self) -> SupplierRelationshipRepository:
         raise NotImplementedError
 
+    def prepare_relationship(self, relationship: SupplierRelationship) -> None:
+        """Prepare external Aggregate preconditions required by an adapter."""
+
     def test_save_then_get_returns_same_logical_relationship(self) -> None:
         repository = self.make_repository()
         relationship = make_relationship()
 
+        self.prepare_relationship(relationship)
         repository.save(relationship)
         loaded = repository.get(relationship.id)
 
@@ -62,6 +66,7 @@ class SupplierRelationshipRepositoryContract(ABC):
             supplier_id=supplier_id,
             organization_id=organization_id,
         )
+        self.prepare_relationship(relationship)
         repository.save(relationship)
 
         loaded = repository.find_for_supplier_and_organization(supplier_id, organization_id)
@@ -76,6 +81,7 @@ class SupplierRelationshipRepositoryContract(ABC):
             supplier_id=supplier_id,
             organization_id=InternalOrganizationId("ORG-A"),
         )
+        self.prepare_relationship(relationship)
         repository.save(relationship)
 
         assert (
@@ -99,7 +105,9 @@ class SupplierRelationshipRepositoryContract(ABC):
             supplier_id=second_supplier,
             organization_id=organization_id,
         )
+        self.prepare_relationship(first)
         repository.save(first)
+        self.prepare_relationship(second)
         repository.save(second)
 
         loaded_first = repository.find_for_supplier_and_organization(
@@ -127,7 +135,9 @@ class SupplierRelationshipRepositoryContract(ABC):
             supplier_id=supplier_id,
             organization_id=InternalOrganizationId("ORG-B"),
         )
+        self.prepare_relationship(first)
         repository.save(first)
+        self.prepare_relationship(second)
         repository.save(second)
 
         loaded_first = repository.find_for_supplier_and_organization(
@@ -147,6 +157,7 @@ class SupplierRelationshipRepositoryContract(ABC):
         repository = self.make_repository()
         relationship = make_relationship()
         relationship.pull_events()
+        self.prepare_relationship(relationship)
         repository.save(relationship)
 
         loaded = repository.get(relationship.id)
@@ -171,6 +182,7 @@ class SupplierRelationshipRepositoryContract(ABC):
         repository = self.make_repository()
         relationship = make_relationship()
         relationship.pull_events()
+        self.prepare_relationship(relationship)
         repository.save(relationship)
 
         loaded = repository.get(relationship.id)
