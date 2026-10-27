@@ -76,7 +76,7 @@ def test_in_memory_runtime_evaluates_qualification_with_shared_repositories() ->
 
     requested = srm.qualifications.request(
         relationship_id=relationship.relationship_id,
-        scope=QualificationScope(country=CountryCode("FR")),
+        scope=QualificationScope(country_code=CountryCode("FR")),
     )
     evaluated = srm.qualifications.evaluate(qualification_id=requested.qualification_id)
 
