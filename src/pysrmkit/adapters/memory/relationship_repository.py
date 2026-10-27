@@ -44,16 +44,17 @@ class InMemorySupplierRelationshipRepository:
             stage=relationship.stage,
         )
 
-    def _snapshot_state(self) -> object:
+    def _snapshot_state(self) -> dict[SupplierRelationshipId, _StoredRelationship]:
         """Return an adapter-internal snapshot for transactional rollback."""
 
         return dict(self._relationships)
 
-    def _restore_state(self, snapshot: object) -> None:
+    def _restore_state(
+        self,
+        snapshot: dict[SupplierRelationshipId, _StoredRelationship],
+    ) -> None:
         """Restore a previously captured adapter-internal snapshot."""
 
-        if not isinstance(snapshot, dict):
-            raise TypeError("Invalid SupplierRelationship repository snapshot")
         self._relationships = dict(snapshot)
 
     def find_for_supplier_and_organization(
