@@ -25,6 +25,7 @@ This directory contains the frozen pre-implementation baseline used to bootstrap
 The frozen baseline above is followed by targeted documents created only from implementation pressure.
 
 - `15_PYSRMKIT_POST_CORE_ARCHITECTURE_REVIEW.md` - review of the qualified `0.1.0a1 -> 0.1.0a8` Core and Cycle 2 decision point.
+- `16_PYSRMKIT_PERSISTENCE_ARCHITECTURE.md` - targeted persistence architecture for the `0.2.x` Persistent Core, including SQLAlchemy, SQLite, PostgreSQL, transaction and migration boundaries.
 
 ## Transverse conventions
 
