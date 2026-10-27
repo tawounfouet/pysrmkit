@@ -43,6 +43,18 @@ class InMemorySupplierOnboardingRepository:
             completed_at=onboarding.completed_at,
         )
 
+    def _snapshot_state(self) -> object:
+        """Return an adapter-internal snapshot for transactional rollback."""
+
+        return dict(self._onboardings)
+
+    def _restore_state(self, snapshot: object) -> None:
+        """Restore a previously captured adapter-internal snapshot."""
+
+        if not isinstance(snapshot, dict):
+            raise TypeError("Invalid SupplierOnboarding repository snapshot")
+        self._onboardings = dict(snapshot)
+
     def find_for_relationship(
         self,
         relationship_id: SupplierRelationshipId,
