@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.1.0a3` Supplier Relationships qualified on `main`.**
+**Early alpha — `0.1.0a4` Relationship Lifecycle qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -14,12 +14,13 @@ Qualified milestones:
 0.1.0a1 — Repository Bootstrap
 0.1.0a2 — Supplier Core
 0.1.0a3 — Supplier Relationships
+0.1.0a4 — Relationship Lifecycle
 ```
 
 Next milestone:
 
 ```text
-0.1.0a4 — Relationship Lifecycle
+0.1.0a5 — Onboarding Core
 ```
 
 The bootstrap deliberately creates the development foundation before implementing the business domain.
@@ -35,7 +36,7 @@ repeatable
 green
 ```
 
-`0.1.0a3` is green. PySRMKit can now create independently persisted Supplier relationships across multiple internal organizations.
+`0.1.0a4` is green. Supplier relationships now move through explicit guarded lifecycle transitions from discovery to onboarding.
 
 ## Architecture
 

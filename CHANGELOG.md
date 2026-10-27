@@ -4,6 +4,45 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a4 - 2026-10-27
+
+### Added
+
+- `SupplierLifecycleStage` as an explicit relationship-scoped `StrEnum`.
+- `LifecycleTransitionReason` Value Object for lifecycle operations that require auditable reasons.
+- `InvalidLifecycleTransition` Domain Error carrying source and target stages.
+- Explicit `SupplierRelationship.invite(...)` transition.
+- Explicit `SupplierRelationship.start_onboarding(...)` transition.
+- `SupplierInvited` Domain Event.
+- `SupplierOnboardingStarted` Domain Event.
+- `InviteSupplierRelationship` and matching Handler.
+- `StartSupplierOnboarding` and matching Handler.
+- `SupplierRelationshipNotFound` Application Error.
+- Lifecycle stage persistence in `InMemorySupplierRelationshipRepository`.
+- Transition-matrix, event, handler, repository round-trip, and multi-organization isolation tests.
+
+### Qualified
+
+- New relationships start in `DISCOVERED`.
+- The first local path supports `DISCOVERED → INVITED → ONBOARDING`.
+- `PROSPECTIVE → INVITED` remains compatible with the reference baseline.
+- Forbidden invite/onboarding transitions raise `InvalidLifecycleTransition`.
+- Failed transitions leave state unchanged and emit no success event.
+- Successful transitions emit the expected Domain Event.
+- Lifecycle state survives repository save/reload.
+- Unsaved lifecycle changes do not leak into repository state.
+- Lifecycle changes remain scoped to the targeted Relationship only.
+- Ruff, formatting, Pyright strict, architecture tests, and Pytest are green.
+- 73 tests pass with 99.64% total coverage on PR validation CI #34.
+
+### Deferred
+
+- `UNDER_REVIEW` transition remains deferred until onboarding/qualification pressure requires it.
+- Qualification, activation, suspension, blocking, reactivation, inactivity, and offboarding behavior remain out of scope.
+- No GoF State Pattern is introduced.
+- No workflow engine or onboarding infrastructure is introduced.
+
+
 ## 0.1.0a3 - 2026-10-27
 
 ### Added
