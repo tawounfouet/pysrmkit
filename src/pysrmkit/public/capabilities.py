@@ -341,4 +341,3 @@ class QualificationsAPI:
         return self._get_current_for_scope.handle(
             GetCurrentQualificationForScope(relationship_id=relationship_id, scope=scope)
         )
-
