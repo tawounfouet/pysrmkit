@@ -23,9 +23,7 @@ pytestmark = pytest.mark.postgresql
 DATABASE_URL = os.environ.get("PYSRMKIT_POSTGRESQL_TEST_URL")
 
 
-class TestPostgresqlSupplierQualificationRepository(
-    SupplierQualificationRepositoryContract
-):
+class TestPostgresqlSupplierQualificationRepository(SupplierQualificationRepositoryContract):
     engine: Engine
     session: Session
     repository: SqlAlchemySupplierQualificationRepository
