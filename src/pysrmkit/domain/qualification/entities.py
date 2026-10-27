@@ -142,4 +142,7 @@ class SupplierQualification:
         self._events.append(event)
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, SupplierQualification) and self.qualification_id == other.qualification_id
+        return (
+            isinstance(other, SupplierQualification)
+            and self.qualification_id == other.qualification_id
+        )
