@@ -19,7 +19,7 @@ class PySRMKit:
     """
 
     @classmethod
-    def in_memory(cls) -> "PySRMKit":
+    def in_memory(cls) -> PySRMKit:
         """Build a complete local runtime backed by in-memory repositories."""
         from pysrmkit.public.composition import compose_in_memory
 
