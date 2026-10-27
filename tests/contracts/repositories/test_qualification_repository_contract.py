@@ -53,11 +53,15 @@ class SupplierQualificationRepositoryContract(ABC):
     def make_repository(self) -> SupplierQualificationRepository:
         raise NotImplementedError
 
+    def prepare_qualification(self, qualification: SupplierQualification) -> None:
+        """Prepare external Aggregate preconditions required by an adapter."""
+
     def test_save_then_get_returns_same_logical_qualification(self) -> None:
         repository = self.make_repository()
         qualification = make_qualification()
         qualification.pull_events()
 
+        self.prepare_qualification(qualification)
         repository.save(qualification)
         loaded = repository.get(qualification.id)
 
@@ -79,6 +83,7 @@ class SupplierQualificationRepositoryContract(ABC):
         scope = QualificationScope(category_code=CategoryCode("IT_SERVICES"))
         qualification = make_qualification(relationship_id=relationship_id, scope=scope)
         qualification.pull_events()
+        self.prepare_qualification(qualification)
         repository.save(qualification)
 
         loaded = repository.find_current_for_scope(relationship_id, scope)
@@ -95,7 +100,9 @@ class SupplierQualificationRepositoryContract(ABC):
         second = make_qualification(relationship_id=relationship_id, scope=second_scope)
         first.pull_events()
         second.pull_events()
+        self.prepare_qualification(first)
         repository.save(first)
+        self.prepare_qualification(second)
         repository.save(second)
 
         loaded_first = repository.find_current_for_scope(relationship_id, first_scope)
@@ -115,7 +122,9 @@ class SupplierQualificationRepositoryContract(ABC):
         second = make_qualification(relationship_id=second_relationship, scope=scope)
         first.pull_events()
         second.pull_events()
+        self.prepare_qualification(first)
         repository.save(first)
+        self.prepare_qualification(second)
         repository.save(second)
 
         loaded_first = repository.find_current_for_scope(first_relationship, scope)
@@ -130,6 +139,7 @@ class SupplierQualificationRepositoryContract(ABC):
         repository = self.make_repository()
         qualification = make_qualification()
         qualification.pull_events()
+        self.prepare_qualification(qualification)
         repository.save(qualification)
 
         loaded = repository.get(qualification.id)
@@ -148,6 +158,7 @@ class SupplierQualificationRepositoryContract(ABC):
         repository = self.make_repository()
         qualification = make_qualification()
         qualification.pull_events()
+        self.prepare_qualification(qualification)
         repository.save(qualification)
 
         loaded = repository.get(qualification.id)
@@ -170,6 +181,7 @@ class SupplierQualificationRepositoryContract(ABC):
             requested_at=REQUESTED_AT,
             status=QualificationStatus.EXPIRED,
         )
+        self.prepare_qualification(qualification)
         repository.save(qualification)
 
         assert repository.find_current_for_scope(relationship_id, scope) is None

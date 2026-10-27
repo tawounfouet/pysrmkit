@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a3` Onboarding + Assessment SQL Persistence qualified on `main`.**
+**Early alpha — `0.2.0a4` Qualification SQL Persistence qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -23,12 +23,13 @@ Qualified milestones:
 0.2.0a1 — Persistence Foundation
 0.2.0a2 — Supplier + Relationship SQL Persistence
 0.2.0a3 — Onboarding + Assessment SQL Persistence
+0.2.0a4 — Qualification SQL Persistence
 ```
 
 Next milestone:
 
 ```text
-0.2.0a4 — Qualification SQL Persistence
+0.2.0a5 — Transaction Boundary / UnitOfWork
 ```
 
 The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now begins validating the same architecture against optional relational persistence infrastructure.
@@ -44,7 +45,7 @@ repeatable
 green
 ```
 
-`0.2.0a3` is green. Onboarding and Assessment now persist their owned collections and timezone-aware business timestamps through the same SQLAlchemy adapter family on SQLite and PostgreSQL.
+`0.2.0a4` is green. Qualification scope, status, explainable decisions, current-scope uniqueness, and Relationship linkage now persist through the same SQLAlchemy adapter family on SQLite and PostgreSQL.
 
 ## Architecture
 
@@ -103,7 +104,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a3` quality suite reaches **98.49%** total coverage, while a dedicated PostgreSQL CI job executes the same repository contracts against PostgreSQL 18.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a4` quality suite reaches **98.49%** total coverage, while the PostgreSQL CI job executes 39 persistence tests against PostgreSQL 18.
 
 ## Documentation
 

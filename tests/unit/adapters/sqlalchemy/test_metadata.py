@@ -5,9 +5,12 @@ from pysrmkit.adapters.sqlalchemy.models import (
     AssessmentAnswerRecord,
     AssessmentQuestionRecord,
     OnboardingRequirementRecord,
+    QualificationDecisionReasonRecord,
+    QualificationFailedRequirementRecord,
     SupplierAssessmentRecord,
     SupplierExternalIdentifierRecord,
     SupplierOnboardingRecord,
+    SupplierQualificationRecord,
     SupplierRecord,
     SupplierRelationshipRecord,
 )
@@ -23,6 +26,9 @@ def test_persistence_metadata_contains_only_implemented_tables() -> None:
         "supplier_assessments",
         "supplier_assessment_questions",
         "supplier_assessment_answers",
+        "supplier_qualifications",
+        "supplier_qualification_decision_reasons",
+        "supplier_qualification_failed_requirements",
     }
 
     assert SupplierRecord.__table__ is PersistenceBase.metadata.tables["suppliers"]
@@ -54,4 +60,17 @@ def test_persistence_metadata_contains_only_implemented_tables() -> None:
     assert (
         AssessmentAnswerRecord.__table__
         is PersistenceBase.metadata.tables["supplier_assessment_answers"]
+    )
+
+    assert (
+        SupplierQualificationRecord.__table__
+        is PersistenceBase.metadata.tables["supplier_qualifications"]
+    )
+    assert (
+        QualificationDecisionReasonRecord.__table__
+        is PersistenceBase.metadata.tables["supplier_qualification_decision_reasons"]
+    )
+    assert (
+        QualificationFailedRequirementRecord.__table__
+        is PersistenceBase.metadata.tables["supplier_qualification_failed_requirements"]
     )
