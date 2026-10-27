@@ -14,6 +14,7 @@ from pysrmkit.public.capabilities import (
     RelationshipsAPI,
     SuppliersAPI,
 )
+from pysrmkit.public.events import EventsAPI
 
 
 class PySRMKit:
@@ -28,13 +29,21 @@ class PySRMKit:
         """Build a complete local runtime backed by in-memory repositories."""
         from pysrmkit.public.composition import compose_in_memory
 
-        suppliers, relationships, onboardings, assessments, qualifications = compose_in_memory()
+        (
+            suppliers,
+            relationships,
+            onboardings,
+            assessments,
+            qualifications,
+            events,
+        ) = compose_in_memory()
         return cls(
             suppliers=suppliers,
             relationships=relationships,
             onboardings=onboardings,
             assessments=assessments,
             qualifications=qualifications,
+            events=events,
         )
 
     @classmethod
@@ -42,13 +51,21 @@ class PySRMKit:
         """Build a SQLAlchemy-backed runtime around an externally owned Engine."""
         from pysrmkit.public.sql_composition import compose_sql
 
-        suppliers, relationships, onboardings, assessments, qualifications = compose_sql(engine)
+        (
+            suppliers,
+            relationships,
+            onboardings,
+            assessments,
+            qualifications,
+            events,
+        ) = compose_sql(engine)
         return cls(
             suppliers=suppliers,
             relationships=relationships,
             onboardings=onboardings,
             assessments=assessments,
             qualifications=qualifications,
+            events=events,
         )
 
     def __init__(
@@ -59,12 +76,14 @@ class PySRMKit:
         onboardings: OnboardingsAPI,
         assessments: AssessmentsAPI,
         qualifications: QualificationsAPI,
+        events: EventsAPI,
     ) -> None:
         self._suppliers = suppliers
         self._relationships = relationships
         self._onboardings = onboardings
         self._assessments = assessments
         self._qualifications = qualifications
+        self._events = events
 
     @property
     def suppliers(self) -> SuppliersAPI:
@@ -90,3 +109,8 @@ class PySRMKit:
     def qualifications(self) -> QualificationsAPI:
         """Supplier Qualification capability API."""
         return self._qualifications
+
+    @property
+    def events(self) -> EventsAPI:
+        """Typed synchronous public Domain Event subscription API."""
+        return self._events

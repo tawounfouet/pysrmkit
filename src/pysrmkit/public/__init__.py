@@ -34,6 +34,7 @@ from pysrmkit.domain.assessment.errors import (
     MandatoryAssessmentAnswersMissing,
     UnknownAssessmentQuestion,
 )
+from pysrmkit.domain.assessment.events import SupplierAssessmentCompleted
 from pysrmkit.domain.assessment.value_objects import AssessmentDecision, AssessmentId
 from pysrmkit.domain.onboarding.errors import (
     DuplicateOnboardingRequirement,
@@ -41,11 +42,17 @@ from pysrmkit.domain.onboarding.errors import (
     OnboardingAlreadyCompleted,
     UnknownOnboardingRequirement,
 )
+from pysrmkit.domain.onboarding.events import SupplierOnboardingCompleted
 from pysrmkit.domain.onboarding.value_objects import OnboardingId
 from pysrmkit.domain.qualification.errors import (
     InvalidQualificationDecision,
     InvalidQualificationScope,
     InvalidQualificationState,
+)
+from pysrmkit.domain.qualification.events import (
+    SupplierQualificationRejected,
+    SupplierQualificationRequested,
+    SupplierQualified,
 )
 from pysrmkit.domain.qualification.value_objects import (
     QualificationId,
@@ -53,6 +60,11 @@ from pysrmkit.domain.qualification.value_objects import (
     QualificationStatus,
 )
 from pysrmkit.domain.relationship.errors import InvalidLifecycleTransition
+from pysrmkit.domain.relationship.events import (
+    SupplierInvited,
+    SupplierOnboardingStarted,
+    SupplierRelationshipCreated,
+)
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
     SupplierLifecycleStage,
@@ -63,6 +75,7 @@ from pysrmkit.domain.supplier.errors import (
     InvalidExternalIdentifier,
     InvalidSupplierIdentity,
 )
+from pysrmkit.domain.supplier.events import SupplierCreated
 from pysrmkit.domain.supplier.value_objects import CategoryCode, CountryCode, SupplierId
 from pysrmkit.public.capabilities import (
     AssessmentsAPI,
@@ -77,6 +90,7 @@ from pysrmkit.public.errors import (
     PersistenceUnavailable,
     PySRMKitError,
 )
+from pysrmkit.public.events import EventsAPI
 from pysrmkit.public.facade import PySRMKit
 from pysrmkit.public.views import (
     AssessmentView,
@@ -147,4 +161,14 @@ __all__ = [
     "SupplierQualificationNotFound",
     "UnknownAssessmentQuestion",
     "UnknownOnboardingRequirement",
+    "EventsAPI",
+    "SupplierAssessmentCompleted",
+    "SupplierCreated",
+    "SupplierInvited",
+    "SupplierOnboardingCompleted",
+    "SupplierOnboardingStarted",
+    "SupplierQualificationRejected",
+    "SupplierQualificationRequested",
+    "SupplierQualified",
+    "SupplierRelationshipCreated",
 ]

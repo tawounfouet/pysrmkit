@@ -58,6 +58,7 @@ from pysrmkit.public.capabilities import (
     RelationshipsAPI,
     SuppliersAPI,
 )
+from pysrmkit.public.events import EventsAPI
 from pysrmkit.public.query_handlers import (
     GetAssessmentHandler,
     GetCurrentQualificationForScopeHandler,
@@ -84,6 +85,24 @@ def _transactional(
     )
 
 
+def _transactional_events(
+    sessions: Callable[[], Session],
+    event_dispatcher: DomainEventDispatcher,
+    handler_factory: Callable[
+        [Session, DomainEventDispatcher],
+        Handler[_CommandT, _ResultT],
+    ],
+) -> Handler[_CommandT, _ResultT]:
+    """Publish events only after the surrounding SQL transaction commits."""
+    return SqlAlchemyErrorBoundaryHandler(
+        SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            event_dispatcher=event_dispatcher,
+            event_handler_factory=handler_factory,
+        )
+    )
+
+
 def _guard(handler: Handler[_CommandT, _ResultT]) -> Handler[_CommandT, _ResultT]:
     """Apply only the persistence exception boundary to an existing transactional handler."""
     return SqlAlchemyErrorBoundaryHandler(handler)
@@ -101,10 +120,12 @@ def compose_sql(
     OnboardingsAPI,
     AssessmentsAPI,
     QualificationsAPI,
+    EventsAPI,
 ]:
     """Wire the public runtime to SQLAlchemy with operation-scoped transactions."""
     runtime_clock = clock or SystemClock()
-    runtime_events = event_dispatcher or InProcessDomainEventDispatcher()
+    public_events = InProcessDomainEventDispatcher()
+    runtime_events = event_dispatcher or public_events
     runtime_policy = qualification_policy or QualificationPolicy()
     sessions = create_session_factory(engine)
 
@@ -124,12 +145,13 @@ def compose_sql(
         return SqlAlchemySupplierQualificationRepository(session)
 
     suppliers_api = SuppliersAPI(
-        register_supplier=_transactional(
+        register_supplier=_transactional_events(
             sessions,
-            lambda session: RegisterSupplierHandler(
+            runtime_events,
+            lambda session, events: RegisterSupplierHandler(
                 repository=supplier_repository(session),
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
         get_supplier=_transactional(
@@ -138,21 +160,23 @@ def compose_sql(
         ),
     )
     relationships_api = RelationshipsAPI(
-        create_relationship=_transactional(
+        create_relationship=_transactional_events(
             sessions,
-            lambda session: CreateSupplierRelationshipHandler(
+            runtime_events,
+            lambda session, events: CreateSupplierRelationshipHandler(
                 supplier_repository=supplier_repository(session),
                 relationship_repository=relationship_repository(session),
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
-        invite_relationship=_transactional(
+        invite_relationship=_transactional_events(
             sessions,
-            lambda session: InviteSupplierRelationshipHandler(
+            runtime_events,
+            lambda session, events: InviteSupplierRelationshipHandler(
                 relationship_repository=relationship_repository(session),
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
         start_onboarding=_guard(
@@ -174,12 +198,13 @@ def compose_sql(
                 repository=onboarding_repository(session)
             ),
         ),
-        complete_onboarding=_transactional(
+        complete_onboarding=_transactional_events(
             sessions,
-            lambda session: CompleteSupplierOnboardingHandler(
+            runtime_events,
+            lambda session, events: CompleteSupplierOnboardingHandler(
                 repository=onboarding_repository(session),
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
         get_progress=_transactional(
@@ -206,12 +231,13 @@ def compose_sql(
                 repository=assessment_repository(session)
             ),
         ),
-        complete_assessment=_transactional(
+        complete_assessment=_transactional_events(
             sessions,
-            lambda session: CompleteSupplierAssessmentHandler(
+            runtime_events,
+            lambda session, events: CompleteSupplierAssessmentHandler(
                 repository=assessment_repository(session),
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
         get_assessment=_transactional(
@@ -220,24 +246,26 @@ def compose_sql(
         ),
     )
     qualifications_api = QualificationsAPI(
-        request_qualification=_transactional(
+        request_qualification=_transactional_events(
             sessions,
-            lambda session: RequestSupplierQualificationHandler(
+            runtime_events,
+            lambda session, events: RequestSupplierQualificationHandler(
                 relationship_repository=relationship_repository(session),
                 qualification_repository=qualification_repository(session),
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
-        evaluate_qualification=_transactional(
+        evaluate_qualification=_transactional_events(
             sessions,
-            lambda session: EvaluateSupplierQualificationHandler(
+            runtime_events,
+            lambda session, events: EvaluateSupplierQualificationHandler(
                 qualification_repository=qualification_repository(session),
                 assessment_repository=assessment_repository(session),
                 onboarding_repository=onboarding_repository(session),
                 policy=runtime_policy,
                 clock=runtime_clock,
-                event_dispatcher=runtime_events,
+                event_dispatcher=events,
             ),
         ),
         get_qualification=_transactional(
@@ -258,4 +286,5 @@ def compose_sql(
         onboardings_api,
         assessments_api,
         qualifications_api,
+        EventsAPI(public_events),
     )
