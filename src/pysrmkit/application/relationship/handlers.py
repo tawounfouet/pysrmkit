@@ -123,9 +123,7 @@ class StartSupplierOnboardingHandler:
                 unit_of_work.relationship_repository,
                 command.relationship_id,
             )
-            existing = unit_of_work.onboarding_repository.find_for_relationship(
-                relationship.id
-            )
+            existing = unit_of_work.onboarding_repository.find_for_relationship(relationship.id)
             if existing is not None:
                 raise SupplierOnboardingAlreadyExists(
                     f"SupplierRelationship {relationship.id} already has onboarding"
