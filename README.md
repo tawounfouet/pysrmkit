@@ -155,6 +155,10 @@ docs/specifications/18_PYSRMKIT_POST_PERSISTENCE_ARCHITECTURE_REVIEW.md
 docs/specifications/19_PYSRMKIT_PUBLIC_API_AND_RUNTIME_COMPOSITION_ARCHITECTURE.md
 ```
 
+## Release history
+
+See [CHANGELOG.md](CHANGELOG.md) for the three completed cycles and detailed alpha milestones.
+
 ## Cycle 3 qualification evidence
 
 - [Public Runtime qualification report](docs/cycle-3-public-runtime-qualification.md)
