@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a4` Qualification SQL Persistence qualified on `main`.**
+**Early alpha — `0.2.0a5` Transaction Boundary / UnitOfWork qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -24,6 +24,7 @@ Qualified milestones:
 0.2.0a2 — Supplier + Relationship SQL Persistence
 0.2.0a3 — Onboarding + Assessment SQL Persistence
 0.2.0a4 — Qualification SQL Persistence
+0.2.0a6 — Alembic Migration Baseline
 ```
 
 Next milestone:
@@ -45,7 +46,7 @@ repeatable
 green
 ```
 
-`0.2.0a4` is green. Qualification scope, status, explainable decisions, current-scope uniqueness, and Relationship linkage now persist through the same SQLAlchemy adapter family on SQLite and PostgreSQL.
+`0.2.0a5` is green. Starting onboarding now commits SupplierRelationship and SupplierOnboarding atomically through a capability-specific UnitOfWork and dispatches Domain Events only after successful commit.
 
 ## Architecture
 
@@ -104,7 +105,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a4` quality suite reaches **98.49%** total coverage, while the PostgreSQL CI job executes 39 persistence tests against PostgreSQL 18.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a5` quality suite reaches **97.73%** total coverage, while the PostgreSQL CI job executes 41 persistence/transaction tests against PostgreSQL 18.
 
 ## Documentation
 
