@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pysrmkit.application.onboarding.errors import SupplierOnboardingAlreadyExists
 from pysrmkit.application.relationship.commands import (
     CreateSupplierRelationship,
     InviteSupplierRelationship,
@@ -13,10 +14,17 @@ from pysrmkit.application.relationship.errors import (
     SupplierRelationshipNotFound,
 )
 from pysrmkit.application.relationship.results import CreateSupplierRelationshipResult
+from pysrmkit.domain.onboarding.entities import SupplierOnboarding
+from pysrmkit.domain.onboarding.value_objects import (
+    OnboardingId,
+    OnboardingRequirement,
+    OnboardingRequirementCode,
+)
 from pysrmkit.domain.relationship.entities import SupplierRelationship
 from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
 from pysrmkit.ports.clock import Clock
 from pysrmkit.ports.events import DomainEventDispatcher
+from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.relationship import SupplierRelationshipRepository
 from pysrmkit.ports.repositories.supplier import SupplierRepository
 
@@ -102,17 +110,41 @@ class StartSupplierOnboardingHandler:
         self,
         *,
         relationship_repository: SupplierRelationshipRepository,
+        onboarding_repository: SupplierOnboardingRepository,
         clock: Clock,
         event_dispatcher: DomainEventDispatcher,
     ) -> None:
         self._relationship_repository = relationship_repository
+        self._onboarding_repository = onboarding_repository
         self._clock = clock
         self._event_dispatcher = event_dispatcher
 
     def handle(self, command: StartSupplierOnboarding) -> None:
         relationship = self._load(command.relationship_id)
-        relationship.start_onboarding(occurred_at=self._clock.now())
+        existing = self._onboarding_repository.find_for_relationship(relationship.id)
+        if existing is not None:
+            raise SupplierOnboardingAlreadyExists(
+                f"SupplierRelationship {relationship.id} already has onboarding"
+            )
+
+        occurred_at = self._clock.now()
+        requirements = tuple(
+            OnboardingRequirement(
+                code=OnboardingRequirementCode(item.code),
+                mandatory=item.mandatory,
+            )
+            for item in command.requirements
+        )
+        relationship.start_onboarding(occurred_at=occurred_at)
+        onboarding = SupplierOnboarding.create(
+            onboarding_id=OnboardingId.new(),
+            relationship_id=relationship.id,
+            started_at=occurred_at,
+            requirements=requirements,
+        )
+
         self._relationship_repository.save(relationship)
+        self._onboarding_repository.save(onboarding)
         self._event_dispatcher.dispatch(relationship.pull_events())
 
     def _load(self, relationship_id: SupplierRelationshipId) -> SupplierRelationship:
