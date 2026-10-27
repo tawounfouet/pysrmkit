@@ -28,13 +28,11 @@ def _assert_migrated_schema_matches_metadata(engine: Engine) -> None:
 
     for table_name, table in metadata.tables.items():
         assert {column["name"] for column in inspector.get_columns(table_name)} == set(
-            table.columns
+            table.columns.keys()
         )
         assert inspector.get_pk_constraint(table_name)["name"] == table.primary_key.name
 
-        expected_foreign_keys = {
-            constraint.name for constraint in table.foreign_key_constraints
-        }
+        expected_foreign_keys = {constraint.name for constraint in table.foreign_key_constraints}
         actual_foreign_keys = {
             foreign_key["name"] for foreign_key in inspector.get_foreign_keys(table_name)
         }
@@ -89,9 +87,7 @@ def test_sqlite_baseline_can_downgrade_and_reupgrade(tmp_path: Path) -> None:
 
     engine = create_persistence_engine(database_url)
     try:
-        remaining_business_tables = set(inspect(engine).get_table_names()) - {
-            ALEMBIC_VERSION_TABLE
-        }
+        remaining_business_tables = set(inspect(engine).get_table_names()) - {ALEMBIC_VERSION_TABLE}
         assert remaining_business_tables == set()
     finally:
         engine.dispose()
