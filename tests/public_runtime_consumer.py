@@ -9,6 +9,7 @@ from pysrmkit.public import (
     QualificationId,
     QualificationScope,
     QualificationStatus,
+    InternalOrganizationId,
     SupplierId,
     SupplierLifecycleStage,
     SupplierQualificationRejected,
@@ -77,7 +78,7 @@ def run_public_qualification(
     )
     srm.assessments.complete(assessment_id=assessment.assessment_id)
 
-    scope = QualificationScope(organization_id=relationship.organization_id)
+    scope = QualificationScope(organization_id=InternalOrganizationId(f"ORG-{assessment_score}"))
     requested = srm.qualifications.request(
         relationship_id=relationship.relationship_id,
         scope=scope,
