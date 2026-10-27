@@ -75,9 +75,7 @@ def test_relationships_api_builds_internal_organization_id() -> None:
         create_relationship=handler,
         invite_relationship=NoOpHandler(),
         start_onboarding=NoOpHandler(),
-        get_relationship=GetSupplierRelationshipHandler(
-            InMemorySupplierRelationshipRepository()
-        ),
+        get_relationship=GetSupplierRelationshipHandler(InMemorySupplierRelationshipRepository()),
     )
 
     result = api.create(
