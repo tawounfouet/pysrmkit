@@ -4,6 +4,49 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a1 - 2026-10-27
+
+### Added
+
+- Optional `persistence` extra targeting SQLAlchemy `2.1.x`.
+- `pysrmkit.adapters.sqlalchemy` persistence adapter package.
+- `PersistenceBase` SQLAlchemy declarative metadata boundary.
+- `create_persistence_engine(...)` Engine factory owned by infrastructure.
+- Explicit SQLite `PRAGMA foreign_keys = ON` configuration on every SQLAlchemy connection.
+- `create_session_factory(...)` with externally owned Engine.
+- Architecture tests preventing SQLAlchemy, Alembic, and Psycopg imports in Domain, Application, and Ports.
+- SQLite relational smoke tests for connectivity, Session binding, and foreign-key enforcement.
+- Package version `0.2.0a1`.
+
+### Qualified
+
+- Importing the package still creates no Engine or database connection.
+- SQLAlchemy exists only below the Adapter boundary.
+- Domain remains persistence-ignorant.
+- Application remains persistence-ignorant.
+- Repository Ports remain persistence-framework agnostic.
+- SQLite foreign keys are enabled explicitly and proven by a failing invalid insert.
+- Session creation is explicit and uses an externally created Engine.
+- Persistence metadata begins with no speculative business tables.
+- Existing first-Core behavior remains unchanged.
+- Ruff, Ruff format, Pyright strict, architecture tests, and Pytest are green.
+- 170 tests pass with 99.12% total coverage on PR validation CI #72.
+
+### Deferred
+
+- No Supplier or SupplierRelationship SQLAlchemy persistence model yet.
+- No SQL-backed Repository implementation yet.
+- No UnitOfWork yet.
+- No Alembic migration files yet.
+- No PostgreSQL runtime/driver dependency yet.
+- No AsyncSession or async persistence model.
+- No DI container.
+
+### Implementation feedback
+
+- The first CI run exposed only an unused local variable in the SQLite foreign-key test; no persistence-design correction was required.
+
+
 ## 0.1.0a8 - 2026-10-27
 
 ### Added
