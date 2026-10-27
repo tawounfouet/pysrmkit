@@ -19,7 +19,8 @@ from pysrmkit.public.capabilities import (
 class PySRMKit:
     """Stable facade grouping the public Supplier Domain capability APIs.
 
-    Runtime factories expose explicit composition roots while keeping infrastructure\n    dependencies outside the Domain and Application layers.
+    Runtime factories expose explicit composition roots while keeping infrastructure
+    dependencies outside the Domain and Application layers.
     """
 
     @classmethod
