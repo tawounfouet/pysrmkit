@@ -58,9 +58,7 @@ def test_suppliers_api_translates_primitives_to_register_command() -> None:
 
 def test_relationships_api_builds_internal_organization_id() -> None:
     supplier_id = SupplierId.new()
-    expected = CreateSupplierRelationshipResult(
-        relationship_id=SupplierRelationshipId.new()
-    )
+    expected = CreateSupplierRelationshipResult(relationship_id=SupplierRelationshipId.new())
     handler = CreateRelationshipSpy(expected)
 
     class NoOpHandler:
