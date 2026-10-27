@@ -1,6 +1,8 @@
 """End-to-end local Core Supplier qualification scenarios."""
 
-from examples.local_qualification import run_local_qualification
+import pytest
+
+from examples.local_qualification import main, run_local_qualification
 
 from pysrmkit.domain.qualification.value_objects import QualificationStatus
 from pysrmkit.domain.relationship.value_objects import SupplierLifecycleStage
@@ -46,3 +48,13 @@ def test_local_supplier_qualification_rejection() -> None:
     assert outcome.qualification_decision.failed_requirements == ("ASSESSMENT_MINIMUM_SCORE",)
     assert outcome.observed_events[-1] == "SupplierQualificationRejected"
     assert "SupplierQualified" not in outcome.observed_events
+
+def test_local_example_entrypoint_prints_success_trace(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    main()
+
+    output = capsys.readouterr().out
+    assert "[EVENT] SupplierCreated" in output
+    assert "[EVENT] SupplierQualified" in output
+    assert "[RESULT] Qualification status: QUALIFIED" in output
