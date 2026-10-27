@@ -242,8 +242,7 @@ def upgrade() -> None:
         sa.Column("decision_resulting_status", sa.String(length=50), nullable=True),
         sa.Column("decision_decided_at", sa.DateTime(timezone=True), nullable=True),
         sa.CheckConstraint(
-            "scope_organization_id <> '' OR scope_category_code <> '' "
-            "OR scope_country_code <> ''",
+            "scope_organization_id <> '' OR scope_category_code <> '' OR scope_country_code <> ''",
             name="ck_supplier_qualification_non_empty_scope",
         ),
         sa.CheckConstraint(
@@ -291,9 +290,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["qualification_id"],
             ["supplier_qualifications.qualification_id"],
-            name=(
-                "fk_supplier_qualification_decision_reasons_qualification_id"
-            ),
+            name=("fk_supplier_qualification_decision_reasons_qualification_id"),
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint(
@@ -317,9 +314,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["qualification_id"],
             ["supplier_qualifications.qualification_id"],
-            name=(
-                "fk_supplier_qualification_failed_requirements_qualification_id"
-            ),
+            name=("fk_supplier_qualification_failed_requirements_qualification_id"),
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint(
