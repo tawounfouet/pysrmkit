@@ -65,9 +65,7 @@ def test_postgresql_persistent_rejection_survives_fresh_context() -> None:
         assert outcome.assessment_score == 60
         assert outcome.qualification_status is QualificationStatus.NOT_QUALIFIED
         assert outcome.qualification_decision.approved is False
-        assert outcome.qualification_decision.failed_requirements == (
-            "ASSESSMENT_MINIMUM_SCORE",
-        )
+        assert outcome.qualification_decision.failed_requirements == ("ASSESSMENT_MINIMUM_SCORE",)
         assert outcome.observed_events[-1] == "SupplierQualificationRejected"
     finally:
         _reset_database(database_url)
