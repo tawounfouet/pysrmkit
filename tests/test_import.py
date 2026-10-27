@@ -10,6 +10,7 @@ BOOTSTRAP_MODULES = (
     "pysrmkit.application",
     "pysrmkit.ports",
     "pysrmkit.adapters",
+    "pysrmkit.adapters.sqlalchemy",
 )
 
 
@@ -20,4 +21,4 @@ def test_bootstrap_packages_import() -> None:
 
 
 def test_package_version() -> None:
-    assert pysrmkit.__version__ == "0.1.0a8"
+    assert pysrmkit.__version__ == "0.2.0a1"
