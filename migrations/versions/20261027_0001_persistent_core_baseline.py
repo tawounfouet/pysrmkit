@@ -7,8 +7,8 @@ Create Date: 2026-10-27
 
 from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision: str = "20261027_0001"
 down_revision: str | Sequence[str] | None = None
@@ -40,7 +40,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["supplier_id"],
             ["suppliers.supplier_id"],
-            name="fk_supplier_external_identifiers_supplier_id_suppliers",
+            name="fk_supplier_external_identifiers_supplier_id",
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("identifier_id", name="pk_supplier_external_identifiers"),
@@ -68,7 +68,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["supplier_id"],
             ["suppliers.supplier_id"],
-            name="fk_supplier_relationships_supplier_id_suppliers",
+            name="fk_supplier_relationships_supplier_id",
         ),
         sa.PrimaryKeyConstraint("relationship_id", name="pk_supplier_relationships"),
         sa.UniqueConstraint(
@@ -93,7 +93,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["relationship_id"],
             ["supplier_relationships.relationship_id"],
-            name="fk_supplier_onboardings_relationship_id_supplier_relationships",
+            name="fk_supplier_onboardings_relationship_id",
         ),
         sa.PrimaryKeyConstraint("onboarding_id", name="pk_supplier_onboardings"),
         sa.UniqueConstraint(
@@ -119,7 +119,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["onboarding_id"],
             ["supplier_onboardings.onboarding_id"],
-            name="fk_supplier_onboarding_requirements_onboarding_id_supplier_onboardings",
+            name="fk_supplier_onboarding_requirements_onboarding_id",
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint(
@@ -151,7 +151,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["relationship_id"],
             ["supplier_relationships.relationship_id"],
-            name="fk_supplier_assessments_relationship_id_supplier_relationships",
+            name="fk_supplier_assessments_relationship_id",
         ),
         sa.PrimaryKeyConstraint("assessment_id", name="pk_supplier_assessments"),
     )
@@ -179,7 +179,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["assessment_id"],
             ["supplier_assessments.assessment_id"],
-            name="fk_supplier_assessment_questions_assessment_id_supplier_assessments",
+            name="fk_supplier_assessment_questions_assessment_id",
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("question_id", name="pk_supplier_assessment_questions"),
@@ -206,13 +206,13 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["assessment_id"],
             ["supplier_assessments.assessment_id"],
-            name="fk_supplier_assessment_answers_assessment_id_supplier_assessments",
+            name="fk_supplier_assessment_answers_assessment_id",
             ondelete="CASCADE",
         ),
         sa.ForeignKeyConstraint(
             ["question_id"],
             ["supplier_assessment_questions.question_id"],
-            name="fk_supplier_assessment_answers_question_id_supplier_assessment_questions",
+            name="fk_supplier_assessment_answers_question_id",
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("answer_id", name="pk_supplier_assessment_answers"),
@@ -258,7 +258,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["relationship_id"],
             ["supplier_relationships.relationship_id"],
-            name="fk_supplier_qualifications_relationship_id_supplier_relationships",
+            name="fk_supplier_qualifications_relationship_id",
         ),
         sa.PrimaryKeyConstraint("qualification_id", name="pk_supplier_qualifications"),
     )
@@ -292,8 +292,7 @@ def upgrade() -> None:
             ["qualification_id"],
             ["supplier_qualifications.qualification_id"],
             name=(
-                "fk_supplier_qualification_decision_reasons_"
-                "qualification_id_supplier_qualifications"
+                "fk_supplier_qualification_decision_reasons_qualification_id"
             ),
             ondelete="CASCADE",
         ),
@@ -319,8 +318,7 @@ def upgrade() -> None:
             ["qualification_id"],
             ["supplier_qualifications.qualification_id"],
             name=(
-                "fk_supplier_qualification_failed_requirements_"
-                "qualification_id_supplier_qualifications"
+                "fk_supplier_qualification_failed_requirements_qualification_id"
             ),
             ondelete="CASCADE",
         ),
