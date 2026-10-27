@@ -211,6 +211,7 @@ def test_lifecycle_transition_is_scoped_to_one_relationship() -> None:
     assert first.stage is SupplierLifecycleStage.ONBOARDING
     assert second.stage is SupplierLifecycleStage.DISCOVERED
 
+
 def test_start_onboarding_rejects_second_onboarding_for_same_relationship() -> None:
     repository = InMemorySupplierRelationshipRepository()
     onboardings = InMemorySupplierOnboardingRepository()
