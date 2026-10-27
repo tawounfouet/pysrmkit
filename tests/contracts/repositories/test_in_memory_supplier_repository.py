@@ -1,12 +1,11 @@
 """SupplierRepository contract execution for the in-memory adapter."""
 
+from pysrmkit.adapters.memory.supplier_repository import InMemorySupplierRepository
+from pysrmkit.ports.repositories.supplier import SupplierRepository
 from tests.contracts.repositories.test_supplier_repository_contract import (
     SupplierRepositoryContract,
     make_supplier,
 )
-
-from pysrmkit.adapters.memory.supplier_repository import InMemorySupplierRepository
-from pysrmkit.ports.repositories.supplier import SupplierRepository
 
 
 class TestInMemorySupplierRepository(SupplierRepositoryContract):
