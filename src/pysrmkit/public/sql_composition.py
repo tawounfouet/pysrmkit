@@ -46,12 +46,21 @@ from pysrmkit.application.supplier.handlers import RegisterSupplierHandler
 from pysrmkit.domain.qualification.policies import QualificationPolicy
 from pysrmkit.ports.clock import Clock
 from pysrmkit.ports.events import DomainEventDispatcher
+from pysrmkit.public._sql_boundary import SqlAlchemyErrorBoundaryHandler
 from pysrmkit.public.capabilities import (
     AssessmentsAPI,
     OnboardingsAPI,
     QualificationsAPI,
     RelationshipsAPI,
     SuppliersAPI,
+)
+from pysrmkit.public.query_handlers import (
+    GetAssessmentHandler,
+    GetCurrentQualificationForScopeHandler,
+    GetOnboardingForRelationshipHandler,
+    GetQualificationHandler,
+    GetSupplierHandler,
+    GetSupplierRelationshipHandler,
 )
 
 
@@ -90,17 +99,21 @@ def compose_sql(
         return SqlAlchemySupplierQualificationRepository(session)
 
     suppliers_api = SuppliersAPI(
-        register_supplier=SqlAlchemyTransactionalHandler(
+        register_supplier=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: RegisterSupplierHandler(
                 repository=supplier_repository(session),
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        )
+        )),
+        get_supplier=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            handler_factory=lambda session: GetSupplierHandler(supplier_repository(session)),
+        )),
     )
     relationships_api = RelationshipsAPI(
-        create_relationship=SqlAlchemyTransactionalHandler(
+        create_relationship=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: CreateSupplierRelationshipHandler(
                 supplier_repository=supplier_repository(session),
@@ -108,69 +121,85 @@ def compose_sql(
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        ),
-        invite_relationship=SqlAlchemyTransactionalHandler(
+        )),
+        invite_relationship=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: InviteSupplierRelationshipHandler(
                 relationship_repository=relationship_repository(session),
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        ),
-        start_onboarding=StartSupplierOnboardingHandler(
+        )),
+        start_onboarding=SqlAlchemyErrorBoundaryHandler(StartSupplierOnboardingHandler(
             unit_of_work=SqlAlchemySupplierOnboardingUnitOfWork(sessions),
             clock=runtime_clock,
             event_dispatcher=runtime_events,
-        ),
+        )),
+        get_relationship=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            handler_factory=lambda session: GetSupplierRelationshipHandler(
+                relationship_repository(session)
+            ),
+        )),
     )
     onboardings_api = OnboardingsAPI(
-        satisfy_requirement=SqlAlchemyTransactionalHandler(
+        satisfy_requirement=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: SatisfyOnboardingRequirementHandler(
                 repository=onboarding_repository(session)
             ),
-        ),
-        complete_onboarding=SqlAlchemyTransactionalHandler(
+        )),
+        complete_onboarding=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: CompleteSupplierOnboardingHandler(
                 repository=onboarding_repository(session),
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        ),
-        get_progress=SqlAlchemyTransactionalHandler(
+        )),
+        get_progress=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: GetOnboardingProgressHandler(
                 repository=onboarding_repository(session)
             ),
-        ),
+        )),
+        get_for_relationship=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            handler_factory=lambda session: GetOnboardingForRelationshipHandler(
+                onboarding_repository(session)
+            ),
+        )),
     )
     assessments_api = AssessmentsAPI(
-        create_assessment=SqlAlchemyTransactionalHandler(
+        create_assessment=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: CreateSupplierAssessmentHandler(
                 assessment_repository=assessment_repository(session),
                 relationship_repository=relationship_repository(session),
                 clock=runtime_clock,
             ),
-        ),
-        record_answer=SqlAlchemyTransactionalHandler(
+        )),
+        record_answer=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: RecordAssessmentAnswerHandler(
                 repository=assessment_repository(session)
             ),
-        ),
-        complete_assessment=SqlAlchemyTransactionalHandler(
+        )),
+        complete_assessment=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: CompleteSupplierAssessmentHandler(
                 repository=assessment_repository(session),
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        ),
+        )),
+        get_assessment=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            handler_factory=lambda session: GetAssessmentHandler(assessment_repository(session)),
+        )),
     )
     qualifications_api = QualificationsAPI(
-        request_qualification=SqlAlchemyTransactionalHandler(
+        request_qualification=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: RequestSupplierQualificationHandler(
                 relationship_repository=relationship_repository(session),
@@ -178,8 +207,8 @@ def compose_sql(
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        ),
-        evaluate_qualification=SqlAlchemyTransactionalHandler(
+        )),
+        evaluate_qualification=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
             session_factory=sessions,
             handler_factory=lambda session: EvaluateSupplierQualificationHandler(
                 qualification_repository=qualification_repository(session),
@@ -189,7 +218,19 @@ def compose_sql(
                 clock=runtime_clock,
                 event_dispatcher=runtime_events,
             ),
-        ),
+        )),
+        get_qualification=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            handler_factory=lambda session: GetQualificationHandler(
+                qualification_repository(session)
+            ),
+        )),
+        get_current_for_scope=SqlAlchemyErrorBoundaryHandler(SqlAlchemyTransactionalHandler(
+            session_factory=sessions,
+            handler_factory=lambda session: GetCurrentQualificationForScopeHandler(
+                qualification_repository(session)
+            ),
+        )),
     )
 
     return (
