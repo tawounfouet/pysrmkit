@@ -5,10 +5,16 @@ from __future__ import annotations
 from types import TracebackType
 from typing import Self
 
-from pysrmkit.adapters.memory.onboarding_repository import InMemorySupplierOnboardingRepository
+from pysrmkit.adapters.memory.onboarding_repository import (
+    InMemorySupplierOnboardingRepository,
+    _StoredOnboarding,
+)
 from pysrmkit.adapters.memory.relationship_repository import (
     InMemorySupplierRelationshipRepository,
+    _StoredRelationship,
 )
+from pysrmkit.domain.onboarding.value_objects import OnboardingId
+from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
 from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.relationship import SupplierRelationshipRepository
 
@@ -24,8 +30,10 @@ class InMemorySupplierOnboardingUnitOfWork:
     ) -> None:
         self._relationship_repository = relationship_repository
         self._onboarding_repository = onboarding_repository
-        self._relationship_snapshot: object | None = None
-        self._onboarding_snapshot: object | None = None
+        self._relationship_snapshot: (
+            dict[SupplierRelationshipId, _StoredRelationship] | None
+        ) = None
+        self._onboarding_snapshot: dict[OnboardingId, _StoredOnboarding] | None = None
         self._committed = False
 
     @property
