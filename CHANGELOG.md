@@ -4,6 +4,39 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a2 - 2026-10-27
+
+### Added
+
+- Supplier Core Aggregate Root with stable `SupplierId`.
+- Supplier identity Value Objects: `SupplierIdentity`, `ExternalIdentifier`, `CountryCode`, `Address`, `CategoryCode`, and `CapabilityCode`.
+- Supplier identity invariants and duplicate external-identifier protection.
+- `SupplierCreated` Domain Event and minimal Aggregate event recording/`pull_events()`.
+- `SupplierRepository` Protocol with `get`, `save`, and `find_by_external_identifier`.
+- Persistence-like `InMemorySupplierRepository` with explicit save/reload isolation.
+- `Clock` and `DomainEventDispatcher` Ports.
+- `SystemClock` and `FixedClock` adapters.
+- `RegisterSupplier`, `RegisterSupplierHandler`, and `RegisterSupplierResult`.
+- Shared repository contract tests executed against the InMemory adapter.
+
+### Qualified
+
+- Supplier can be registered through the Application Handler.
+- Supplier has a stable internal identity independent from external identifiers.
+- Duplicate identifiers are rejected within one Aggregate.
+- Cross-Supplier duplicate identifiers are rejected through repository lookup.
+- `SupplierCreated` is recorded and dispatched after successful registration.
+- Repository save/get/update/find/isolation behavior passes the shared contract suite.
+- Ruff, formatting, Pyright strict, architecture tests, and Pytest are green.
+- 31 tests pass with 99.34% total coverage on PR validation CI #24.
+
+### Deferred
+
+- Supplier relationships move to `0.1.0a3`.
+- Relationship lifecycle remains `0.1.0a4`.
+- Onboarding, qualification, database persistence, and query projections remain out of scope.
+
+
 ## 0.1.0a1 - 2026-10-27
 
 ### Added

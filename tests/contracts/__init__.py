@@ -1,0 +1,1 @@
+"""Shared behavioral contract tests."""

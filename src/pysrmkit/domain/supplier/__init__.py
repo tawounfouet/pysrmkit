@@ -1,0 +1,1 @@
+"""Supplier Core domain capability."""
