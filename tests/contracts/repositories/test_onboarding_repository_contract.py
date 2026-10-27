@@ -26,9 +26,7 @@ def make_onboarding(
         onboarding_id=OnboardingId.new(),
         relationship_id=relationship_id or SupplierRelationshipId.new(),
         started_at=NOW,
-        requirements=(
-            OnboardingRequirement(code=OnboardingRequirementCode("LEGAL_NAME")),
-        ),
+        requirements=(OnboardingRequirement(code=OnboardingRequirementCode("LEGAL_NAME")),),
     )
 
 
