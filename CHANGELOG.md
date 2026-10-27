@@ -4,6 +4,46 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a6 - 2026-10-27
+
+### Added
+
+- `QualificationId` and explicit `QualificationScope` Value Objects.
+- `QualificationStatus` with the reference statuses `PENDING`, `QUALIFIED`, `NOT_QUALIFIED`, `REVOKED`, and `EXPIRED`.
+- Explainable `QualificationDecision` Domain Result.
+- `QualificationContext` containing pre-collected onboarding and assessment facts.
+- Concrete deterministic `QualificationPolicy` with configurable minimum assessment score.
+- `SupplierQualification` Aggregate Root with request and apply-decision behavior.
+- `SupplierQualificationRequested`, `SupplierQualified`, and `SupplierQualificationRejected` Domain Events.
+- `SupplierQualificationRepository` Protocol and `InMemorySupplierQualificationRepository`.
+- Shared qualification repository contract tests.
+
+### Qualified
+
+- Empty Qualification scopes are rejected.
+- Organization, category, and country can independently define a meaningful scope.
+- Qualifications start in `PENDING`.
+- Approved decisions are consistent with `QUALIFIED`.
+- Rejected decisions are consistent with `NOT_QUALIFIED` and preserve explanations.
+- Policy success and all first-core rejection branches are tested.
+- Policy evaluation is deterministic for the same facts and explicit evaluation time.
+- Only a current pending Qualification can receive its first decision.
+- Qualification success/rejection emits the correct Domain Event.
+- Repository lookup isolates Relationship + Scope combinations.
+- Updated decision/status survives repository round trip.
+- Unsaved Aggregate mutation does not leak into repository state.
+- Ruff, formatting, Pyright strict, architecture tests, and Pytest are green.
+- 133 tests pass with 99.82% total coverage on PR validation CI #47.
+
+### Deferred
+
+- `RequestSupplierQualification` and `EvaluateSupplierQualification` Application handlers remain in `0.1.0a7`.
+- Assessment Aggregate implementation remains in `0.1.0a7`.
+- Revocation, expiration, and renewal behaviors are not implemented yet.
+- Business-unit, capability, service-type, and financial-limit scope dimensions remain deferred until real use cases require them.
+- No database, HTTP API, vendor SDK, or external provider is called from the Policy.
+
+
 ## 0.1.0a5 - 2026-10-27
 
 ### Added
