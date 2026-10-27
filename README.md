@@ -24,16 +24,16 @@ Qualified milestones:
 0.2.0a2 — Supplier + Relationship SQL Persistence
 0.2.0a3 — Onboarding + Assessment SQL Persistence
 0.2.0a4 — Qualification SQL Persistence
-0.2.0a6 — Alembic Migration Baseline
+0.2.0a5 — Transaction Boundary / UnitOfWork
 ```
 
 Next milestone:
 
 ```text
-0.2.0a5 — Transaction Boundary / UnitOfWork
+0.2.0a6 — Alembic Migration Baseline
 ```
 
-The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now begins validating the same architecture against optional relational persistence infrastructure.
+The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now validates the same architecture against optional relational persistence infrastructure.
 
 SQLAlchemy remains optional: the pure Core still requires no database, API framework, message broker, cloud service, or external SRM connector.
 
@@ -46,7 +46,7 @@ repeatable
 green
 ```
 
-`0.2.0a5` is green. Starting onboarding now commits SupplierRelationship and SupplierOnboarding atomically through a capability-specific UnitOfWork and dispatches Domain Events only after successful commit.
+`0.2.0a5` is green. Starting onboarding commits SupplierRelationship and SupplierOnboarding atomically through a capability-specific UnitOfWork and dispatches Domain Events only after successful commit.
 
 ## Architecture
 
@@ -82,10 +82,17 @@ For consumers who need the optional relational persistence foundation without th
 python -m pip install -e ".[persistence]"
 ```
 
+For schema migration tooling:
+
+```bash
+python -m pip install -e ".[migrations]"
+PYSRMKIT_DATABASE_URL="sqlite:///pysrmkit.db" alembic upgrade head
+```
+
 For PostgreSQL support through Psycopg 3:
 
 ```bash
-python -m pip install -e ".[postgresql]"
+python -m pip install -e ".[postgresql,migrations]"
 ```
 
 On Windows PowerShell, activate the environment with:
@@ -136,4 +143,5 @@ The post-Core review and persistence-cycle architecture are defined in:
 ```text
 docs/specifications/15_PYSRMKIT_POST_CORE_ARCHITECTURE_REVIEW.md
 docs/specifications/16_PYSRMKIT_PERSISTENCE_ARCHITECTURE.md
+docs/specifications/17_PYSRMKIT_PERSISTENT_CORE_MILESTONE.md
 ```
