@@ -99,9 +99,9 @@ def test_postgresql_unit_of_work_commits_relationship_and_onboarding_atomically(
             relationship = SqlAlchemySupplierRelationshipRepository(verification).get(
                 relationship_id
             )
-            onboarding = SqlAlchemySupplierOnboardingRepository(
-                verification
-            ).find_for_relationship(relationship_id)
+            onboarding = SqlAlchemySupplierOnboardingRepository(verification).find_for_relationship(
+                relationship_id
+            )
 
         assert relationship is not None
         assert relationship.stage is SupplierLifecycleStage.ONBOARDING
@@ -132,9 +132,9 @@ def test_postgresql_commit_failure_rolls_back_both_aggregates_and_event() -> Non
             relationship = SqlAlchemySupplierRelationshipRepository(verification).get(
                 relationship_id
             )
-            onboarding = SqlAlchemySupplierOnboardingRepository(
-                verification
-            ).find_for_relationship(relationship_id)
+            onboarding = SqlAlchemySupplierOnboardingRepository(verification).find_for_relationship(
+                relationship_id
+            )
 
         assert relationship is not None
         assert relationship.stage is SupplierLifecycleStage.INVITED
