@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a2` Supplier + Relationship SQL Persistence qualified on the feature branch.**
+**Early alpha — `0.2.0a2` Supplier + Relationship SQL Persistence qualified on `main`.**
 
 Qualified milestones:
 
