@@ -42,6 +42,14 @@ from pysrmkit.public.capabilities import (
     RelationshipsAPI,
     SuppliersAPI,
 )
+from pysrmkit.public.query_handlers import (
+    GetAssessmentHandler,
+    GetCurrentQualificationForScopeHandler,
+    GetOnboardingForRelationshipHandler,
+    GetQualificationHandler,
+    GetSupplierHandler,
+    GetSupplierRelationshipHandler,
+)
 
 
 def compose_in_memory(
@@ -83,7 +91,8 @@ def compose_in_memory(
             repository=suppliers,
             clock=runtime_clock,
             event_dispatcher=runtime_events,
-        )
+        ),
+        get_supplier=GetSupplierHandler(suppliers),
     )
     relationships_api = RelationshipsAPI(
         create_relationship=CreateSupplierRelationshipHandler(
@@ -102,6 +111,7 @@ def compose_in_memory(
             clock=runtime_clock,
             event_dispatcher=runtime_events,
         ),
+        get_relationship=GetSupplierRelationshipHandler(relationships),
     )
     onboardings_api = OnboardingsAPI(
         satisfy_requirement=SatisfyOnboardingRequirementHandler(repository=onboardings),
@@ -111,6 +121,7 @@ def compose_in_memory(
             event_dispatcher=runtime_events,
         ),
         get_progress=GetOnboardingProgressHandler(repository=onboardings),
+        get_for_relationship=GetOnboardingForRelationshipHandler(onboardings),
     )
     assessments_api = AssessmentsAPI(
         create_assessment=CreateSupplierAssessmentHandler(
@@ -124,6 +135,7 @@ def compose_in_memory(
             clock=runtime_clock,
             event_dispatcher=runtime_events,
         ),
+        get_assessment=GetAssessmentHandler(assessments),
     )
     qualifications_api = QualificationsAPI(
         request_qualification=RequestSupplierQualificationHandler(
@@ -140,6 +152,8 @@ def compose_in_memory(
             clock=runtime_clock,
             event_dispatcher=runtime_events,
         ),
+        get_qualification=GetQualificationHandler(qualifications),
+        get_current_for_scope=GetCurrentQualificationForScopeHandler(qualifications),
     )
 
     return (
