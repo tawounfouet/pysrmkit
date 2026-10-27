@@ -1,0 +1,1 @@
+"""Supplier Assessment domain capability."""
