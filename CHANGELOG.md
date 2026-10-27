@@ -4,6 +4,49 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a8 - 2026-10-27
+
+### Added
+
+- Executable `examples/local_qualification.py` local composition root.
+- Manual assembly of Supplier, Relationship, Onboarding, Assessment, and Qualification InMemory repositories.
+- Manual assembly of `FixedClock`, `InProcessDomainEventDispatcher`, `QualificationPolicy`, and Application Handlers.
+- End-to-end success scenario producing `QUALIFIED`.
+- End-to-end rejection scenario producing `NOT_QUALIFIED` and `SupplierQualificationRejected`.
+- Exact Domain Event trace assertions across the whole first business journey.
+- Entry-point test proving the example's pedagogical console trace and final result output.
+
+### Qualified
+
+- Supplier registration works inside the complete vertical slice.
+- Relationship creation, invitation, and onboarding start remain relationship-scoped.
+- Mandatory onboarding readiness is satisfied and onboarding completion is explicit.
+- Assessment answers are recorded and Assessment completion provides qualification facts.
+- Qualification request preserves explicit Relationship + Scope semantics.
+- Qualification evaluation delegates to `QualificationPolicy` and persists the explainable Decision.
+- Success produces `SupplierQualified`; insufficient evidence produces `SupplierQualificationRejected`.
+- Relationship lifecycle remains independently `ONBOARDING` after Qualification evaluation.
+- No network, database, framework runtime, broker, or external service is required.
+- Package import remains side-effect free.
+- All unit, application, contract, architecture, and scenario tests are green.
+- Ruff, formatting, Pyright strict, and Pytest are green.
+- 165 tests pass with 99.17% total coverage on PR validation CI #62.
+
+### Refined
+
+- The `0.1.0a8` roadmap sequence now explicitly includes `SatisfyOnboardingRequirement`, `CompleteSupplierOnboarding`, and `RecordAssessmentAnswer` because implementation made those prerequisites real.
+- The reference event trace now includes `SupplierOnboardingCompleted`.
+- `0.1.0a7` final `main` qualification evidence is recorded from CI #56.
+
+### Deferred / Post-Core
+
+- No next capability is preselected after the first local Core cycle.
+- A common Aggregate event-recording abstraction is now a legitimate refactoring candidate because event recording is repeated across multiple Aggregates, but it is not introduced inside the final qualification milestone.
+- UnitOfWork remains deferred until a persistence adapter can provide a real transaction boundary.
+- Relationship lifecycle advancement after a Qualification decision remains a separate future use case.
+- PostgreSQL, ORM, HTTP API, external connectors, broker, workflow engine, and deployment concerns remain outside the first Core.
+
+
 ## 0.1.0a7 - 2026-10-27
 
 ### Added

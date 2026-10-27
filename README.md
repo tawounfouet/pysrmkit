@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.1.0a7` Qualification Application Flow qualified on the feature branch.**
+**Early alpha — `0.1.0a8` Local Core Qualification qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -18,19 +18,21 @@ Qualified milestones:
 0.1.0a5 — Onboarding Core
 0.1.0a6 — Qualification Domain
 0.1.0a7 — Qualification Application Flow
-```
-
-Next milestone:
-
-```text
 0.1.0a8 — Local Core Qualification
 ```
 
-The bootstrap deliberately creates the development foundation before implementing the business domain.
+Next decision point:
 
-No Supplier aggregate, business repository, database adapter, API, message broker, or external connector is implemented at this stage.
+```text
+Post-Core architecture / product review
+No next capability is preselected.
+```
 
-## Bootstrap principles
+The first local Core implementation cycle now covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification using only local InMemory adapters.
+
+Production infrastructure remains intentionally absent: no database, API framework, message broker, cloud service, or external SRM connector is required by the Core.
+
+## Core principles
 
 ```text
 minimal
@@ -39,7 +41,7 @@ repeatable
 green
 ```
 
-`0.1.0a7` is green. Assessment and Qualification now operate through explicit Application handlers while policy decisions remain owned by the Domain.
+`0.1.0a8` is green. The complete local journey can now produce either `QUALIFIED` or `NOT_QUALIFIED` through Domain and Application layers with an explicit Domain Event trace.
 
 ## Architecture
 
@@ -50,7 +52,7 @@ The bootstrap exposes four explicit package boundaries:
 - `ports` — replaceable contracts required by the core;
 - `adapters` — implementations of ports when they become necessary.
 
-At `0.1.0a1`, these boundaries exist structurally but contain no speculative business abstractions.
+These boundaries were established at `0.1.0a1` and are now exercised by the complete first vertical slice without introducing infrastructure dependencies into the Domain.
 
 ## Requirements
 
@@ -86,7 +88,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The bootstrap target is currently **80% minimum coverage**. The threshold is expected to rise as real domain behavior appears.
+The CI threshold remains **80% minimum coverage**. The qualified first local Core currently reaches **99.17%** total coverage; the threshold itself can be revisited during the post-Core review.
 
 ## Documentation
 
