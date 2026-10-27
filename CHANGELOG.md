@@ -4,6 +4,57 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a2 - 2026-10-27
+
+### Added
+
+- SQLAlchemy `SupplierRecord` persistence model.
+- Owned `supplier_external_identifiers` persistence table.
+- SQLAlchemy `SupplierRelationshipRecord` persistence model.
+- Explicit Supplier Domain ↔ persistence mappers.
+- Explicit SupplierRelationship Domain ↔ persistence mappers.
+- `SqlAlchemySupplierRepository`.
+- `SqlAlchemySupplierRelationshipRepository`.
+- SQLite execution of the existing Supplier Repository Contract.
+- SQLite execution of the existing SupplierRelationship Repository Contract.
+- Real PostgreSQL execution of the same Repository Contracts.
+- Optional `postgresql` extra using Psycopg 3.
+- Dedicated PostgreSQL 18 GitHub Actions service/job.
+- Supplier → Relationship foreign-key constraint.
+- Supplier + organization relationship uniqueness constraint.
+- External identifier identity uniqueness constraint.
+- Repository test proving `save()` does not commit the Session.
+
+### Qualified
+
+- Domain and Application layers remain unchanged and SQLAlchemy-free.
+- Existing Repository Ports remain unchanged.
+- Supplier identity, optional identity fields, country, external identifiers, source system, and jurisdiction round-trip through explicit mappers.
+- SupplierRelationship identity, organization context, Supplier reference, and lifecycle stage round-trip through explicit mappers.
+- The same SQLAlchemy repository classes pass shared contracts on SQLite and PostgreSQL.
+- SQLite enforces Supplier FK, relationship uniqueness, and external-identifier uniqueness.
+- Relationship Repository contract keeps FK setup outside repository behavior through a test-harness preparation hook.
+- Repositories stage SQLAlchemy state but never commit.
+- Persistence metadata contains exactly the implemented Supplier/Relationship tables.
+- Ruff, Ruff format, Pyright strict, architecture tests, and Pytest are green.
+- Quality CI #79: 191 passed, 15 PostgreSQL-marked tests skipped, 99.19% coverage.
+- PostgreSQL CI #79: 15 PostgreSQL Repository Contract tests passed against PostgreSQL 18.
+
+### Refined
+
+- The `0.2.0a1` metadata test evolved from 'metadata must be empty' to 'metadata must contain exactly implemented tables'.
+- The shared Relationship Repository Contract gained a no-op preparation hook so SQL adapters can satisfy an external Supplier FK without teaching the repository to create Suppliers implicitly.
+- The original SQLite-only intermediate qualification was extended before merge to honor the persistence architecture requirement for first PostgreSQL contracts in `0.2.0a2`.
+
+### Deferred
+
+- Onboarding and Assessment SQL persistence remain in `0.2.0a3`.
+- Qualification SQL persistence remains in `0.2.0a4`.
+- UnitOfWork remains deferred until the first SQL-backed multi-repository atomic use case.
+- Alembic migration history remains deferred.
+- Async persistence remains deferred.
+
+
 ## 0.2.0a1 - 2026-10-27
 
 ### Added
