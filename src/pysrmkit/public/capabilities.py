@@ -102,7 +102,6 @@ class SuppliersAPI:
             )
         )
 
-
     def get(self, *, supplier_id: SupplierId) -> SupplierView:
         """Return an immutable Supplier snapshot or raise SupplierNotFound."""
         return self._get_supplier.handle(GetSupplier(supplier_id=supplier_id))
@@ -161,7 +160,6 @@ class RelationshipsAPI:
             )
         )
 
-
     def get(self, *, relationship_id: SupplierRelationshipId) -> SupplierRelationshipView:
         """Return an immutable SupplierRelationship snapshot."""
         return self._get_relationship.handle(GetSupplierRelationship(relationship_id))
@@ -204,7 +202,6 @@ class OnboardingsAPI:
     def progress(self, *, onboarding_id: OnboardingId) -> OnboardingProgress:
         """Return computed onboarding progress."""
         return self._get_progress.handle(GetOnboardingProgress(onboarding_id=onboarding_id))
-
 
     def get_for_relationship(self, *, relationship_id: SupplierRelationshipId) -> OnboardingView:
         """Return the relationship onboarding snapshot."""
@@ -278,7 +275,6 @@ class AssessmentsAPI:
                 decision=decision,
             )
         )
-
 
     def get(self, *, assessment_id: AssessmentId) -> AssessmentView:
         """Return an immutable SupplierAssessment snapshot."""
