@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.1.0a5` Onboarding Core qualified on `main`.**
+**Early alpha — `0.1.0a6` Qualification Domain qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -16,12 +16,13 @@ Qualified milestones:
 0.1.0a3 — Supplier Relationships
 0.1.0a4 — Relationship Lifecycle
 0.1.0a5 — Onboarding Core
+0.1.0a6 — Qualification Domain
 ```
 
 Next milestone:
 
 ```text
-0.1.0a6 — Qualification Domain
+0.1.0a7 — Qualification Application Flow
 ```
 
 The bootstrap deliberately creates the development foundation before implementing the business domain.
@@ -37,7 +38,7 @@ repeatable
 green
 ```
 
-`0.1.0a5` is green. Relationship-scoped onboarding requirements now produce explicit readiness and completion state usable by later qualification rules.
+`0.1.0a6` is green. Qualification scope, explainable decisions, deterministic policy evaluation, Aggregate transitions, events, and repository contracts now work without Application handlers.
 
 ## Architecture
 
