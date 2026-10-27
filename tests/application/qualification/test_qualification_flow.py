@@ -41,6 +41,7 @@ from pysrmkit.domain.qualification.events import (
 )
 from pysrmkit.domain.qualification.policies import QualificationContext, QualificationPolicy
 from pysrmkit.domain.qualification.value_objects import (
+    QualificationDecision,
     QualificationScope,
     QualificationStatus,
 )
@@ -64,16 +65,23 @@ class RecordingEventDispatcher:
         self.events.extend(events)
 
 
+def _qualification_context_list() -> list[QualificationContext]:
+    return []
+
+
 @dataclass(frozen=True, slots=True)
 class RecordingQualificationPolicy(QualificationPolicy):
-    contexts: list[QualificationContext] = field(default_factory=list, compare=False)
+    contexts: list[QualificationContext] = field(
+        default_factory=_qualification_context_list,
+        compare=False,
+    )
 
     def evaluate(
         self,
         context: QualificationContext,
         *,
         evaluated_at: datetime,
-    ):
+    ) -> QualificationDecision:
         self.contexts.append(context)
         return super().evaluate(context, evaluated_at=evaluated_at)
 
