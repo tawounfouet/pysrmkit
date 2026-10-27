@@ -30,9 +30,7 @@ class InMemorySupplierOnboardingUnitOfWork:
     ) -> None:
         self._relationship_repository = relationship_repository
         self._onboarding_repository = onboarding_repository
-        self._relationship_snapshot: (
-            dict[SupplierRelationshipId, _StoredRelationship] | None
-        ) = None
+        self._relationship_snapshot: dict[SupplierRelationshipId, _StoredRelationship] | None = None
         self._onboarding_snapshot: dict[OnboardingId, _StoredOnboarding] | None = None
         self._committed = False
 
