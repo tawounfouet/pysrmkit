@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a1` Persistence Foundation qualified on `main`.**
+**Early alpha — `0.2.0a2` Supplier + Relationship SQL Persistence qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -21,12 +21,13 @@ Qualified milestones:
 0.1.0a8 — Local Core Qualification
 
 0.2.0a1 — Persistence Foundation
+0.2.0a2 — Supplier + Relationship SQL Persistence
 ```
 
 Next milestone:
 
 ```text
-0.2.0a2 — Supplier + Relationship SQL Persistence
+0.2.0a3 — Onboarding + Assessment SQL Persistence
 ```
 
 The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now begins validating the same architecture against optional relational persistence infrastructure.
@@ -42,7 +43,7 @@ repeatable
 green
 ```
 
-`0.2.0a1` is green. PySRMKit now has an isolated SQLAlchemy persistence foundation with explicit Engine/Session construction, SQLite foreign-key enforcement, and architecture gates preventing persistence frameworks from leaking into Domain, Application, or Ports.
+`0.2.0a2` is green. Supplier and SupplierRelationship now persist through one SQLAlchemy adapter family whose shared Repository Contracts pass against both SQLite and real PostgreSQL.
 
 ## Architecture
 
@@ -78,6 +79,12 @@ For consumers who need the optional relational persistence foundation without th
 python -m pip install -e ".[persistence]"
 ```
 
+For PostgreSQL support through Psycopg 3:
+
+```bash
+python -m pip install -e ".[postgresql]"
+```
+
 On Windows PowerShell, activate the environment with:
 
 ```powershell
@@ -95,7 +102,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a1` qualification suite currently reaches **99.12%** total coverage.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a2` quality suite reaches **99.19%** total coverage, while a dedicated PostgreSQL CI job executes the same repository contracts against PostgreSQL 18.
 
 ## Documentation
 
