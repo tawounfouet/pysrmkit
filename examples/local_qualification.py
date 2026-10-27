@@ -15,8 +15,8 @@ from pysrmkit.adapters.memory.qualification_repository import (
 from pysrmkit.adapters.memory.relationship_repository import (
     InMemorySupplierRelationshipRepository,
 )
-from pysrmkit.adapters.memory.unit_of_work import InMemorySupplierOnboardingUnitOfWork
 from pysrmkit.adapters.memory.supplier_repository import InMemorySupplierRepository
+from pysrmkit.adapters.memory.unit_of_work import InMemorySupplierOnboardingUnitOfWork
 from pysrmkit.application.assessment.commands import (
     AssessmentQuestionInput,
     CompleteSupplierAssessment,
