@@ -156,13 +156,10 @@ class SupplierAssessment:
         self._require_open()
         question = self._questions.get(answer.question_code)
         if question is None:
-            raise UnknownAssessmentQuestion(
-                f"Unknown assessment question {answer.question_code}"
-            )
+            raise UnknownAssessmentQuestion(f"Unknown assessment question {answer.question_code}")
         if answer.score > question.maximum_score:
             raise InvalidAssessmentAnswer(
-                f"Answer score for {answer.question_code} exceeds maximum "
-                f"{question.maximum_score}"
+                f"Answer score for {answer.question_code} exceeds maximum {question.maximum_score}"
             )
         self._answers[answer.question_code] = answer
 
@@ -203,9 +200,7 @@ class SupplierAssessment:
 
     def _add_question(self, question: AssessmentQuestion) -> None:
         if question.code in self._questions:
-            raise DuplicateAssessmentQuestion(
-                f"Assessment question {question.code} is duplicated"
-            )
+            raise DuplicateAssessmentQuestion(f"Assessment question {question.code} is duplicated")
         self._questions[question.code] = question
 
     def _require_open(self) -> None:
