@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.1.0a6` Qualification Domain qualified on `main`.**
+**Early alpha — `0.1.0a7` Qualification Application Flow qualified on the feature branch.**
 
 Qualified milestones:
 
@@ -17,12 +17,13 @@ Qualified milestones:
 0.1.0a4 — Relationship Lifecycle
 0.1.0a5 — Onboarding Core
 0.1.0a6 — Qualification Domain
+0.1.0a7 — Qualification Application Flow
 ```
 
 Next milestone:
 
 ```text
-0.1.0a7 — Qualification Application Flow
+0.1.0a8 — Local Core Qualification
 ```
 
 The bootstrap deliberately creates the development foundation before implementing the business domain.
@@ -38,7 +39,7 @@ repeatable
 green
 ```
 
-`0.1.0a6` is green. Qualification scope, explainable decisions, deterministic policy evaluation, Aggregate transitions, events, and repository contracts now work without Application handlers.
+`0.1.0a7` is green. Assessment and Qualification now operate through explicit Application handlers while policy decisions remain owned by the Domain.
 
 ## Architecture
 

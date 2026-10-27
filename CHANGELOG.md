@@ -4,6 +4,52 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a7 - 2026-10-27
+
+### Added
+
+- Minimal relationship-scoped `SupplierAssessment` Aggregate Root.
+- `AssessmentId`, `AssessmentType`, `AssessmentQuestion`, `AssessmentAnswer`, `AssessmentScore`, and `AssessmentDecision` domain types.
+- Mandatory-answer completion guards and assessment immutability after completion.
+- Deterministic percentage scoring for the first local qualification scenario.
+- `SupplierAssessmentCompleted` Domain Event.
+- `SupplierAssessmentRepository` and `InMemorySupplierAssessmentRepository`.
+- `CreateSupplierAssessment`, `RecordAssessmentAnswer`, and `CompleteSupplierAssessment` application flows.
+- `RequestSupplierQualification` and `EvaluateSupplierQualification` application flows.
+- `RequestSupplierQualificationHandler` cross-instance uniqueness check for Relationship + Scope.
+- `EvaluateSupplierQualificationHandler` fact collection from Onboarding + Assessment.
+- Explicit delegation from the Evaluate Handler to `QualificationPolicy`.
+- `InProcessDomainEventDispatcher` for synchronous local event dispatch.
+- Cross-capability boundary tests proving Application-level coordination.
+
+### Qualified
+
+- Assessment questions are immutable snapshots inside one assessment execution.
+- Answers must reference known questions and remain inside each question scoring range.
+- Mandatory questions must be answered before Assessment completion.
+- Completed Assessments are immutable by default.
+- Assessment score is persisted and rehydrated without recreating historical events.
+- Qualification requests require an existing Relationship.
+- Duplicate current Qualification for the same Relationship + Scope is rejected.
+- Evaluate Handler explicitly invokes the injected QualificationPolicy.
+- Application code does not duplicate the minimum-score rule.
+- Policy decisions are applied through `SupplierQualification.apply_decision(...)`.
+- Qualified and rejected Domain Events are dispatched through the Application layer.
+- Qualification evaluation does not mutate Relationship lifecycle state.
+- Completing an Assessment does not directly create or mutate Qualification.
+- `FixedClock` controls request, assessment-completion, and qualification-decision timestamps in tests.
+- Ruff, formatting, Pyright strict, architecture tests, and Pytest are green.
+- 162 tests pass with 99.17% total coverage on PR validation CI #54.
+
+### Deferred
+
+- UnitOfWork remains deferred because each new `a7` command writes one main Aggregate.
+- Assessment templates, questionnaire engines, evidence storage, and external providers remain out of scope.
+- Automatic event-to-command cascades remain deferred; reactions stay explicit use cases.
+- Relationship lifecycle is not automatically advanced by Qualification evaluation.
+- The full composition-root scenario remains in `0.1.0a8`.
+
+
 ## 0.1.0a6 - 2026-10-27
 
 ### Added
