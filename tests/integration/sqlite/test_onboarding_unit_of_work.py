@@ -1,6 +1,7 @@
 """SQLite integration tests for transactional Supplier onboarding."""
 
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 from sqlalchemy.orm import Session, sessionmaker
@@ -70,7 +71,7 @@ def _seed_invited_relationship(
         return relationship.id
 
 
-def test_handler_commits_both_aggregates_before_dispatch(tmp_path: pytest.TempPathFactory) -> None:
+def test_handler_commits_both_aggregates_before_dispatch(tmp_path: Path) -> None:
     database_path = tmp_path / "pysrmkit-uow.sqlite"
     engine = create_persistence_engine(f"sqlite:///{database_path}")
     PersistenceBase.metadata.create_all(engine)
@@ -109,7 +110,7 @@ def test_handler_commits_both_aggregates_before_dispatch(tmp_path: pytest.TempPa
 
 
 def test_commit_failure_rolls_back_both_aggregates_and_dispatches_nothing(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: Path,
 ) -> None:
     database_path = tmp_path / "pysrmkit-uow-failure.sqlite"
     engine = create_persistence_engine(f"sqlite:///{database_path}")
