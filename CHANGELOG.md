@@ -4,6 +4,44 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a5 - 2026-10-27
+
+### Added
+
+- `SupplierOnboardingUnitOfWork` transaction Port.
+- `InMemorySupplierOnboardingUnitOfWork` with real snapshot/restore rollback semantics.
+- `SqlAlchemySupplierOnboardingUnitOfWork` owning one Session shared by Relationship and Onboarding repositories.
+- Transactional `StartSupplierOnboardingHandler`.
+- SQLite commit/rollback integration tests.
+- PostgreSQL commit/rollback integration tests.
+- Post-commit Domain Event dispatch behavior.
+
+### Qualified
+
+- Relationship + Onboarding commit atomically on success.
+- A forced commit failure rolls both Aggregates back.
+- A failed commit dispatches no `SupplierOnboardingStarted` event.
+- InMemory and SQLAlchemy UnitOfWork implementations satisfy the same application-facing contract.
+- Repositories remain non-committing.
+- UnitOfWork remains persistence-agnostic at the Port boundary.
+- Quality CI #113: 233 passed, 41 PostgreSQL-marked tests skipped, 97.73% coverage.
+- PostgreSQL CI #113: 41 selected tests passed against PostgreSQL 18.6.
+
+### Refined
+
+- InMemory rollback snapshots are expressed as Domain state rather than private repository storage types.
+- `StartSupplierOnboardingHandler` now depends on a capability-specific UnitOfWork instead of two independently supplied repositories.
+- Domain Events are pulled before commit but dispatched only after commit succeeds.
+
+### Deferred
+
+- No global UnitOfWork across all capabilities.
+- No nested transactions or savepoints.
+- No automatic transaction retries.
+- No Transactional Outbox.
+- Alembic migration history remains in `0.2.0a6`.
+
+
 ## 0.2.0a4 - 2026-10-27
 
 ### Added
