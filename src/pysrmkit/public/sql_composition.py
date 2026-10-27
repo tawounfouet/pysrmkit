@@ -184,15 +184,11 @@ def compose_sql(
         ),
         get_progress=_transactional(
             sessions,
-            lambda session: GetOnboardingProgressHandler(
-                repository=onboarding_repository(session)
-            ),
+            lambda session: GetOnboardingProgressHandler(repository=onboarding_repository(session)),
         ),
         get_for_relationship=_transactional(
             sessions,
-            lambda session: GetOnboardingForRelationshipHandler(
-                onboarding_repository(session)
-            ),
+            lambda session: GetOnboardingForRelationshipHandler(onboarding_repository(session)),
         ),
     )
     assessments_api = AssessmentsAPI(
