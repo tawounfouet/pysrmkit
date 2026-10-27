@@ -43,8 +43,8 @@ jobs:
         image: postgres:18
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: pysrmkit_test
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
         options: >-
@@ -54,7 +54,7 @@ jobs:
           --health-retries 10
 
     env:
-      PYSRMKIT_POSTGRESQL_TEST_URL: postgresql+psycopg://postgres:postgres@localhost:5432/pysrmkit_test
+      PYSRMKIT_POSTGRESQL_TEST_URL: postgresql+psycopg://postgres@localhost:5432/pysrmkit_test
 
     steps:
       - name: Checkout
