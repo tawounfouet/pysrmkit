@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pysrmkit.domain.relationship.entities import SupplierRelationship
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
+    SupplierLifecycleStage,
     SupplierRelationshipId,
 )
 from pysrmkit.domain.supplier.value_objects import SupplierId
@@ -17,6 +18,7 @@ class _StoredRelationship:
     relationship_id: SupplierRelationshipId
     supplier_id: SupplierId
     organization_id: InternalOrganizationId
+    stage: SupplierLifecycleStage
 
 
 class InMemorySupplierRelationshipRepository:
@@ -39,6 +41,7 @@ class InMemorySupplierRelationshipRepository:
             relationship_id=relationship.id,
             supplier_id=relationship.supplier_id,
             organization_id=relationship.organization_id,
+            stage=relationship.stage,
         )
 
     def find_for_supplier_and_organization(
@@ -57,4 +60,5 @@ class InMemorySupplierRelationshipRepository:
             relationship_id=stored.relationship_id,
             supplier_id=stored.supplier_id,
             organization_id=stored.organization_id,
+            stage=stored.stage,
         )
