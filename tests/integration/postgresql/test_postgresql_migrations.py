@@ -7,7 +7,7 @@ import os
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import inspect
+from sqlalchemy import CheckConstraint, UniqueConstraint, inspect
 
 from pysrmkit.adapters.sqlalchemy.engine import create_persistence_engine
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
@@ -47,12 +47,37 @@ def test_postgresql_empty_database_can_upgrade_to_persistent_core_head() -> None
                 table.columns.keys()
             )
             assert inspector.get_pk_constraint(table_name)["name"] == table.primary_key.name
-            assert {
+
+            actual_foreign_keys = {
                 foreign_key["name"] for foreign_key in inspector.get_foreign_keys(table_name)
-            } == {constraint.name for constraint in table.foreign_key_constraints}
-            assert {index["name"] for index in inspector.get_indexes(table_name)} == {
-                index.name for index in table.indexes
             }
+            assert actual_foreign_keys == {
+                constraint.name for constraint in table.foreign_key_constraints
+            }
+
+            actual_unique_constraints = {
+                constraint["name"] for constraint in inspector.get_unique_constraints(table_name)
+            }
+            assert actual_unique_constraints == {
+                constraint.name
+                for constraint in table.constraints
+                if isinstance(constraint, UniqueConstraint)
+            }
+
+            actual_check_constraints = {
+                constraint["name"] for constraint in inspector.get_check_constraints(table_name)
+            }
+            assert actual_check_constraints == {
+                constraint.name
+                for constraint in table.constraints
+                if isinstance(constraint, CheckConstraint)
+            }
+
+            actual_index_names = {
+                index["name"] for index in inspector.get_indexes(table_name)
+            }
+            expected_explicit_indexes = {index.name for index in table.indexes}
+            assert expected_explicit_indexes <= actual_index_names
     finally:
         metadata.drop_all(engine)
         with engine.begin() as connection:
