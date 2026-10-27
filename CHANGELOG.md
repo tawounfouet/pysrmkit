@@ -26,8 +26,8 @@ All notable changes to PySRMKit will be documented in this file.
 - Existing Repository Contracts and UnitOfWork transaction semantics remain green.
 - Domain, Application, and Repository Ports remain free from SQLAlchemy, Alembic, and Psycopg dependencies.
 - Core consumers still have zero mandatory third-party runtime dependencies.
-- Quality CI #128: 235 passed, 42 PostgreSQL-marked tests skipped, 97.74% coverage.
-- PostgreSQL CI #128: 42 selected tests passed against PostgreSQL 18.6.
+- Final PR CI #131 quality job: 235 passed, 42 PostgreSQL-marked tests skipped, 97.74% coverage.
+- Final PR CI #131 PostgreSQL job: 42 selected tests passed against PostgreSQL 18.6.
 - Ruff, Ruff format, Pyright strict, architecture gates, and full regression suite are green.
 
 ### Refined
