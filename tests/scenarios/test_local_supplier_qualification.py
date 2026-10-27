@@ -1,7 +1,6 @@
 """End-to-end local Core Supplier qualification scenarios."""
 
 import pytest
-
 from examples.local_qualification import main, run_local_qualification
 
 from pysrmkit.domain.qualification.value_objects import QualificationStatus
