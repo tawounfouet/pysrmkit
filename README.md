@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.1.0a6` Qualification Domain qualified on the feature branch.**
+**Early alpha — `0.1.0a6` Qualification Domain qualified on `main`.**
 
 Qualified milestones:
 
