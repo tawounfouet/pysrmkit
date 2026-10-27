@@ -42,6 +42,7 @@ from pysrmkit.public.capabilities import (
     RelationshipsAPI,
     SuppliersAPI,
 )
+from pysrmkit.public.events import EventsAPI
 from pysrmkit.public.query_handlers import (
     GetAssessmentHandler,
     GetCurrentQualificationForScopeHandler,
@@ -63,6 +64,7 @@ def compose_in_memory(
     OnboardingsAPI,
     AssessmentsAPI,
     QualificationsAPI,
+    EventsAPI,
 ]:
     """Wire the complete local runtime using in-memory adapters.
 
@@ -72,7 +74,8 @@ def compose_in_memory(
     host-application customization without introducing a DI container.
     """
     runtime_clock = clock or SystemClock()
-    runtime_events = event_dispatcher or InProcessDomainEventDispatcher()
+    public_events = InProcessDomainEventDispatcher()
+    runtime_events = event_dispatcher or public_events
     runtime_policy = qualification_policy or QualificationPolicy()
 
     suppliers = InMemorySupplierRepository()
@@ -162,4 +165,5 @@ def compose_in_memory(
         onboardings_api,
         assessments_api,
         qualifications_api,
+        EventsAPI(public_events),
     )
