@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sqlalchemy.engine import Engine
+
 from pysrmkit.public.capabilities import (
     AssessmentsAPI,
     OnboardingsAPI,
@@ -14,8 +19,7 @@ from pysrmkit.public.capabilities import (
 class PySRMKit:
     """Stable facade grouping the public Supplier Domain capability APIs.
 
-    Runtime factories are intentionally not defined in 0.3.0a1. The InMemory and
-    SQL composition root belongs to the following Cycle 3 milestone.
+    Runtime factories expose explicit composition roots while keeping infrastructure\n    dependencies outside the Domain and Application layers.
     """
 
     @classmethod
@@ -24,6 +28,20 @@ class PySRMKit:
         from pysrmkit.public.composition import compose_in_memory
 
         suppliers, relationships, onboardings, assessments, qualifications = compose_in_memory()
+        return cls(
+            suppliers=suppliers,
+            relationships=relationships,
+            onboardings=onboardings,
+            assessments=assessments,
+            qualifications=qualifications,
+        )
+
+    @classmethod
+    def sql(cls, engine: Engine) -> PySRMKit:
+        """Build a SQLAlchemy-backed runtime around an externally owned Engine."""
+        from pysrmkit.public.sql_composition import compose_sql
+
+        suppliers, relationships, onboardings, assessments, qualifications = compose_sql(engine)
         return cls(
             suppliers=suppliers,
             relationships=relationships,
