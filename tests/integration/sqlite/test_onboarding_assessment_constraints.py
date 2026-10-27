@@ -3,6 +3,7 @@
 from datetime import UTC, datetime
 
 import pytest
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -39,7 +40,7 @@ from pysrmkit.domain.supplier.value_objects import SupplierId, SupplierIdentity
 NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 
 
-def _new_session() -> tuple[Session, object]:
+def _new_session() -> tuple[Session, Engine]:
     engine = create_persistence_engine("sqlite:///:memory:")
     PersistenceBase.metadata.create_all(engine)
     return create_session_factory(engine)(), engine
