@@ -94,7 +94,7 @@ def test_invite_handler_raises_not_found_without_dispatch() -> None:
     assert dispatcher.events == []
 
 
-def test_start_onboarding_handler_persists_transition_creates_onboarding_and_dispatches_event() -> None:
+def test_start_onboarding_handler_persists_transition_and_creates_onboarding() -> None:
     repository = InMemorySupplierRelationshipRepository()
     onboardings = InMemorySupplierOnboardingRepository()
     dispatcher = RecordingEventDispatcher()
