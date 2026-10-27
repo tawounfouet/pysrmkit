@@ -27,6 +27,7 @@ from pysrmkit.application.relationship.errors import (
 from pysrmkit.application.relationship.results import CreateSupplierRelationshipResult
 from pysrmkit.application.supplier.commands import ExternalIdentifierInput
 from pysrmkit.application.supplier.results import RegisterSupplierResult
+from pysrmkit.domain.assessment.events import SupplierAssessmentCompleted
 from pysrmkit.domain.assessment.errors import (
     AssessmentAlreadyCompleted,
     DuplicateAssessmentQuestion,
@@ -35,6 +36,7 @@ from pysrmkit.domain.assessment.errors import (
     UnknownAssessmentQuestion,
 )
 from pysrmkit.domain.assessment.value_objects import AssessmentDecision, AssessmentId
+from pysrmkit.domain.onboarding.events import SupplierOnboardingCompleted
 from pysrmkit.domain.onboarding.errors import (
     DuplicateOnboardingRequirement,
     MandatoryOnboardingRequirementsNotSatisfied,
@@ -42,6 +44,11 @@ from pysrmkit.domain.onboarding.errors import (
     UnknownOnboardingRequirement,
 )
 from pysrmkit.domain.onboarding.value_objects import OnboardingId
+from pysrmkit.domain.qualification.events import (
+    SupplierQualificationRejected,
+    SupplierQualificationRequested,
+    SupplierQualified,
+)
 from pysrmkit.domain.qualification.errors import (
     InvalidQualificationDecision,
     InvalidQualificationScope,
@@ -52,12 +59,18 @@ from pysrmkit.domain.qualification.value_objects import (
     QualificationScope,
     QualificationStatus,
 )
+from pysrmkit.domain.relationship.events import (
+    SupplierInvited,
+    SupplierOnboardingStarted,
+    SupplierRelationshipCreated,
+)
 from pysrmkit.domain.relationship.errors import InvalidLifecycleTransition
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
     SupplierLifecycleStage,
     SupplierRelationshipId,
 )
+from pysrmkit.domain.supplier.events import SupplierCreated
 from pysrmkit.domain.supplier.errors import (
     DuplicateExternalIdentifier,
     InvalidExternalIdentifier,
@@ -77,6 +90,7 @@ from pysrmkit.public.errors import (
     PersistenceUnavailable,
     PySRMKitError,
 )
+from pysrmkit.public.events import EventsAPI
 from pysrmkit.public.facade import PySRMKit
 from pysrmkit.public.views import (
     AssessmentView,
@@ -147,4 +161,14 @@ __all__ = [
     "SupplierQualificationNotFound",
     "UnknownAssessmentQuestion",
     "UnknownOnboardingRequirement",
+    "EventsAPI",
+    "SupplierAssessmentCompleted",
+    "SupplierCreated",
+    "SupplierInvited",
+    "SupplierOnboardingCompleted",
+    "SupplierOnboardingStarted",
+    "SupplierQualificationRejected",
+    "SupplierQualificationRequested",
+    "SupplierQualified",
+    "SupplierRelationshipCreated",
 ]
