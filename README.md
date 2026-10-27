@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a7` Persistent Local Qualification qualified on PR #19.**
+**Early alpha — `0.2.0a7` Persistent Local Qualification qualified on `main`.**
 
 Qualified milestones:
 
@@ -50,7 +50,7 @@ repeatable
 green
 ```
 
-`0.2.0a7` is green on PR #19. The complete Supplier qualification journey now survives Alembic bootstrap, SQL commits, destruction of the original Engine/Session/repositories, and reload through a fresh persistence context on SQLite and PostgreSQL.
+`0.2.0a7` is green on `main`. The complete Supplier qualification journey now survives Alembic bootstrap, SQL commits, destruction of the original Engine/Session/repositories, and reload through a fresh persistence context on SQLite and PostgreSQL.
 
 ## Architecture
 
@@ -116,7 +116,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a7` PR qualification (CI #141) reaches **98.11%** total coverage with **239 tests passed** in the quality job, while the PostgreSQL CI job executes **44 selected tests** against PostgreSQL 18.6.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a7` final PR qualification (CI #144) reaches **98.11%** total coverage with **239 tests passed** in the quality job, while the PostgreSQL CI job executes **44 selected tests** against PostgreSQL 18.6.
 
 ## Documentation
 
