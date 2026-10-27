@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a6` Alembic Migration Baseline qualified on PR #18.**
+**Early alpha — `0.2.0a6` Alembic Migration Baseline qualified on `main`.**
 
 Qualified milestones:
 
@@ -47,7 +47,7 @@ repeatable
 green
 ```
 
-`0.2.0a6` is green on PR #18. Empty SQLite and PostgreSQL databases can now be migrated reproducibly to the complete Persistent Core schema through the versioned Alembic baseline, while Domain, Application, and Repository Ports remain persistence-framework agnostic.
+`0.2.0a6` is green on `main`. Empty SQLite and PostgreSQL databases can now be migrated reproducibly to the complete Persistent Core schema through the versioned Alembic baseline, while Domain, Application, and Repository Ports remain persistence-framework agnostic.
 
 ## Architecture
 
@@ -113,7 +113,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a6` PR qualification reaches **97.74%** total coverage with **235 tests passed** in the quality job, while the PostgreSQL CI job executes **42 selected tests** against PostgreSQL 18.6.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a6` final PR qualification (CI #131) reaches **97.74%** total coverage with **235 tests passed** in the quality job, while the PostgreSQL CI job executes **42 selected tests** against PostgreSQL 18.6.
 
 ## Documentation
 
