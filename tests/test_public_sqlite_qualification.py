@@ -39,12 +39,8 @@ def test_public_sqlite_success_rejection_and_runtime_restart(tmp_path: Path) -> 
     engine_b = create_engine(database_url)
     runtime_b = PySRMKit.sql(engine_b)
     try:
-        qualified_view = runtime_b.qualifications.get(
-            qualification_id=qualified.qualification_id
-        )
-        rejected_view = runtime_b.qualifications.get(
-            qualification_id=rejected.qualification_id
-        )
+        qualified_view = runtime_b.qualifications.get(qualification_id=qualified.qualification_id)
+        rejected_view = runtime_b.qualifications.get(qualification_id=rejected.qualification_id)
         supplier_view = runtime_b.suppliers.get(supplier_id=qualified.supplier_id)
 
         assert supplier_view.legal_name == "Public Supplier 90"
