@@ -6,7 +6,7 @@ from pysrmkit.adapters.clock.system import SystemClock
 from pysrmkit.adapters.events.in_process import InProcessDomainEventDispatcher
 from pysrmkit.adapters.memory.assessment_repository import InMemorySupplierAssessmentRepository
 from pysrmkit.adapters.memory.onboarding_repository import InMemorySupplierOnboardingRepository
-from pysrmkit.adapters.memory.qualification_repository import InMemorySupplierQualificationRepository
+from pysrmkit.adapters.memory.qualification_repository import (\n    InMemorySupplierQualificationRepository,\n)
 from pysrmkit.adapters.memory.relationship_repository import InMemorySupplierRelationshipRepository
 from pysrmkit.adapters.memory.supplier_repository import InMemorySupplierRepository
 from pysrmkit.adapters.memory.unit_of_work import InMemorySupplierOnboardingUnitOfWork
