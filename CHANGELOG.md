@@ -4,6 +4,64 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a7 - 2026-10-27
+
+### Added
+
+- Executable `examples/persistent_qualification.py` SQL-backed composition root.
+- `DeferredDomainEventDispatcher` adapter for buffering in-process Domain Events until the surrounding SQL transaction commits.
+- SQLite end-to-end success and rejection restart scenarios.
+- PostgreSQL 18 end-to-end success and rejection persistence scenarios.
+- Fresh Engine, Session, and Repository reconstruction before final business-state assertions.
+
+### Qualified
+
+- The complete Supplier journey executes through existing Application Handlers and SQLAlchemy Repository adapters.
+- Empty databases are bootstrapped through the Alembic `head` migration before business execution.
+- Supplier, Relationship, Onboarding, Assessment, and Qualification survive durable commits.
+- The original Engine, Session, and repository instances are discarded before verification.
+- A fresh persistence context reloads the final `QUALIFIED` state with the same Relationship lifecycle, scope, score, decision, and failed-requirement semantics.
+- The `NOT_QUALIFIED` path survives the same restart/reload boundary and preserves `ASSESSMENT_MINIMUM_SCORE`.
+- Existing Domain Event trace semantics remain observable without publishing single-repository events before SQL commit.
+- Domain, Application, and Repository Ports remain unchanged and persistence-framework agnostic.
+- No global UnitOfWork was introduced.
+- Quality CI #141: 239 passed, 44 PostgreSQL-marked tests skipped, 98.11% coverage.
+- PostgreSQL CI #141: 44 selected tests passed against PostgreSQL 18.6.
+- Ruff, Ruff format, Pyright strict, architecture gates, migrations, Repository Contracts, UnitOfWork tests, and persistent scenarios are green.
+
+### Refined
+
+- Onboarding Data Mapper updates now reconcile persisted requirement rows by business code instead of recreating technical child rows after each committed update.
+- Assessment Data Mapper updates now reconcile persisted question and answer rows by Domain-level question identity instead of replacing committed child rows.
+- This preserves hidden SQL technical identities while keeping the Domain free of persistence IDs.
+- Single-repository transaction boundaries remain a composition-root responsibility; the existing capability-specific onboarding UnitOfWork remains the only UnitOfWork justified by multi-Aggregate atomicity.
+- Deferred event dispatch is explicitly an in-process post-commit mechanism, not a Transactional Outbox.
+
+### Implementation feedback
+
+The persistent scenario exposed a defect that shorter Repository Contract transactions could not reveal:
+
+```text
+create Aggregate
+    -> save
+    -> COMMIT
+    -> reload
+    -> mutate owned collection
+    -> save
+    -> COMMIT
+```
+
+Recreating every owned persistence child produced duplicate unique keys on PostgreSQL. The correct Data Mapper behavior is to reconcile persistence rows using the Domain's stable owned-object identity while keeping technical database identifiers outside the Domain model.
+
+### Deferred / Post-Persistent-Core
+
+- No Transactional Outbox; a process crash after database commit but before in-process publication remains a future reliability concern.
+- No async SQLAlchemy / AsyncSession path.
+- No generic/global UnitOfWork.
+- No automatic transaction retries, savepoints, or distributed transactions.
+- No API framework, broker, cache, or external SRM connector is introduced by this cycle.
+- No next implementation capability is preselected before a post-persistence architecture review.
+
 ## 0.2.0a6 - 2026-10-27
 
 ### Added
