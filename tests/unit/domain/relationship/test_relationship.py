@@ -6,6 +6,7 @@ from pysrmkit.domain.relationship.entities import SupplierRelationship
 from pysrmkit.domain.relationship.events import SupplierRelationshipCreated
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
+    SupplierLifecycleStage,
     SupplierRelationshipId,
 )
 from pysrmkit.domain.supplier.value_objects import SupplierId
@@ -28,7 +29,7 @@ def test_relationship_creation_references_supplier_and_organization() -> None:
     assert relationship.id == relationship_id
     assert relationship.supplier_id == supplier_id
     assert relationship.organization_id == organization_id
-    assert relationship.stage == "DISCOVERED"
+    assert relationship.stage is SupplierLifecycleStage.DISCOVERED
 
 
 def test_relationship_creation_records_supplier_relationship_created() -> None:

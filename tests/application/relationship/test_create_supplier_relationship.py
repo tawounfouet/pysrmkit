@@ -14,7 +14,10 @@ from pysrmkit.application.relationship.errors import RelationshipAlreadyExists, 
 from pysrmkit.application.relationship.handlers import CreateSupplierRelationshipHandler
 from pysrmkit.domain.common.events import DomainEvent
 from pysrmkit.domain.relationship.events import SupplierRelationshipCreated
-from pysrmkit.domain.relationship.value_objects import InternalOrganizationId
+from pysrmkit.domain.relationship.value_objects import (
+    InternalOrganizationId,
+    SupplierLifecycleStage,
+)
 from pysrmkit.domain.supplier.entities import Supplier
 from pysrmkit.domain.supplier.value_objects import SupplierId, SupplierIdentity
 
@@ -71,7 +74,7 @@ def test_create_relationship_for_existing_supplier_saves_and_dispatches_event() 
     assert loaded is not None
     assert loaded.supplier_id == supplier_id
     assert loaded.organization_id == organization_id
-    assert loaded.stage == "DISCOVERED"
+    assert loaded.stage is SupplierLifecycleStage.DISCOVERED
 
     assert len(dispatcher.events) == 1
     event = dispatcher.events[0]

@@ -2,8 +2,16 @@
 
 from __future__ import annotations
 
-from pysrmkit.application.relationship.commands import CreateSupplierRelationship
-from pysrmkit.application.relationship.errors import RelationshipAlreadyExists, SupplierNotFound
+from pysrmkit.application.relationship.commands import (
+    CreateSupplierRelationship,
+    InviteSupplierRelationship,
+    StartSupplierOnboarding,
+)
+from pysrmkit.application.relationship.errors import (
+    RelationshipAlreadyExists,
+    SupplierNotFound,
+    SupplierRelationshipNotFound,
+)
 from pysrmkit.application.relationship.results import CreateSupplierRelationshipResult
 from pysrmkit.domain.relationship.entities import SupplierRelationship
 from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
@@ -56,3 +64,61 @@ class CreateSupplierRelationshipHandler:
         self._event_dispatcher.dispatch(relationship.pull_events())
 
         return CreateSupplierRelationshipResult(relationship_id=relationship.id)
+
+
+class InviteSupplierRelationshipHandler:
+    """Application orchestration for inviting a SupplierRelationship."""
+
+    def __init__(
+        self,
+        *,
+        relationship_repository: SupplierRelationshipRepository,
+        clock: Clock,
+        event_dispatcher: DomainEventDispatcher,
+    ) -> None:
+        self._relationship_repository = relationship_repository
+        self._clock = clock
+        self._event_dispatcher = event_dispatcher
+
+    def handle(self, command: InviteSupplierRelationship) -> None:
+        relationship = self._load(command.relationship_id)
+        relationship.invite(occurred_at=self._clock.now())
+        self._relationship_repository.save(relationship)
+        self._event_dispatcher.dispatch(relationship.pull_events())
+
+    def _load(self, relationship_id: SupplierRelationshipId) -> SupplierRelationship:
+        relationship = self._relationship_repository.get(relationship_id)
+        if relationship is None:
+            raise SupplierRelationshipNotFound(
+                f"SupplierRelationship {relationship_id} does not exist"
+            )
+        return relationship
+
+
+class StartSupplierOnboardingHandler:
+    """Application orchestration for starting SupplierRelationship onboarding."""
+
+    def __init__(
+        self,
+        *,
+        relationship_repository: SupplierRelationshipRepository,
+        clock: Clock,
+        event_dispatcher: DomainEventDispatcher,
+    ) -> None:
+        self._relationship_repository = relationship_repository
+        self._clock = clock
+        self._event_dispatcher = event_dispatcher
+
+    def handle(self, command: StartSupplierOnboarding) -> None:
+        relationship = self._load(command.relationship_id)
+        relationship.start_onboarding(occurred_at=self._clock.now())
+        self._relationship_repository.save(relationship)
+        self._event_dispatcher.dispatch(relationship.pull_events())
+
+    def _load(self, relationship_id: SupplierRelationshipId) -> SupplierRelationship:
+        relationship = self._relationship_repository.get(relationship_id)
+        if relationship is None:
+            raise SupplierRelationshipNotFound(
+                f"SupplierRelationship {relationship_id} does not exist"
+            )
+        return relationship

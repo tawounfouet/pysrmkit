@@ -2,7 +2,10 @@
 
 from dataclasses import dataclass
 
-from pysrmkit.domain.relationship.value_objects import InternalOrganizationId
+from pysrmkit.domain.relationship.value_objects import (
+    InternalOrganizationId,
+    SupplierRelationshipId,
+)
 from pysrmkit.domain.supplier.value_objects import SupplierId
 
 
@@ -12,3 +15,17 @@ class CreateSupplierRelationship:
 
     supplier_id: SupplierId
     organization_id: InternalOrganizationId
+
+
+@dataclass(frozen=True, slots=True)
+class InviteSupplierRelationship:
+    """Intent to invite an existing SupplierRelationship."""
+
+    relationship_id: SupplierRelationshipId
+
+
+@dataclass(frozen=True, slots=True)
+class StartSupplierOnboarding:
+    """Intent to move an invited SupplierRelationship into onboarding."""
+
+    relationship_id: SupplierRelationshipId

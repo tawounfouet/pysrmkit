@@ -22,3 +22,22 @@ class SupplierRelationshipCreated:
     supplier_id: SupplierId
     organization_id: InternalOrganizationId
     occurred_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class SupplierInvited:
+    """Fact emitted after a SupplierRelationship is invited successfully."""
+
+    event_id: UUID
+    relationship_id: SupplierRelationshipId
+    supplier_id: SupplierId
+    occurred_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class SupplierOnboardingStarted:
+    """Fact emitted after onboarding starts for a SupplierRelationship."""
+
+    event_id: UUID
+    relationship_id: SupplierRelationshipId
+    occurred_at: datetime
