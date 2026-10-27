@@ -33,3 +33,40 @@ jobs:
 
       - name: Test
         run: pytest --cov=pysrmkit --cov-report=term-missing
+
+
+  postgresql:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pysrmkit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d pysrmkit_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PYSRMKIT_POSTGRESQL_TEST_URL: postgresql+psycopg://postgres:postgres@localhost:5432/pysrmkit_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PostgreSQL test dependencies
+        run: python -m pip install -e ".[dev,postgresql]"
+
+      - name: PostgreSQL repository contracts
+        run: pytest -m postgresql
