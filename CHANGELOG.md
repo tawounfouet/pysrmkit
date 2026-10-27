@@ -1,8 +1,61 @@
 # Changelog
 
-All notable changes to PySRMKit will be documented in this file.
+All notable changes to PySRMKit are documented here, grouped by implementation cycle and individual alpha milestone. This is an implementation history, not a claim that alpha versions were published to PyPI.
+
+## Cycle overview
+
+| Cycle | Milestones | Focus | Status |
+| --- | --- | --- | --- |
+| 1 - Local Supplier Core | `0.1.0a1` to `0.1.0a8` | Domain, use cases, InMemory qualification | Completed |
+| 2 - Persistent Core | `0.2.0a1` to `0.2.0a7` | SQLAlchemy, transactions, migrations, persistence qualification | Completed |
+| 3 - Public API & Runtime Composition | `0.3.0a1` to `0.3.0a6` | Public facade, runtime factories, views, errors, events, consumer qualification | Completed |
 
 ## Unreleased
+
+No next implementation milestone has been selected.
+
+## Cycle 3 - Public API & Runtime Composition (completed 2026-10-27)
+
+### 0.3.0a6 - Public Runtime Qualification
+- Added public-only consumer journey exercising Supplier registration, Relationship invitation, Onboarding completion, Assessment completion and scoped Qualification.
+- Qualified success (`90 -> QUALIFIED`) and rejection (`60 -> NOT_QUALIFIED`, `ASSESSMENT_MINIMUM_SCORE`) using InMemory, SQLite and PostgreSQL runtimes.
+- Verified immutable public Views, typed qualification events, and SQLite durability across Engine/runtime destruction and recreation.
+- Strengthened architecture tests to prevent Domain, Application and Ports from importing Public Runtime.
+- Recorded Cycle 3 exit evidence in `docs/cycle-3-public-runtime-qualification.md` (PR #28, CI #188).
+
+### 0.3.0a5 - Public Event Surface
+- Exposed typed public Domain Event subscriptions via `srm.events`.
+- Published selected Supplier, Relationship, Onboarding, Assessment and Qualification events.
+- Ensured SQL event delivery occurs only after successful commit; failed transactions discard pending events.
+- Kept event delivery synchronous and in-process; no outbox, replay, broker or durable delivery guarantee (PR #27).
+
+### 0.3.0a4 - Public Views & Error Boundary
+- Added consumer-facing immutable read Views instead of leaking Domain Aggregates or ORM records.
+- Exposed read operations through capability APIs and mapped persistence failures at the public boundary.
+- Kept Domain-specific errors explicit and retained Core independence from persistence infrastructure.
+
+### 0.3.0a3 - SQL Runtime Composition
+- Added SQL-backed `PySRMKit.sql(engine)` composition using externally owned SQLAlchemy Engine.
+- Introduced operation-scoped Sessions and transaction ownership for ordinary commands while retaining the capability-specific onboarding UnitOfWork.
+- Preserved Repository Port semantics: repositories stage changes without committing; composition controls commit/rollback.
+- Kept SQLAlchemy optional and schema migration/bootstrap explicit.
+
+### 0.3.0a2 - InMemory Runtime Composition
+- Added `PySRMKit.in_memory()` Composition Root wiring shared InMemory repositories, handlers, clock, event dispatcher and qualification policy.
+- Preserved one shared runtime lifetime across capability APIs and reused the onboarding UnitOfWork.
+- Exercised dependency injection without a container or service locator (PR #24).
+
+### 0.3.0a1 - Public API Foundation
+- Introduced `PySRMKit` facade, generic Handler Protocol and five typed capability APIs: Suppliers, Relationships, Onboardings, Assessments and Qualifications.
+- Established a small Python-first entry point without an HTTP framework or application-layer business rule duplication (PR #23).
+
+## Cycle 2 - Persistent Core (completed 2026-10-27)
+
+The detailed milestone notes below record the SQL persistence evolution, its design decisions, failures and quality evidence. See also `docs/specifications/17_PYSRMKIT_PERSISTENT_CORE_MILESTONE.md`.
+
+## Cycle 1 - Local Supplier Core (completed 2026-10-27)
+
+The detailed `0.1.0a1` to `0.1.0a8` entries below record the Domain, Application, Repository Contracts, InMemory adapters and complete local Supplier qualification journey.
 
 ## 0.2.0a7 - 2026-10-27
 
