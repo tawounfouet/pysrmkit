@@ -1,11 +1,20 @@
 """Stable public Python API surface for PySRMKit."""
 
 from pysrmkit.application.assessment.commands import AssessmentQuestionInput
+from pysrmkit.application.assessment.errors import SupplierAssessmentNotFound
 from pysrmkit.application.assessment.results import (
     CompleteSupplierAssessmentResult,
     CreateSupplierAssessmentResult,
 )
 from pysrmkit.application.onboarding.commands import OnboardingRequirementInput
+from pysrmkit.application.onboarding.errors import (
+    SupplierOnboardingAlreadyExists,
+    SupplierOnboardingNotFound,
+)
+from pysrmkit.application.qualification.errors import (
+    CurrentQualificationAlreadyExists,
+    SupplierQualificationNotFound,
+)
 from pysrmkit.application.qualification.results import (
     EvaluateSupplierQualificationResult,
     RequestSupplierQualificationResult,
@@ -18,17 +27,41 @@ from pysrmkit.application.relationship.errors import (
 from pysrmkit.application.relationship.results import CreateSupplierRelationshipResult
 from pysrmkit.application.supplier.commands import ExternalIdentifierInput
 from pysrmkit.application.supplier.results import RegisterSupplierResult
+from pysrmkit.domain.assessment.errors import (
+    AssessmentAlreadyCompleted,
+    DuplicateAssessmentQuestion,
+    InvalidAssessmentAnswer,
+    MandatoryAssessmentAnswersMissing,
+    UnknownAssessmentQuestion,
+)
 from pysrmkit.domain.assessment.value_objects import AssessmentDecision, AssessmentId
+from pysrmkit.domain.onboarding.errors import (
+    DuplicateOnboardingRequirement,
+    MandatoryOnboardingRequirementsNotSatisfied,
+    OnboardingAlreadyCompleted,
+    UnknownOnboardingRequirement,
+)
 from pysrmkit.domain.onboarding.value_objects import OnboardingId
+from pysrmkit.domain.qualification.errors import (
+    InvalidQualificationDecision,
+    InvalidQualificationScope,
+    InvalidQualificationState,
+)
 from pysrmkit.domain.qualification.value_objects import (
     QualificationId,
     QualificationScope,
     QualificationStatus,
 )
+from pysrmkit.domain.relationship.errors import InvalidLifecycleTransition
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
     SupplierLifecycleStage,
     SupplierRelationshipId,
+)
+from pysrmkit.domain.supplier.errors import (
+    DuplicateExternalIdentifier,
+    InvalidExternalIdentifier,
+    InvalidSupplierIdentity,
 )
 from pysrmkit.domain.supplier.value_objects import CategoryCode, CountryCode, SupplierId
 from pysrmkit.public.capabilities import (
@@ -93,4 +126,25 @@ __all__ = [
     "SupplierRelationshipView",
     "SupplierView",
     "SuppliersAPI",
+    "AssessmentAlreadyCompleted",
+    "CurrentQualificationAlreadyExists",
+    "DuplicateAssessmentQuestion",
+    "DuplicateExternalIdentifier",
+    "DuplicateOnboardingRequirement",
+    "InvalidAssessmentAnswer",
+    "InvalidExternalIdentifier",
+    "InvalidLifecycleTransition",
+    "InvalidQualificationDecision",
+    "InvalidQualificationScope",
+    "InvalidQualificationState",
+    "InvalidSupplierIdentity",
+    "MandatoryAssessmentAnswersMissing",
+    "MandatoryOnboardingRequirementsNotSatisfied",
+    "OnboardingAlreadyCompleted",
+    "SupplierAssessmentNotFound",
+    "SupplierOnboardingAlreadyExists",
+    "SupplierOnboardingNotFound",
+    "SupplierQualificationNotFound",
+    "UnknownAssessmentQuestion",
+    "UnknownOnboardingRequirement",
 ]
