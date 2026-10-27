@@ -22,7 +22,7 @@ def test_bootstrap_packages_import() -> None:
 
 
 def test_package_version() -> None:
-    assert pysrmkit.__version__ == "0.3.0a1"
+    assert pysrmkit.__version__ == "0.3.0a2"
 
 
 def test_public_facade_is_exported_from_package_root() -> None:
