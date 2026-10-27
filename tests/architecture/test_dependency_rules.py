@@ -12,9 +12,10 @@ FORBIDDEN_IMPORTS: dict[str, tuple[str, ...]] = {
         "pysrmkit.application",
         "pysrmkit.ports",
         "pysrmkit.adapters",
+        "pysrmkit.public",
     ),
-    "application": ("pysrmkit.adapters",),
-    "ports": ("pysrmkit.adapters",),
+    "application": ("pysrmkit.adapters", "pysrmkit.public"),
+    "ports": ("pysrmkit.adapters", "pysrmkit.public"),
 }
 
 FORBIDDEN_INFRASTRUCTURE_IMPORTS = (
