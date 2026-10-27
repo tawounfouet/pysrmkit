@@ -8,7 +8,10 @@ from pysrmkit.public import (
     PySRMKit,
     QualificationScope,
     QualificationStatus,
+    QualificationId,
+    SupplierId,
     SupplierLifecycleStage,
+    SupplierRelationshipId,
     SupplierQualificationRejected,
     SupplierQualified,
 )
@@ -16,9 +19,9 @@ from pysrmkit.public import (
 
 @dataclass(frozen=True, slots=True)
 class PublicJourneyOutcome:
-    supplier_id: object
-    relationship_id: object
-    qualification_id: object
+    supplier_id: SupplierId
+    relationship_id: SupplierRelationshipId
+    qualification_id: QualificationId
     relationship_stage: SupplierLifecycleStage
     onboarding_complete: bool
     assessment_complete: bool
