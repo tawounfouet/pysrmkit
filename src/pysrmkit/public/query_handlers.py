@@ -9,6 +9,7 @@ from pysrmkit.application.relationship.errors import (
     SupplierNotFound,
     SupplierRelationshipNotFound,
 )
+from pysrmkit.domain.qualification.entities import SupplierQualification
 from pysrmkit.ports.repositories.assessment import SupplierAssessmentRepository
 from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.qualification import SupplierQualificationRepository
@@ -169,12 +170,7 @@ class GetCurrentQualificationForScopeHandler:
         return _qualification_view(qualification)
 
 
-def _qualification_view(qualification: object) -> QualificationView:
-    from pysrmkit.domain.qualification.entities import SupplierQualification
-
-    if not isinstance(qualification, SupplierQualification):
-        raise TypeError("qualification must be a SupplierQualification")
-
+def _qualification_view(qualification: SupplierQualification) -> QualificationView:
     decision = qualification.decision
     return QualificationView(
         qualification_id=qualification.id,
