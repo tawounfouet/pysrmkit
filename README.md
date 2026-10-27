@@ -6,7 +6,7 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha — `0.2.0a6` Alembic Migration Baseline qualified on `main`.**
+**Early alpha — `0.2.0a7` Persistent Local Qualification qualified on PR #19.**
 
 Qualified milestones:
 
@@ -26,15 +26,18 @@ Qualified milestones:
 0.2.0a4 — Qualification SQL Persistence
 0.2.0a5 — Transaction Boundary / UnitOfWork
 0.2.0a6 — Alembic Migration Baseline
-```
-
-Next milestone:
-
-```text
 0.2.0a7 — Persistent Local Qualification
 ```
 
-The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle now validates the same architecture against optional relational persistence infrastructure.
+Persistent Core cycle:
+
+```text
+COMPLETE
+```
+
+No next implementation milestone is preselected. The next step is a post-persistence architecture review driven by the evidence collected across `0.2.0a1 → 0.2.0a7`.
+
+The first local Core implementation cycle covers Supplier identity, Relationship context and lifecycle, Onboarding readiness, Assessment, and explainable scoped Qualification. The second cycle has now validated the same architecture against optional relational persistence infrastructure.
 
 SQLAlchemy remains optional: the pure Core still requires no database, API framework, message broker, cloud service, or external SRM connector.
 
@@ -47,7 +50,7 @@ repeatable
 green
 ```
 
-`0.2.0a6` is green on `main`. Empty SQLite and PostgreSQL databases can now be migrated reproducibly to the complete Persistent Core schema through the versioned Alembic baseline, while Domain, Application, and Repository Ports remain persistence-framework agnostic.
+`0.2.0a7` is green on PR #19. The complete Supplier qualification journey now survives Alembic bootstrap, SQL commits, destruction of the original Engine/Session/repositories, and reload through a fresh persistence context on SQLite and PostgreSQL.
 
 ## Architecture
 
@@ -113,7 +116,7 @@ pyright
 pytest --cov=pysrmkit --cov-report=term-missing
 ```
 
-The CI threshold remains **80% minimum coverage**. The `0.2.0a6` final PR qualification (CI #131) reaches **97.74%** total coverage with **235 tests passed** in the quality job, while the PostgreSQL CI job executes **42 selected tests** against PostgreSQL 18.6.
+The CI threshold remains **80% minimum coverage**. The `0.2.0a7` PR qualification (CI #141) reaches **98.11%** total coverage with **239 tests passed** in the quality job, while the PostgreSQL CI job executes **44 selected tests** against PostgreSQL 18.6.
 
 ## Documentation
 

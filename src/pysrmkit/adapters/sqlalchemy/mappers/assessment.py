@@ -46,6 +46,58 @@ def _answer_records(
     ]
 
 
+def _synchronize_question_records(
+    record: SupplierAssessmentRecord,
+    assessment: SupplierAssessment,
+) -> list[AssessmentQuestionRecord]:
+    existing_by_code = {item.code: item for item in record.questions}
+    synchronized: list[AssessmentQuestionRecord] = []
+
+    for position, question in enumerate(assessment.questions):
+        item = existing_by_code.get(question.code)
+        if item is None:
+            item = AssessmentQuestionRecord(
+                position=position,
+                code=question.code,
+                mandatory=question.mandatory,
+                maximum_score=question.maximum_score,
+            )
+        else:
+            item.position = position
+            item.mandatory = question.mandatory
+            item.maximum_score = question.maximum_score
+        synchronized.append(item)
+
+    return synchronized
+
+
+def _synchronize_answer_records(
+    record: SupplierAssessmentRecord,
+    assessment: SupplierAssessment,
+    questions: list[AssessmentQuestionRecord],
+) -> list[AssessmentAnswerRecord]:
+    existing_by_code = {item.question.code: item for item in record.answers}
+    questions_by_code = {item.code: item for item in questions}
+    synchronized: list[AssessmentAnswerRecord] = []
+
+    for position, answer in enumerate(assessment.answers):
+        question = questions_by_code[answer.question_code]
+        item = existing_by_code.get(answer.question_code)
+        if item is None:
+            item = AssessmentAnswerRecord(
+                position=position,
+                score=answer.score,
+                question=question,
+            )
+        else:
+            item.position = position
+            item.score = answer.score
+            item.question = question
+        synchronized.append(item)
+
+    return synchronized
+
+
 def new_assessment_record(assessment: SupplierAssessment) -> SupplierAssessmentRecord:
     """Create a new persistence record from current Assessment state."""
 
@@ -75,9 +127,10 @@ def apply_assessment_state(
     record.completed_at = assessment.completed_at
     record.score = assessment.score.value if assessment.score is not None else None
     record.decision = assessment.decision.value if assessment.decision is not None else None
-    questions = _question_records(assessment)
+    questions = _synchronize_question_records(record, assessment)
+    answers = _synchronize_answer_records(record, assessment, questions)
     record.questions = questions
-    record.answers = _answer_records(assessment, questions)
+    record.answers = answers
 
 
 def assessment_from_record(record: SupplierAssessmentRecord) -> SupplierAssessment:
