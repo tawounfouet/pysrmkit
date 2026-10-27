@@ -1,13 +1,14 @@
 # PySRMKit - Persistent Core Milestone
 
 **Document:** `17_PYSRMKIT_PERSISTENT_CORE_MILESTONE.md`  
-**Status:** ACTIVE CYCLE / ITERATIVE MILESTONE BASELINE  
+**Status:** COMPLETED CYCLE / HISTORICAL ARCHITECTURE BASELINE  
 **Cycle:** `0.2.x - Persistent Core`  
 **Predecessors:**  
 - `15_PYSRMKIT_POST_CORE_ARCHITECTURE_REVIEW.md`
 - `16_PYSRMKIT_PERSISTENCE_ARCHITECTURE.md`
 
 **Date:** 2026-10-27
+**Completion note:** Cycle 2 (`0.2.0a1` through `0.2.0a7`) has been implemented and qualified. Cycle 3 (`0.3.0a1` through `0.3.0a6`) has subsequently been merged into `main`. This document preserves the original execution plan and architecture decisions; prospective wording below is historical, not a statement of current implementation status.
 
 ---
 
