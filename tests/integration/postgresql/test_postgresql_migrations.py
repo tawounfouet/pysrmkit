@@ -44,12 +44,11 @@ def test_postgresql_empty_database_can_upgrade_to_persistent_core_head() -> None
 
         for table_name, table in metadata.tables.items():
             assert {column["name"] for column in inspector.get_columns(table_name)} == set(
-                table.columns
+                table.columns.keys()
             )
             assert inspector.get_pk_constraint(table_name)["name"] == table.primary_key.name
             assert {
-                foreign_key["name"]
-                for foreign_key in inspector.get_foreign_keys(table_name)
+                foreign_key["name"] for foreign_key in inspector.get_foreign_keys(table_name)
             } == {constraint.name for constraint in table.foreign_key_constraints}
             assert {index["name"] for index in inspector.get_indexes(table_name)} == {
                 index.name for index in table.indexes
