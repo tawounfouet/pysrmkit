@@ -4,6 +4,47 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.1.0a5 - 2026-10-27
+
+### Added
+
+- `SupplierOnboarding` as a relationship-scoped Aggregate Root.
+- Strong `OnboardingId` and `OnboardingRequirementCode` Value Objects.
+- Immutable `OnboardingRequirement` values with mandatory/optional semantics.
+- Computed `OnboardingProgress` Domain Result.
+- Mandatory-requirement completion invariant.
+- Explicit onboarding Domain Errors for duplicate, unknown, incomplete, and already-completed states.
+- `SupplierOnboardingCompleted` Domain Event.
+- `SupplierOnboardingRepository` Protocol and `InMemorySupplierOnboardingRepository`.
+- `SatisfyOnboardingRequirement`, `CompleteSupplierOnboarding`, and `GetOnboardingProgress` application flows.
+- `StartSupplierOnboardingHandler` now creates the relationship-scoped onboarding Aggregate instead of requiring a duplicate create command.
+- Shared onboarding repository contract tests.
+- Local invite → onboarding → satisfy → complete readiness scenario.
+
+### Qualified
+
+- Onboarding belongs to one `SupplierRelationshipId`.
+- Mandatory and optional requirements are represented explicitly.
+- Requirement satisfaction is persisted independently.
+- Incomplete onboarding cannot be completed while mandatory requirements remain unsatisfied.
+- Optional unsatisfied requirements do not block completion.
+- Progress is computed from canonical requirement state rather than stored independently.
+- Completed onboarding emits `SupplierOnboardingCompleted`.
+- Rehydration does not recreate historical events.
+- One current onboarding is enforced per Relationship by application orchestration.
+- Relationship/onboarding state remains isolated across different Relationships.
+- Ruff, formatting, Pyright strict, architecture tests, and Pytest are green.
+- 101 tests pass with 99.76% total coverage on PR validation CI #41.
+
+### Deferred
+
+- Task assignment, reminders, timers, reviewer inboxes, escalations, and workflow DSL remain outside PySRMKit Domain.
+- No generic workflow engine was introduced.
+- No `OnboardingStage` state machine was introduced because requirement readiness is sufficient for the qualification path.
+- No UnitOfWork was introduced; a NoOp implementation would not provide real multi-repository atomicity.
+- Qualification rules remain in `0.1.0a6`.
+
+
 ## 0.1.0a4 - 2026-10-27
 
 ### Added

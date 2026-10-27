@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from pysrmkit.application.onboarding.commands import OnboardingRequirementInput
 from pysrmkit.domain.relationship.value_objects import (
     InternalOrganizationId,
     SupplierRelationshipId,
@@ -26,6 +27,7 @@ class InviteSupplierRelationship:
 
 @dataclass(frozen=True, slots=True)
 class StartSupplierOnboarding:
-    """Intent to move an invited SupplierRelationship into onboarding."""
+    """Intent to move a Relationship into onboarding and create its onboarding state."""
 
     relationship_id: SupplierRelationshipId
+    requirements: tuple[OnboardingRequirementInput, ...] = ()
