@@ -4,6 +4,45 @@ All notable changes to PySRMKit will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0a6 - 2026-10-27
+
+### Added
+
+- Optional `migrations` extra with Alembic 1.20.x.
+- Adapter-owned Alembic configuration, migration environment, and revision template.
+- Deterministic SQLAlchemy naming convention for primary keys, foreign keys, unique constraints, checks, and indexes.
+- Explicit persistence metadata loader that registers the complete SQLAlchemy persistence model.
+- Initial versioned migration for the 11-table Persistent Core relational schema.
+- SQLite migration tests proving empty database → `upgrade head` and downgrade/re-upgrade replay.
+- PostgreSQL 18 migration qualification from an empty database.
+- Structural cross-checks between migrated schema and SQLAlchemy persistence metadata.
+
+### Qualified
+
+- An empty SQLite file database migrates reproducibly to the complete Persistent Core schema.
+- The SQLite baseline can downgrade to `base` and replay to `head`.
+- An empty PostgreSQL 18.6 database migrates reproducibly to the same logical Persistent Core schema.
+- Re-running `alembic upgrade head` on the current PostgreSQL schema is safe.
+- Existing Repository Contracts and UnitOfWork transaction semantics remain green.
+- Domain, Application, and Repository Ports remain free from SQLAlchemy, Alembic, and Psycopg dependencies.
+- Core consumers still have zero mandatory third-party runtime dependencies.
+- Quality CI #128: 235 passed, 42 PostgreSQL-marked tests skipped, 97.74% coverage.
+- PostgreSQL CI #128: 42 selected tests passed against PostgreSQL 18.6.
+- Ruff, Ruff format, Pyright strict, architecture gates, and full regression suite are green.
+
+### Refined
+
+- Foreign-key naming was shortened from `fk_<table>_<column>_<referred_table>` to `fk_<table>_<column>` after PostgreSQL exposed its 63-character identifier limit.
+- Migration qualification distinguishes logical unique constraints from PostgreSQL physical backing indexes instead of requiring dialect-identical index reflection.
+- `metadata.create_all()` remains valid in focused repository behavior tests; Alembic now owns schema-history/bootstrap qualification.
+
+### Deferred
+
+- Persistent end-to-end qualification and runtime/context reload remain in `0.2.0a7`.
+- No post-baseline data migration strategy is introduced yet.
+- No async migration/runtime path.
+- No Transactional Outbox.
+
 ## 0.2.0a5 - 2026-10-27
 
 ### Added
