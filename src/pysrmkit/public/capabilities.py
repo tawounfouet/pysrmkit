@@ -168,9 +168,7 @@ class OnboardingsAPI:
 
     def complete(self, *, onboarding_id: OnboardingId) -> None:
         """Complete an onboarding whose mandatory requirements are satisfied."""
-        self._complete_onboarding.handle(
-            CompleteSupplierOnboarding(onboarding_id=onboarding_id)
-        )
+        self._complete_onboarding.handle(CompleteSupplierOnboarding(onboarding_id=onboarding_id))
 
     def progress(self, *, onboarding_id: OnboardingId) -> OnboardingProgress:
         """Return computed onboarding progress."""
