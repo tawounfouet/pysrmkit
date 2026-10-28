@@ -34,6 +34,7 @@ relationship = srm.relationships.create(
 srm.relationships.invite(relationship_id=relationship.relationship_id)
 
 supplier_view = srm.suppliers.get(supplier_id=supplier.supplier_id)
+supplier_page = srm.suppliers.list(offset=0, limit=25)
 relationship_view = srm.relationships.get(relationship_id=relationship.relationship_id)
 ```
 
@@ -101,6 +102,21 @@ For PostgreSQL support through Psycopg 3:
 ```bash
 python -m pip install -e ".[postgresql,migrations]"
 ```
+
+For the optional FastAPI host example:
+
+```bash
+python -m pip install -e ".[api,migrations]"
+createdb -O postgres pysrmkit
+PYSRMKIT_DATABASE_URL="postgresql+psycopg://postgres@localhost:5432/pysrmkit" alembic upgrade head
+PYSRMKIT_DATABASE_URL="postgresql+psycopg://postgres@localhost:5432/pysrmkit" \
+  python -m examples.seed_suppliers
+PYSRMKIT_DATABASE_URL="postgresql+psycopg://postgres@localhost:5432/pysrmkit" \
+  uvicorn examples.http_api:app --reload --port 8000
+```
+
+The interactive OpenAPI documentation is available at `http://localhost:8000/docs`.
+This HTTP host is an example consumer of the public facade; FastAPI remains outside the Core.
 
 On Windows PowerShell, activate the environment with:
 
