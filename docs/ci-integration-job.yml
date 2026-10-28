@@ -1,9 +1,8 @@
-# CI integration workflow
-
-The executable and authoritative workflow is `.github/workflows/ci.yml`.
-
-This file previously contained a non-executable copy of the proposed integration job. The job now lives in the real GitHub Actions workflow to avoid drift between documentation and CI.
-
-The three independently qualified jobs are `quality`, `postgresql`, and `integration`. The `integration` job installs the optional `e2e` dependency, provisions two PostgreSQL databases, applies Alembic migrations, seeds demonstration data, builds Next.js and runs the Playwright browser journey.
-
-The core Python package retains zero mandatory runtime dependencies.
+# Historical integration CI template (documentation only).
+#
+# The executable source of truth is now:
+#   .github/workflows/ci.yml
+#
+# Its integration job provisions PostgreSQL, runs Alembic and idempotent seeds,
+# builds the Next.js dashboard, and runs API, bootstrap and Playwright E2E tests.
+# This stub stays here only to preserve the previously documented path.
