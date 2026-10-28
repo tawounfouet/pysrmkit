@@ -55,6 +55,23 @@ def test_in_memory_runtime_shares_state_across_capability_handlers() -> None:
     assert completed.score.value == 100
 
 
+def test_in_memory_runtime_lists_suppliers_in_pages() -> None:
+    srm = PySRMKit.in_memory()
+    expected_ids = {
+        srm.suppliers.register(legal_name=name).supplier_id
+        for name in ("Atlas Components", "Boreal Logistics", "Cedar Works")
+    }
+
+    first_page = srm.suppliers.list(limit=2)
+    second_page = srm.suppliers.list(offset=2, limit=2)
+
+    assert first_page.total == 3
+    assert second_page.total == 3
+    listed_ids = tuple(supplier.supplier_id for supplier in (*first_page.items, *second_page.items))
+    assert listed_ids == tuple(sorted(expected_ids, key=lambda supplier_id: supplier_id.value))
+    assert srm.suppliers.list(offset=3).items == ()
+
+
 def test_in_memory_runtime_evaluates_qualification_with_shared_repositories() -> None:
     srm = PySRMKit.in_memory()
     supplier = srm.suppliers.register(legal_name="Qualification Supplier")

@@ -44,6 +44,23 @@ def test_sql_runtime_persists_state_across_public_operations() -> None:
     assert completed.score.value == 100
 
 
+def test_sql_runtime_lists_suppliers_in_pages() -> None:
+    srm = _runtime()
+    expected_ids = {
+        srm.suppliers.register(legal_name=name).supplier_id
+        for name in ("Atlas Components", "Boreal Logistics", "Cedar Works")
+    }
+
+    first_page = srm.suppliers.list(limit=2)
+    second_page = srm.suppliers.list(offset=2, limit=2)
+
+    assert first_page.total == 3
+    assert second_page.total == 3
+    listed_ids = tuple(supplier.supplier_id for supplier in (*first_page.items, *second_page.items))
+    assert listed_ids == tuple(sorted(expected_ids, key=lambda supplier_id: supplier_id.value))
+    assert srm.suppliers.list(offset=3).items == ()
+
+
 def test_sql_runtime_evaluates_using_committed_state_from_prior_operations() -> None:
     srm = _runtime()
 

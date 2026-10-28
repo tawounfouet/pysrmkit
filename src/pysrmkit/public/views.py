@@ -42,6 +42,16 @@ class SupplierView:
 
 
 @dataclass(frozen=True, slots=True)
+class SupplierPageView:
+    """Immutable page of Supplier snapshots."""
+
+    items: tuple[SupplierView, ...]
+    total: int
+    offset: int
+    limit: int
+
+
+@dataclass(frozen=True, slots=True)
 class SupplierRelationshipView:
     """Immutable snapshot of one Supplier relationship."""
 

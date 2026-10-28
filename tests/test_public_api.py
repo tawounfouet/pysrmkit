@@ -9,7 +9,11 @@ from pysrmkit.application.supplier.commands import RegisterSupplier
 from pysrmkit.application.supplier.results import RegisterSupplierResult
 from pysrmkit.domain.relationship.value_objects import SupplierRelationshipId
 from pysrmkit.domain.supplier.value_objects import SupplierId
-from pysrmkit.public.query_handlers import GetSupplierHandler, GetSupplierRelationshipHandler
+from pysrmkit.public.query_handlers import (
+    GetSupplierHandler,
+    GetSupplierRelationshipHandler,
+    ListSuppliersHandler,
+)
 
 
 class RegisterSupplierSpy:
@@ -46,6 +50,7 @@ def test_suppliers_api_translates_primitives_to_register_command() -> None:
     api = SuppliersAPI(
         register_supplier=handler,
         get_supplier=GetSupplierHandler(InMemorySupplierRepository()),
+        list_suppliers=ListSuppliersHandler(InMemorySupplierRepository()),
     )
 
     result = api.register(
@@ -94,6 +99,7 @@ def test_facade_exposes_capabilities_without_runtime_magic() -> None:
     suppliers = SuppliersAPI(
         register_supplier=RegisterSupplierSpy(supplier_result),
         get_supplier=GetSupplierHandler(InMemorySupplierRepository()),
+        list_suppliers=ListSuppliersHandler(InMemorySupplierRepository()),
     )
 
     assert "in_memory" in PySRMKit.__dict__

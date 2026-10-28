@@ -14,6 +14,20 @@ class GetSupplier:
 
 
 @dataclass(frozen=True, slots=True)
+class ListSuppliers:
+    offset: int = 0
+    limit: int = 100
+
+    def __post_init__(self) -> None:
+        if self.offset < 0:
+            raise ValueError("offset must be non-negative")
+        if self.limit <= 0:
+            raise ValueError("limit must be positive")
+        if self.limit > 100:
+            raise ValueError("limit must not exceed 100")
+
+
+@dataclass(frozen=True, slots=True)
 class GetSupplierRelationship:
     relationship_id: SupplierRelationshipId
 

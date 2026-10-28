@@ -99,6 +99,17 @@ def test_public_views_are_immutable() -> None:
         view.legal_name = "Changed"  # type: ignore[misc]
 
 
+def test_supplier_listing_validates_pagination() -> None:
+    srm = PySRMKit.in_memory()
+
+    with pytest.raises(ValueError, match="offset must be non-negative"):
+        srm.suppliers.list(offset=-1)
+    with pytest.raises(ValueError, match="limit must be positive"):
+        srm.suppliers.list(limit=0)
+    with pytest.raises(ValueError, match="limit must not exceed 100"):
+        srm.suppliers.list(limit=101)
+
+
 def test_public_get_uses_typed_not_found_semantics() -> None:
     srm = PySRMKit.in_memory()
 

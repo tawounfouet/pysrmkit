@@ -10,6 +10,8 @@ from pysrmkit.application.relationship.errors import (
     SupplierRelationshipNotFound,
 )
 from pysrmkit.domain.qualification.entities import SupplierQualification
+from pysrmkit.domain.supplier.entities import Supplier
+from pysrmkit.ports.queries.supplier import SupplierQueryService
 from pysrmkit.ports.repositories.assessment import SupplierAssessmentRepository
 from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.qualification import SupplierQualificationRepository
@@ -22,6 +24,7 @@ from pysrmkit.public._queries import (
     GetQualification,
     GetSupplier,
     GetSupplierRelationship,
+    ListSuppliers,
 )
 from pysrmkit.public.views import (
     AssessmentAnswerView,
@@ -30,6 +33,7 @@ from pysrmkit.public.views import (
     OnboardingRequirementView,
     OnboardingView,
     QualificationView,
+    SupplierPageView,
     SupplierRelationshipView,
     SupplierView,
 )
@@ -43,14 +47,20 @@ class GetSupplierHandler:
         supplier = self._repository.get(query.supplier_id)
         if supplier is None:
             raise SupplierNotFound(f"Supplier {query.supplier_id} does not exist")
-        identity = supplier.identity
-        return SupplierView(
-            supplier_id=supplier.id,
-            legal_name=identity.legal_name,
-            trading_name=identity.trading_name,
-            supplier_type=identity.supplier_type,
-            country=identity.country,
-            external_identifiers=supplier.external_identifiers,
+        return _supplier_view(supplier)
+
+
+class ListSuppliersHandler:
+    def __init__(self, query_service: SupplierQueryService) -> None:
+        self._query_service = query_service
+
+    def handle(self, query: ListSuppliers) -> SupplierPageView:
+        page = self._query_service.list_suppliers(offset=query.offset, limit=query.limit)
+        return SupplierPageView(
+            items=tuple(_supplier_view(supplier) for supplier in page.suppliers),
+            total=page.total,
+            offset=query.offset,
+            limit=query.limit,
         )
 
 
@@ -182,4 +192,16 @@ def _qualification_view(qualification: SupplierQualification) -> QualificationVi
         reasons=decision.reasons if decision is not None else (),
         failed_requirements=decision.failed_requirements if decision is not None else (),
         decided_at=decision.decided_at if decision is not None else None,
+    )
+
+
+def _supplier_view(supplier: Supplier) -> SupplierView:
+    identity = supplier.identity
+    return SupplierView(
+        supplier_id=supplier.id,
+        legal_name=identity.legal_name,
+        trading_name=identity.trading_name,
+        supplier_type=identity.supplier_type,
+        country=identity.country,
+        external_identifiers=supplier.external_identifiers,
     )

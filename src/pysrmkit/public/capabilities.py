@@ -60,11 +60,13 @@ from pysrmkit.public._queries import (
     GetQualification,
     GetSupplier,
     GetSupplierRelationship,
+    ListSuppliers,
 )
 from pysrmkit.public.views import (
     AssessmentView,
     OnboardingView,
     QualificationView,
+    SupplierPageView,
     SupplierRelationshipView,
     SupplierView,
 )
@@ -78,9 +80,11 @@ class SuppliersAPI:
         *,
         register_supplier: Handler[RegisterSupplier, RegisterSupplierResult],
         get_supplier: Handler[GetSupplier, SupplierView],
+        list_suppliers: Handler[ListSuppliers, SupplierPageView] | None = None,
     ) -> None:
         self._register_supplier = register_supplier
         self._get_supplier = get_supplier
+        self._list_suppliers = list_suppliers
 
     def register(
         self,
@@ -105,6 +109,12 @@ class SuppliersAPI:
     def get(self, *, supplier_id: SupplierId) -> SupplierView:
         """Return an immutable Supplier snapshot or raise SupplierNotFound."""
         return self._get_supplier.handle(GetSupplier(supplier_id=supplier_id))
+
+    def list(self, *, offset: int = 0, limit: int = 100) -> SupplierPageView:
+        """Return one deterministic, bounded page of Suppliers."""
+        if self._list_suppliers is None:
+            raise NotImplementedError("Supplier listing is not configured for this runtime")
+        return self._list_suppliers.handle(ListSuppliers(offset=offset, limit=limit))
 
 
 class RelationshipsAPI:

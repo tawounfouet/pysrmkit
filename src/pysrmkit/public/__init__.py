@@ -96,6 +96,7 @@ from pysrmkit.public.views import (
     AssessmentView,
     OnboardingView,
     QualificationView,
+    SupplierPageView,
     SupplierRelationshipView,
     SupplierView,
 )
@@ -138,6 +139,7 @@ __all__ = [
     "SupplierRelationshipId",
     "SupplierRelationshipNotFound",
     "SupplierRelationshipView",
+    "SupplierPageView",
     "SupplierView",
     "SuppliersAPI",
     "AssessmentAlreadyCompleted",

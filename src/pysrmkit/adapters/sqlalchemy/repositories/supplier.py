@@ -1,6 +1,6 @@
 """SQLAlchemy implementation of SupplierRepository."""
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from pysrmkit.adapters.sqlalchemy.mappers.supplier import (
@@ -14,6 +14,7 @@ from pysrmkit.adapters.sqlalchemy.models.supplier import (
 )
 from pysrmkit.domain.supplier.entities import Supplier
 from pysrmkit.domain.supplier.value_objects import ExternalIdentifier, SupplierId
+from pysrmkit.ports.queries.supplier import SupplierPage
 
 
 class SqlAlchemySupplierRepository:
@@ -58,3 +59,13 @@ class SqlAlchemySupplierRepository:
         if record is None:
             return None
         return supplier_from_record(record)
+
+    def list_suppliers(self, *, offset: int, limit: int) -> SupplierPage:
+        total = self._session.scalar(select(func.count()).select_from(SupplierRecord)) or 0
+        records = self._session.scalars(
+            select(SupplierRecord).order_by(SupplierRecord.supplier_id).offset(offset).limit(limit)
+        ).all()
+        return SupplierPage(
+            suppliers=tuple(supplier_from_record(record) for record in records),
+            total=total,
+        )
