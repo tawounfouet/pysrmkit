@@ -22,6 +22,9 @@ postgresql = [
     "sqlalchemy>=2.1,<2.2",
     "psycopg[binary]>=3.3,<4",
 ]
+e2e = [
+    "playwright>=1.45,<2",
+]
 api = [
     "fastapi>=0.141,<0.142",
     "psycopg[binary]>=3.3,<4",
@@ -47,6 +50,7 @@ packages = ["src/pysrmkit"]
 testpaths = ["tests"]
 addopts = "-ra"
 markers = [
+    "integration: requires the external Next.js dashboard and PostgreSQL demo stack",
     "postgresql: requires a real PostgreSQL test database",
 ]
 

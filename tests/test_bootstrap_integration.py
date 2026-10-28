@@ -1,11 +1,16 @@
 """Qualification for the integration bootstrap routine."""
 
+import pytest
+
 from examples.bootstrap_integration import (
     DEFAULT_NEXT_DASHBOARD_DB_URL,
     DEFAULT_PYSRMKIT_DB_URL,
     bootstrap,
     ensure_database_exists,
 )
+
+
+pytestmark = pytest.mark.integration
 
 
 def test_ensure_database_exists_is_idempotent() -> None:

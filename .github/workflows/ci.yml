@@ -20,7 +20,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install package and development tools
-        run: python -m pip install -e ".[dev]"
+        run: python -m pip install -e ".[dev,e2e]"
 
       - name: Lint
         run: ruff check .
@@ -32,7 +32,7 @@ jobs:
         run: pyright
 
       - name: Test
-        run: pytest --cov=pysrmkit --cov-report=term-missing
+        run: pytest -m "not postgresql and not integration" --cov=pysrmkit --cov-report=term-missing
 
 
   postgresql:
@@ -70,3 +70,75 @@ jobs:
 
       - name: PostgreSQL repository contracts
         run: pytest -m postgresql
+
+  integration:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PYSRMKIT_DATABASE_URL: postgresql+psycopg://postgres@localhost:5432/pysrmkit
+      POSTGRES_URL: postgres://postgres@localhost:5432/next_dashboard
+      PYSRMKIT_API_URL: http://127.0.0.1:8000
+      AUTH_SECRET: ci-only-not-for-production-integration-secret-2026
+      AUTH_URL: http://localhost:3000/api/auth
+
+    steps:
+      - name: Checkout PySRMKit
+        uses: actions/checkout@v4
+        with:
+          path: pysrmkit
+
+      - name: Checkout dashboard
+        uses: actions/checkout@v4
+        with:
+          repository: tawounfouet/nextjs-acme-dashboard
+          path: resources/nextjs-acme-dashboard
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: resources/nextjs-acme-dashboard/package-lock.json
+
+      - name: Install Python dependencies and Playwright browser
+        working-directory: pysrmkit
+        run: |
+          python -m pip install -e ".[dev,api,postgresql,migrations,e2e]"
+          python -m playwright install --with-deps chromium
+
+      - name: Install dashboard dependencies
+        working-directory: resources/nextjs-acme-dashboard
+        run: npm ci
+
+      - name: Bootstrap databases, Alembic and idempotent seeds
+        working-directory: pysrmkit
+        run: python -m examples.bootstrap_integration
+
+      - name: Build Next.js
+        working-directory: resources/nextjs-acme-dashboard
+        run: npm run build
+
+      - name: Run API, bootstrap and browser E2E qualification
+        working-directory: pysrmkit
+        run: |
+          pytest tests/test_http_api_example.py tests/test_seed_suppliers_example.py
+          pytest -m integration tests/test_bootstrap_integration.py tests/test_browser_journey.py
