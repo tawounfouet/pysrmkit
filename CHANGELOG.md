@@ -9,10 +9,17 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 | 1 - Local Supplier Core | `0.1.0a1` to `0.1.0a8` | Domain, use cases, InMemory qualification | Completed |
 | 2 - Persistent Core | `0.2.0a1` to `0.2.0a7` | SQLAlchemy, transactions, migrations, persistence qualification | Completed |
 | 3 - Public API & Runtime Composition | `0.3.0a1` to `0.3.0a6` | Public facade, runtime factories, views, errors, events, consumer qualification | Completed |
+| 4 - Industrialisation & Integration Qualification | `0.4.0a1` to `0.4.0a5` | Reproducibility, query contracts, multi-consumer and E2E CI gates | In Progress |
 
-## Unreleased
+## Cycle 4 - Industrialisation & Integration Qualification
 
-No next implementation milestone has been selected.
+### 0.4.0a1 - Integration Reproducibility
+- Automated idempotent PostgreSQL database provisioning (`pysrmkit` and `next_dashboard`) via `examples/bootstrap_integration.py`.
+- Automated Alembic schema migrations and idempotent seeding of 8 demonstration suppliers into PySRMKit.
+- Implemented reproducible Stack Runner (`examples/run_stack.py`) orchestrating FastAPI (port 8000) and Next.js (port 3000) with healthcheck polling and graceful SIGINT cleanup.
+- Added automated end-to-end browser qualification test with Playwright (`tests/test_browser_journey.py`) verifying login, 8 suppliers listing, debounced search filtering, and reload.
+- Added comprehensive `integration` workflow in `.github/workflows/ci.yml` qualifying PostgreSQL, Next.js build, and E2E browser tests from a clean Ubuntu environment.
+- Documented environment variables in `.env.example` across PySRMKit and Next.js Dashboard.
 
 ## Cycle 3 - Public API & Runtime Composition (completed 2026-10-27)
 

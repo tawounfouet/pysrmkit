@@ -6,15 +6,14 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.3.0a6` Public Runtime Qualification completed on `main`.**
+**Early alpha - `0.4.0a1` Integration Reproducibility qualified on `main`.**
 
-Three implementation cycles are qualified:
+Four implementation cycles:
 
 - **Cycle 1 - `0.1.0a1 → 0.1.0a8`:** Supplier Domain Core, relationships, lifecycle, onboarding, assessment, scoped qualification and InMemory end-to-end journey.
 - **Cycle 2 - `0.2.0a1 → 0.2.0a7`:** SQLAlchemy persistence, SQLite/PostgreSQL repository contracts, explicit transactions and UnitOfWork, Alembic migrations and durable restart/reload qualification.
 - **Cycle 3 - `0.3.0a1 → 0.3.0a6`:** public facade and capability APIs, InMemory/SQL runtime composition, immutable Views, public error boundary, typed Domain Events and public-only runtime qualification.
-
-All three cycles are **complete**. The next implementation milestone has not been selected here.
+- **Cycle 4 - `0.4.0a1 → 0.4.0a5` (In Progress):** Industrialisation & Integration Qualification: reproducible multi-service stack (FastAPI + Next.js + PostgreSQL), E2E browser qualification, query contracts and CI gates.
 
 PySRMKit is a reusable **Supplier Domain Engine**, not a complete SRM application. It remains independent of API frameworks, cloud platforms, message brokers and external SRM products. SQLAlchemy is optional.
 
