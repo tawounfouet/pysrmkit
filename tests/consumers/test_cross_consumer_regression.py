@@ -62,15 +62,11 @@ def test_cross_consumer_data_isolation(
 
     for response in (first_canonical, first_legacy):
         assert response.status_code == 200
-        assert [item["legal_name"] for item in response.json()["items"]] == [
-            "Atlas First Tenant"
-        ]
+        assert [item["legal_name"] for item in response.json()["items"]] == ["Atlas First Tenant"]
         assert response.json()["total"] == 1
     for response in (second_canonical, second_legacy):
         assert response.status_code == 200
-        assert [item["legal_name"] for item in response.json()["items"]] == [
-            "Boreal Second Tenant"
-        ]
+        assert [item["legal_name"] for item in response.json()["items"]] == ["Boreal Second Tenant"]
         assert response.json()["total"] == 1
     assert first.suppliers.search(query="Boreal").total == 0
     assert second.suppliers.search(query="Atlas").total == 0
