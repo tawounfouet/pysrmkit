@@ -2,7 +2,7 @@
 
 **Document:** `27_PYSRMKIT_CANONICAL_HTTP_SUPPLIER_SEARCH_CONTRACT.md`  
 **Cycle:** 4 - Multi-Consumer Integration Qualification  
-**Milestone:** `0.4.0a4` - final source-release qualification pending  
+**Milestone:** `0.4.0a4` - qualified on main (CI #270)  
 **Lot:** A4-02 - Canonical HTTP Supplier Search  
 **Date:** 2026-10-29  
 **Status:** A4-02 through A4-05 source behavior qualified on main (latest CI #268)
@@ -153,8 +153,8 @@ canonical core API.
 - [x] A4-03 PostgreSQL transport contract PR #42 qualified on main CI #262.
 - [x] A4-04 Next.js legacy consumer PR #43 qualified on main CI #265.
 - [x] A4-05 cross-consumer regression PR #44 qualified on main CI #268.
-- [ ] A4-06 source release-candidate PR and post-merge main CI qualified.
+- [x] A4-06 source release-candidate PR #45 and main CI #270 qualified.
 
 A4-01 to A4-05 were qualified under source version `0.4.0a3`.
-A4-06 updates the source version to `0.4.0a4`, subject to its own
-qualification gates; no Git tag or PyPI publication is implied.
+A4-06 qualified source version `0.4.0a4` on main in CI #270;
+no Git tag or PyPI publication is implied.
