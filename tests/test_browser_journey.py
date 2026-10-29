@@ -62,18 +62,10 @@ def test_nextjs_suppliers_browser_journey() -> None:
             # Its search includes vendor codes and country; the new canonical
             # route only matches legal/trading names. Verify both contracts
             # against the real API service, not an in-process mocked route.
-            legacy_vendor = page.request.get(
-                f"{urls['api_url']}/suppliers?query=SUP-008"
-            )
-            canonical_vendor = page.request.get(
-                f"{urls['api_url']}/suppliers/search?query=SUP-008"
-            )
-            legacy_country = page.request.get(
-                f"{urls['api_url']}/suppliers?query=FI"
-            )
-            canonical_country = page.request.get(
-                f"{urls['api_url']}/suppliers/search?query=FI"
-            )
+            legacy_vendor = page.request.get(f"{urls['api_url']}/suppliers?query=SUP-008")
+            canonical_vendor = page.request.get(f"{urls['api_url']}/suppliers/search?query=SUP-008")
+            legacy_country = page.request.get(f"{urls['api_url']}/suppliers?query=FI")
+            canonical_country = page.request.get(f"{urls['api_url']}/suppliers/search?query=FI")
             assert legacy_vendor.status == canonical_vendor.status == 200
             assert legacy_country.status == canonical_country.status == 200
             assert [item["legal_name"] for item in legacy_vendor.json()["items"]] == [
