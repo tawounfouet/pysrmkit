@@ -106,15 +106,11 @@ def test_search_unfiltered_is_distinct_from_legacy_list_order(srm: PySRMKit) -> 
         "Percent%Works",
         "Under_Score",
     ]
-    assert {item.supplier_id for item in page.items} == {
-        item.supplier_id for item in listed.items
-    }
+    assert {item.supplier_id for item in page.items} == {item.supplier_id for item in listed.items}
 
 
 @pytest.mark.parametrize("needle", ["Percent%", "Under_"])
-def test_search_treats_sql_wildcard_characters_literally(
-    srm: PySRMKit, needle: str
-) -> None:
+def test_search_treats_sql_wildcard_characters_literally(srm: PySRMKit, needle: str) -> None:
     _seed(srm)
 
     page = srm.suppliers.search(query=needle)
