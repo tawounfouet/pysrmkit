@@ -49,7 +49,9 @@ def _alembic_revision() -> str:
     engine = create_persistence_engine(DEFAULT_PYSRMKIT_DB_URL)
     try:
         with engine.connect() as connection:
-            revisions = connection.execute(text("SELECT version_num FROM alembic_version")).scalars().all()
+            revisions = connection.execute(
+                text("SELECT version_num FROM alembic_version")
+            ).scalars().all()
         assert len(revisions) == 1
         return revisions[0]
     finally:
