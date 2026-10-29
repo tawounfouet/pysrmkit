@@ -5,7 +5,7 @@
 **Milestone:** `0.4.0a4` (work in progress)  
 **Lot:** A4-02 - Canonical HTTP Supplier Search  
 **Date:** 2026-10-29  
-**Status:** Implemented on PR branch; qualification pending
+**Status:** A4-02 qualified on main (PR #41, CI #259); A4-03 PostgreSQL transport qualification pending
 
 ## 1. Motivation
 
@@ -117,8 +117,10 @@ results under both InMemory and file-backed SQLite:
   return their original results. Canonical `/suppliers/search` does not
   silently inherit these additional search fields.
 
-A4-03 will extend the **canonical HTTP transport contract** to real
-PostgreSQL. A4-04 will validate the dashboard's deliberate use of the
+A4-03 extends the **canonical HTTP transport contract** to real
+PostgreSQL through `tests/consumers/test_postgresql_http_supplier_search.py`:
+HTTP/Python page parity, legacy isolation, 422 validation, literal SQL
+wildcards, and reload through a fresh runtime composition. A4-04 will validate the dashboard's deliberate use of the
 legacy route until an explicit consumer migration is accepted.
 
 ## 5. Architecture and design learning
@@ -143,9 +145,9 @@ the already qualified ASCII contract. No claim of production latency
 is made. The example HTTP host is **not** promoted as PySRMKit's
 canonical core API.
 
-- [ ] A4-02 PR CI `quality`, `postgresql`, `integration` green.
-- [ ] Merge exact qualified PR head into `main`.
-- [ ] Post-merge main CI green.
-- [ ] A4-03 real PostgreSQL HTTP transport tests.
+- [x] A4-02 PR #41 CI #258 `quality`, `postgresql`, `integration` green.
+- [x] A4-02 merged into `main` as `14a2de0`.
+- [x] A4-02 post-merge main CI #259 green.
+- [ ] A4-03 real PostgreSQL HTTP transport tests pass in CI and on `main`.
 
 The package remains `0.4.0a3` until the final A4 release gate.
