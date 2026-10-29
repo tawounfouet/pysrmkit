@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-01 - Deterministic Shared Query Corpus  
 **Date:** 2026-10-29  
-**Status:** Implemented in draft PR; CI qualification pending
+**Status:** A3-01 qualified on main; PostgreSQL shared contract implemented in PR #35 (CI qualification in progress)
 
 ## 1. Context and problem
 
@@ -35,7 +35,7 @@ tests/contracts/queries/test_supplier_search_contract.py
   |-- TestInMemorySupplierSearchContract
   +-- TestSqliteSupplierSearchContract
            |
-           +-- TestPostgresqlSupplierSearchContract [planned A3-05]
+           +-- TestPostgresqlSupplierSearchContract [implemented A3-05]
 ```
 
 - Each seed has a stable `SupplierId`, independent of process order and
@@ -103,18 +103,21 @@ A3-01 supplies a reusable abstract suite instantiated for:
 1. InMemory - direct `InMemorySupplierRepository`.
 2. SQLite - `SqlAlchemySupplierRepository` with a fresh schema and Session.
 
-A3-05 must instantiate the same abstract test class with a real PostgreSQL
-repository and a clean isolated test database, without duplicating
-the oracle. A3-06 then hardens boundaries, Unicode decisions and
-read-only behavior in all three backends.
+A3-05 instantiates the same abstract test class with a real PostgreSQL
+repository in `tests/contracts/queries/test_postgresql_supplier_search_contract.py`.
+It uses an isolated fresh schema per case, the existing PostgreSQL CI service,
+and `pytest.mark.postgresql`, without duplicating expected results.
+A3-06 will harden boundaries, Unicode decisions and read-only behavior
+in all three backends.
 
 ## 6. Quality gates
 
-- [ ] `ruff check .`, `ruff format --check .`, `pyright`.
-- [ ] Shared ASCII scenarios green on InMemory and SQLite in CI `quality`.
-- [ ] Existing `list_suppliers()` compatibility green.
-- [ ] Existing CI `postgresql` and `integration` jobs green.
-- [ ] A3-01 PR merged and post-merge `main` qualified.
+- [x] A3-01 `ruff check .`, `ruff format --check .`, `pyright` and shared ASCII corpus qualified in CI #236.
+- [x] InMemory and SQLite search and `list_suppliers()` compatibility in CI #236.
+- [x] A3-01 PR #34 merged and post-merge `main` qualified in CI #237.
+- [x] PostgreSQL executes the same inherited search suite: PR #35 CI #238 `postgresql` job (65 passed, 381 deselected).
+- [ ] PostgreSQL search PR #35 complete (`quality`, `postgresql`, `integration` all green), merge and post-merge `main` CI qualification.
+- [ ] A3-06 explicit Unicode/collation policy and divergent behavior handling.
 
 The above checklist will be updated only with verified CI evidence.
 The full `0.4.0a3` milestone remains open until all **three adapters**
@@ -138,7 +141,7 @@ pass one shared contract suite.
 - **A3-02/A3-03:** existing memory and SQL search implementations are already
   present from A2-06; now they are subjected to stricter contract evidence.
 - **A3-04:** analyze SQLite qualification and query plan boundaries.
-- **A3-05:** add PostgreSQL shared-suite instantiation.
+- **A3-05:** PostgreSQL shared-suite instantiation implemented in PR #35; full PR and post-merge CI pending.
 - **A3-06:** close cross-adapter behavior, null/edge and Unicode policy.
 - **A3-07:** characterize query plans and index needs *only if evidenced*.
 
