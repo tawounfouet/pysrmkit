@@ -9,7 +9,7 @@ from dataclasses import FrozenInstanceError
 import pytest
 from sqlalchemy import create_engine
 
-from pysrmkit import PySRMKit
+from pysrmkit import PySRMKit, SupplierCreated
 from pysrmkit.adapters.sqlalchemy.schema import load_persistence_metadata
 from pysrmkit.public.views import SupplierPageView
 
@@ -140,3 +140,76 @@ def test_search_does_not_modify_supplier_or_public_view(srm: PySRMKit) -> None:
     assert after == before
     with pytest.raises(FrozenInstanceError):
         page.items[0].legal_name = "Changed"  # type: ignore[misc]
+
+
+def test_search_returns_no_matches_and_partial_last_page(srm: PySRMKit) -> None:
+    _seed(srm)
+
+    missing = srm.suppliers.search(query="no-such-supplier", limit=2)
+    first = srm.suppliers.search(query="atlas", limit=3)
+    last = srm.suppliers.search(query="atlas", offset=3, limit=3)
+    beyond = srm.suppliers.search(query="atlas", offset=4, limit=3)
+
+    assert missing.total == 0
+    assert missing.items == ()
+    assert first.total == last.total == beyond.total == 4
+    assert len(first.items) == 3
+    assert len(last.items) == 1
+    assert last.offset == 3
+    assert beyond.items == ()
+
+
+@pytest.mark.parametrize("sort_order", ["asc", "desc"])
+def test_search_tie_break_is_stable_across_pages_and_repeated_calls(
+    srm: PySRMKit, sort_order: str
+) -> None:
+    _seed(srm)
+
+    from typing import Literal, cast
+
+    order = cast(Literal["asc", "desc"], sort_order)
+    first = srm.suppliers.search(query="Atlas Components", sort_order=order, limit=1)
+    second = srm.suppliers.search(
+        query="Atlas Components", sort_order=order, offset=1, limit=1
+    )
+    repeated = srm.suppliers.search(query="Atlas Components", sort_order=order, limit=2)
+
+    ids = [item.supplier_id.value for item in (*first.items, *second.items)]
+    assert first.total == second.total == repeated.total == 2
+    assert ids == sorted(ids)
+    assert ids == [item.supplier_id.value for item in repeated.items]
+
+
+def test_search_never_changes_legacy_listing_order_or_result(srm: PySRMKit) -> None:
+    _seed(srm)
+
+    before = srm.suppliers.list(offset=1, limit=3)
+    srm.suppliers.search(query="atlas", sort_order="desc", limit=2)
+    after = srm.suppliers.list(offset=1, limit=3)
+
+    assert before == after
+    assert before.total == 7
+
+
+def test_search_does_not_publish_domain_events(srm: PySRMKit) -> None:
+    observed: list[SupplierCreated] = []
+    srm.events.subscribe(SupplierCreated, observed.append)
+    srm.suppliers.register(legal_name="Quiet Reads", country_code="FR")
+
+    assert len(observed) == 1
+    observed.clear()
+    first = srm.suppliers.search(query="quiet")
+    second = srm.suppliers.search()
+
+    assert first.total == second.total == 1
+    assert observed == []
+
+
+def test_search_respects_missing_country_and_trading_name(srm: PySRMKit) -> None:
+    srm.suppliers.register(legal_name="Unscoped", supplier_type="SERVICE")
+    srm.suppliers.register(legal_name="Scoped", country_code="FR")
+
+    assert srm.suppliers.search(query="Unscoped").total == 1
+    assert srm.suppliers.search(query="Unscoped", country_code="FR").total == 0
+    assert srm.suppliers.search(query="Scoped", country_code="FR").total == 1
+    assert srm.suppliers.search(query="Scoped", supplier_type="SERVICE").total == 0
