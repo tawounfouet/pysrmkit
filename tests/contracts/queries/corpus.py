@@ -87,9 +87,19 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
     SearchCase(
         "all-ascending",
         (
-            "atlas-a", "atlas-b", "atlas-service", "asteria",
-            "boreal-a", "boreal-b", "cedar", "delta", "nimbus",
-            "no-country", "percent", "under", "zeta",
+            "atlas-a",
+            "atlas-b",
+            "atlas-service",
+            "asteria",
+            "boreal-a",
+            "boreal-b",
+            "cedar",
+            "delta",
+            "nimbus",
+            "no-country",
+            "percent",
+            "under",
+            "zeta",
         ),
         13,
     ),
@@ -113,11 +123,13 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
         country_code="FR",
         supplier_type="MANUFACTURER",
     ),
-    SearchCase("duplicate-legal-name-desc", ("boreal-a", "boreal-b"), 2,
-               query="Boreal", sort_order="desc"),
+    SearchCase(
+        "duplicate-legal-name-desc", ("boreal-a", "boreal-b"), 2, query="Boreal", sort_order="desc"
+    ),
     SearchCase("trading-name-only", ("boreal-b",), 1, query="north"),
-    SearchCase("second-full-page", ("atlas-service", "asteria"), 5,
-               query="atlas", offset=2, limit=2),
+    SearchCase(
+        "second-full-page", ("atlas-service", "asteria"), 5, query="atlas", offset=2, limit=2
+    ),
     SearchCase("last-partial-page", ("zeta",), 5, query="atlas", offset=4, limit=2),
     SearchCase("beyond-final-page", (), 5, query="atlas", offset=100, limit=5),
     SearchCase("no-match", (), 0, query="unfindable", limit=1),
@@ -126,16 +138,14 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
     SearchCase("supplier-type-exact-case", (), 0, supplier_type="service"),
     SearchCase(
         "supplier-type-service",
-        ("atlas-service", "asteria", "boreal-a", "delta",
-         "nimbus", "percent", "under"),
+        ("atlas-service", "asteria", "boreal-a", "delta", "nimbus", "percent", "under"),
         7,
         supplier_type="SERVICE",
     ),
     SearchCase("country-de", ("asteria", "under"), 2, country_code="DE"),
     SearchCase("missing-country-identity", ("no-country",), 1, query="No Country"),
     SearchCase("country-excludes-missing", (), 0, query="No Country", country_code="FR"),
-    SearchCase("absent-supplier-type", ("no-country",), 1, query="No Country",
-               supplier_type=None),
+    SearchCase("absent-supplier-type", ("no-country",), 1, query="No Country", supplier_type=None),
 )
 
 
