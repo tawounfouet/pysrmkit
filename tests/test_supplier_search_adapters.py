@@ -203,10 +203,10 @@ def test_search_does_not_publish_domain_events(srm: PySRMKit) -> None:
 
 
 def test_search_respects_missing_country_and_trading_name(srm: PySRMKit) -> None:
-    srm.suppliers.register(legal_name="Unscoped", supplier_type="SERVICE")
-    srm.suppliers.register(legal_name="Scoped", country_code="FR")
+    srm.suppliers.register(legal_name="Orphan Vendor", supplier_type="SERVICE")
+    srm.suppliers.register(legal_name="Scoped Vendor", country_code="FR")
 
-    assert srm.suppliers.search(query="Unscoped").total == 1
-    assert srm.suppliers.search(query="Unscoped", country_code="FR").total == 0
-    assert srm.suppliers.search(query="Scoped", country_code="FR").total == 1
-    assert srm.suppliers.search(query="Scoped", supplier_type="SERVICE").total == 0
+    assert srm.suppliers.search(query="Orphan Vendor").total == 1
+    assert srm.suppliers.search(query="Orphan Vendor", country_code="FR").total == 0
+    assert srm.suppliers.search(query="Scoped Vendor", country_code="FR").total == 1
+    assert srm.suppliers.search(query="Scoped Vendor", supplier_type="SERVICE").total == 0
