@@ -96,7 +96,7 @@ contracts, including drift, rather than asserting unsupported parity.
 | A4-01 | Inventory and characterize Python, FastAPI and dashboard read contracts | Tests and CI green, documented drift |
 | A4-02 | Introduce an explicit **canonical HTTP search surface** which delegates to `suppliers.search()`, preserving legacy `GET /suppliers` behavior | Matching filter/count/order contract and error mapping in HTTP tests |
 | A4-03 | Qualify canonical HTTP search over InMemory, SQLite and PostgreSQL | Shared transport tests and CI PostgreSQL green |
-| A4-04 | Verify Next.js dashboard uses an intentionally chosen legacy or canonical HTTP surface | External consumer E2E regression, no silent change |
+| A4-04 | Verify Next.js dashboard intentionally retains the legacy HTTP surface | Browser E2E checks vendor-code search and confirms legacy/canonical divergence |
 | A4-05 | Qualify cross-consumer pagination, validation, errors and data isolation | Regression matrix complete |
 | A4-06 | Finalize `0.4.0a4` version, evidence report and main-branch CI | PR and post-merge all green |
 
@@ -138,3 +138,16 @@ interface promoted as the canonical Supplier domain API.
 **Source-release status:** `0.4.0a3` remains the current version.
 This A4-01 test/documentation work is not a `0.4.0a4` package release
 and implies neither Git tag nor PyPI publication.
+
+## 8. A4-04 dashboard consumer decision
+
+The dashboard's `app/lib/data.ts` uses `GET /suppliers` with `offset`,
+`limit` and optional `query`; it does not consume the opt-in
+`GET /suppliers/search` endpoint. This distinction is intentionally
+retained under A4-04. The browser E2E adds real API and browser tests
+for vendor code `SUP-008` and country `FI`, protecting the legacy UI
+contract. See [A4-04 dashboard qualification](../qualification/0.4.0a4-a4-04-dashboard.md).
+
+A4-04 does not modify the external Next.js repository. The tested
+external revision is resolved at CI checkout; exact reproducibility
+across future updates would require a pinned commit.
