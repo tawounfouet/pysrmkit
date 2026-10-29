@@ -5,6 +5,7 @@ A3 will extend these shared scenarios to PostgreSQL and Unicode policies.
 
 from collections.abc import Iterator
 from dataclasses import FrozenInstanceError
+from typing import Literal, cast
 
 import pytest
 from sqlalchemy import create_engine
@@ -164,8 +165,6 @@ def test_search_tie_break_is_stable_across_pages_and_repeated_calls(
     srm: PySRMKit, sort_order: str
 ) -> None:
     _seed(srm)
-
-    from typing import Literal, cast
 
     order = cast(Literal["asc", "desc"], sort_order)
     first = srm.suppliers.search(query="Atlas Components", sort_order=order, limit=1)
