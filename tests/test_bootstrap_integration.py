@@ -8,7 +8,6 @@ from examples.bootstrap_integration import (
     ensure_database_exists,
 )
 
-
 pytestmark = pytest.mark.integration
 
 
