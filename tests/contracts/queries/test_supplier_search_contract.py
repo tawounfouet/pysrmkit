@@ -44,9 +44,7 @@ class SupplierSearchContract(ABC):
 
         result = repository.search_suppliers(
             query=case.query,
-            country_code=CountryCode(case.country_code)
-            if case.country_code is not None
-            else None,
+            country_code=CountryCode(case.country_code) if case.country_code is not None else None,
             supplier_type=case.supplier_type,
             sort_by="legal_name",
             sort_order=case.sort_order,
@@ -55,9 +53,9 @@ class SupplierSearchContract(ABC):
         )
 
         assert result.total == case.total, case.name
-        assert tuple(supplier.id for supplier in result.suppliers) == expected_supplier_ids(
-            case
-        ), case.name
+        assert tuple(supplier.id for supplier in result.suppliers) == expected_supplier_ids(case), (
+            case.name
+        )
         assert len(result.suppliers) <= case.limit
 
     def test_search_retains_canonical_identity_and_identifier(self) -> None:
