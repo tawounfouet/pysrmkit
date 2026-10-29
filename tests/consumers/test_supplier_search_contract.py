@@ -56,7 +56,7 @@ def _register_corpus(srm: PySRMKit) -> None:
         country_code="DE",
     )
     srm.suppliers.register(
-        legal_name="Cedar Services",
+        legal_name="Cedar Logistics",
         supplier_type="SERVICE",
         country_code="FR",
         external_identifiers=(ExternalIdentifierInput(kind="ERP", value="ERP-654"),),
@@ -134,7 +134,7 @@ def test_http_external_identifier_search_is_not_a_public_search_guarantee(
     assert canonical.total == 0
     assert response.status_code == 200
     assert response.json()["total"] == 1
-    assert response.json()["items"][0]["legal_name"] == "Cedar Services"
+    assert response.json()["items"][0]["legal_name"] == "Cedar Logistics"
 
 
 def test_legacy_http_search_paginates_after_filtering(
