@@ -23,8 +23,9 @@ def _child() -> MagicMock:
 def test_dashboard_spawn_failure_reaps_started_fastapi() -> None:
     api = _child()
     with (
-        patch("examples.run_stack.subprocess.Popen", side_effect=[api, OSError("npm unavailable")])
-        as spawn,
+        patch(
+            "examples.run_stack.subprocess.Popen", side_effect=[api, OSError("npm unavailable")]
+        ) as spawn,
         pytest.raises(OSError, match="npm unavailable"),
     ):
         with run_integration_stack():
