@@ -6,9 +6,9 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.4.0a4` Multi-Consumer Integration Qualification release candidate.**
+**Early alpha - `0.4.0a4` Multi-Consumer Integration Qualification qualified on `main` (CI #270).**
 
-The `0.4.0a4` release candidate consolidates previously qualified A4-01 through A4-05 consumer contracts, the additive canonical FastAPI Supplier search, PostgreSQL parity and Next.js legacy compatibility. The version bump requires separate PR and post-merge main CI gates. No PyPI publication or Git tag is implied.
+The `0.4.0a4` source version was merged through PR #45 and qualified by CI #269 on the PR and CI #270 on `main`. It consolidates A4-01 through A4-05 consumer contracts, canonical HTTP search, PostgreSQL parity and Next.js legacy compatibility. No PyPI publication or Git tag is implied.
 
 Four implementation cycles:
 
@@ -19,7 +19,7 @@ Four implementation cycles:
 
 PySRMKit is a reusable **Supplier Domain Engine**, not a complete SRM application. It remains independent of API frameworks, cloud platforms, message brokers and external SRM products. SQLAlchemy is optional.
 
-## Multi-consumer integration - `0.4.0a4` candidate
+## Multi-consumer integration - `0.4.0a4`
 
 The optional FastAPI example provides **two deliberately separate**
 Supplier read routes. `GET /suppliers/search` delegates to the public
