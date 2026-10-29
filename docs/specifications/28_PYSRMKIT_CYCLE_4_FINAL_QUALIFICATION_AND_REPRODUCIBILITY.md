@@ -2,7 +2,7 @@
 
 **Milestone:** `0.4.0a5` - Cycle 4 Final E2E & CI Qualification  
 **Date:** 2026-10-29  
-**Status:** Proposed work packages; A5-01 candidate under qualification
+**Status:** A5-01 qualified on main (PR #47, CI #274); A5-02 under qualification
 
 ## Scope basis
 
@@ -84,8 +84,37 @@ remain compatible forever.
 ## Qualification gates
 
 - [x] The previously qualified `0.4.0a4` source release is on main.
-- [ ] A5-01 PR CI three jobs green with exact SHA logged.
-- [ ] A5-01 merge and post-merge main CI green.
+- [x] A5-01 PR #47 CI #273 passed all three jobs, with exact SHA logged.
+- [x] A5-01 merged as `8ec285b` and post-merge main CI #274 green.
+- [ ] A5-02 repeated PostgreSQL bootstrap and supplier snapshot PR/main CI green.
 - [ ] Remaining A5 lots and final `0.4.0a5` source version qualified.
 
 No Git tag, GitHub Release or PyPI publication is implied.
+
+## A5-02 - Bootstrap and seed repeatability
+
+The pre-existing `test_bootstrap_is_idempotent` only ran one repeat
+and checked aggregate counts after the CI bootstrap. A5-02 strengthens
+the integration suite with **two further executions** of
+`bootstrap(seed_nextjs=False)` against the already bootstrapped real
+PostgreSQL database.
+
+The executable evidence in `tests/test_bootstrap_integration.py`
+checks after each execution:
+
+- Both PostgreSQL databases remain present (no database creation).
+- Supplier seeding creates zero new records and skips exactly eight.
+- The eight source-qualified vendor codes remain unique.
+- The exact **Supplier UUID, vendor code, and legal name tuples** remain
+  stable, not just the supplier count.
+- Alembic's `alembic_version` state remains at the exact prior revision.
+- The separate Next.js database seed is intentionally excluded with
+  `seed_nextjs=False`, because it belongs to the external consumer.
+
+This is a **sequential retry idempotency** test in the controlled CI
+stack. It does not prove concurrent bootstraps, automatic recovery
+from mid-transaction crashes, or idempotence of the external dashboard
+seed. No changes to production bootstrap logic or migrations are needed.
+
+**Design concepts:** Idempotency, State-based Regression Testing,
+Reproducible Integration Testing, CQS and Separation of Concerns.
