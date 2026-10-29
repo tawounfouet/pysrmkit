@@ -6,9 +6,9 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.4.0a2` Supplier Query API qualified on `main` (CI #231).**
+**Early alpha - `0.4.0a3` Query Adapter Qualification release candidate.**
 
-The `0.4.0a2` implementation was merged through PR #32 and qualified by CI #230 on the PR and CI #231 on `main`. This does not imply PyPI publication.
+The `0.4.0a3` source version aligns the query adapter contract qualified across InMemory, SQLite and PostgreSQL, plus explicit Unicode and SQL plan observations. The new version bump still requires its own PR and post-merge CI qualification; no PyPI publication is implied.
 
 Four implementation cycles:
 
@@ -96,6 +96,25 @@ assert page.total == 1
 
 See [Supplier Query Contract ADR](docs/specifications/22_PYSRMKIT_SUPPLIER_QUERY_CONTRACT_ADR.md).
 See [0.4.0a2 qualification evidence](docs/qualification/0.4.0a2.md) for exact commit and CI gates.
+
+## Query adapter qualification - `0.4.0a3` candidate
+
+The same **13-supplier deterministic ASCII corpus** and **18 named query
+scenarios** are executed against InMemory, SQLite and real PostgreSQL.
+This verifies filter, count, ordering and pagination semantics and preserves
+the older `list()` contract.
+
+Five Unicode probes characterize differences between Python `casefold()`
+and SQLite/PostgreSQL `lower()`. These are explicitly **not** a portable
+Unicode search promise. SQLite `EXPLAIN QUERY PLAN` and PostgreSQL 18
+`EXPLAIN (ANALYZE, BUFFERS)` describe scans and sorts of real Supplier
+repository queries using 1,200 synthetic rows. No indexes were added;
+no production-scale performance SLA is claimed.
+
+- [Shared query corpus and qualification](docs/specifications/23_PYSRMKIT_QUERY_ADAPTER_SHARED_CORPUS.md)
+- [Unicode and collation policy](docs/specifications/24_PYSRMKIT_SUPPLIER_SEARCH_UNICODE_COLLATION_POLICY.md)
+- [Query plan and index decision](docs/specifications/25_PYSRMKIT_SUPPLIER_QUERY_PLAN_AND_INDEX_QUALIFICATION.md)
+- [`0.4.0a3` qualification evidence (candidate)](docs/qualification/0.4.0a3.md)
 
 ## Core principles
 
