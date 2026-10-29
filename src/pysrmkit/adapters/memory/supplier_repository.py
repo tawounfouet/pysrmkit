@@ -3,9 +3,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Literal
 
 from pysrmkit.domain.supplier.entities import Supplier
-from pysrmkit.domain.supplier.value_objects import ExternalIdentifier, SupplierId, SupplierIdentity
+from pysrmkit.domain.supplier.value_objects import (
+    CountryCode,
+    ExternalIdentifier,
+    SupplierId,
+    SupplierIdentity,
+)
 from pysrmkit.ports.queries.supplier import SupplierPage
 
 
@@ -54,6 +60,56 @@ class InMemorySupplierRepository:
                 self._restore(stored) for stored in stored_suppliers[offset : offset + limit]
             ),
             total=len(stored_suppliers),
+        )
+
+    def search_suppliers(
+        self,
+        *,
+        query: str | None,
+        country_code: CountryCode | None,
+        supplier_type: str | None,
+        sort_by: Literal["legal_name"],
+        sort_order: Literal["asc", "desc"],
+        offset: int,
+        limit: int,
+    ) -> SupplierPage:
+        """Filter, deterministically sort, then paginate immutable stored snapshots.
+
+        This adapter implements SupplierSearchService using domain-independent
+        Python collection operations. It never mutates Supplier state.
+        """
+        if sort_by != "legal_name":
+            raise ValueError("sort_by must be 'legal_name'")
+        if sort_order not in ("asc", "desc"):
+            raise ValueError("sort_order must be 'asc' or 'desc'")
+
+        needle = query.casefold() if query is not None else None
+        matching = [
+            stored
+            for stored in self._suppliers.values()
+            if (
+                needle is None
+                or needle in stored.identity.legal_name.casefold()
+                or (
+                    stored.identity.trading_name is not None
+                    and needle in stored.identity.trading_name.casefold()
+                )
+            )
+            and (country_code is None or stored.identity.country == country_code)
+            and (supplier_type is None or stored.identity.supplier_type == supplier_type)
+        ]
+
+        # Stable sort: supplier ID always asc, including for descending names.
+        matching.sort(key=lambda stored: stored.supplier_id.value)
+        matching.sort(
+            key=lambda stored: stored.identity.legal_name.casefold(),
+            reverse=sort_order == "desc",
+        )
+        return SupplierPage(
+            suppliers=tuple(
+                self._restore(stored) for stored in matching[offset : offset + limit]
+            ),
+            total=len(matching),
         )
 
     @staticmethod
