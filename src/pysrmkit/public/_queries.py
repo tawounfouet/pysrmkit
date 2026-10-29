@@ -48,17 +48,17 @@ class SearchSuppliersQuery:
 
     def __post_init__(self) -> None:
         if self.query is not None:
-            if not isinstance(self.query, str):
+            if type(self.query) is not str:
                 raise TypeError("query must be a string or None")
             object.__setattr__(self, "query", self.query.strip() or None)
 
         if self.country_code is not None:
-            if not isinstance(self.country_code, str):
+            if type(self.country_code) is not str:
                 raise TypeError("country_code must be a string or None")
             object.__setattr__(self, "country_code", CountryCode(self.country_code).value)
 
         if self.supplier_type is not None:
-            if not isinstance(self.supplier_type, str):
+            if type(self.supplier_type) is not str:
                 raise TypeError("supplier_type must be a string or None")
             object.__setattr__(self, "supplier_type", self.supplier_type.strip() or None)
 
@@ -67,11 +67,11 @@ class SearchSuppliersQuery:
         if self.sort_order not in ("asc", "desc"):
             raise ValueError("sort_order must be 'asc' or 'desc'")
 
-        if isinstance(self.offset, bool) or not isinstance(self.offset, int):
+        if type(self.offset) is not int:
             raise TypeError("offset must be an integer")
         if self.offset < 0:
             raise ValueError("offset must be non-negative")
-        if isinstance(self.limit, bool) or not isinstance(self.limit, int):
+        if type(self.limit) is not int:
             raise TypeError("limit must be an integer")
         if self.limit <= 0:
             raise ValueError("limit must be positive")
