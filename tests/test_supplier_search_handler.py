@@ -51,9 +51,7 @@ class _SpySupplierSearchService:
         offset: int,
         limit: int,
     ) -> SupplierPage:
-        self.calls.append(
-            (query, country_code, supplier_type, sort_by, sort_order, offset, limit)
-        )
+        self.calls.append((query, country_code, supplier_type, sort_by, sort_order, offset, limit))
         return self.result
 
 
@@ -133,8 +131,6 @@ def test_search_handler_composes_through_public_api_without_runtime_adapter() ->
     page = api.search(query="  Asteria ", country_code="fr", offset=10, limit=5)
 
     assert page == SupplierPageView(items=(), total=3, offset=10, limit=5)
-    assert search_port.calls == [
-        ("Asteria", CountryCode("FR"), None, "legal_name", "asc", 10, 5)
-    ]
+    assert search_port.calls == [("Asteria", CountryCode("FR"), None, "legal_name", "asc", 10, 5)]
     # The unchanged listing port can still be used independently.
     assert api.list().total == 0
