@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import FastAPI, HTTPException, Query, status
 from pydantic import BaseModel, Field
@@ -148,6 +148,42 @@ def create_app(srm: PySRMKit, *, engine: Engine | None = None) -> FastAPI:
             )
 
         page = srm.suppliers.list(offset=offset, limit=limit)
+        return SupplierPageResponse(
+            items=[_supplier_response(supplier) for supplier in page.items],
+            total=page.total,
+            offset=page.offset,
+            limit=page.limit,
+        )
+
+    @app.get("/suppliers/search", response_model=SupplierPageResponse)
+    def search_suppliers(
+        query: Annotated[str | None, Query(max_length=100)] = None,
+        country_code: Annotated[str | None, Query()] = None,
+        supplier_type: Annotated[str | None, Query(max_length=100)] = None,
+        sort_by: Annotated[Literal["legal_name"], Query()] = "legal_name",
+        sort_order: Annotated[Literal["asc", "desc"], Query()] = "asc",
+        offset: Annotated[int, Query(ge=0)] = 0,
+        limit: Annotated[int, Query(ge=1, le=100)] = 25,
+    ) -> SupplierPageResponse:
+        """Expose canonical Supplier discovery without changing the legacy endpoint.
+
+        Design: HTTP adapter/Anti-Corruption Layer delegates to a typed Facade.
+        The Facade owns filtering and ordering semantics; this host only maps
+        transport parameters, validation errors and immutable Views to JSON.
+        """
+        try:
+            page = srm.suppliers.search(
+                query=query,
+                country_code=country_code,
+                supplier_type=supplier_type,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                offset=offset,
+                limit=limit,
+            )
+        except ValueError as error:
+            raise HTTPException(status_code=422, detail=str(error)) from error
+
         return SupplierPageResponse(
             items=[_supplier_response(supplier) for supplier in page.items],
             total=page.total,
