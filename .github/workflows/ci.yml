@@ -37,6 +37,9 @@ jobs:
       - name: Unicode search characterization - InMemory and SQLite
         run: pytest -q -s -m "not postgresql" tests/contracts/queries/test_supplier_unicode_diagnostics.py
 
+      - name: SQLite Supplier query plan characterization
+        run: pytest -q -s tests/performance/test_supplier_search_plans_sqlite.py
+
 
   postgresql:
     runs-on: ubuntu-latest
@@ -76,6 +79,9 @@ jobs:
 
       - name: Unicode search characterization - PostgreSQL
         run: pytest -q -s -m postgresql tests/contracts/queries/test_supplier_unicode_diagnostics.py
+
+      - name: PostgreSQL Supplier query plan characterization
+        run: pytest -q -s -m postgresql tests/performance/test_supplier_search_plans_postgresql.py
 
   integration:
     runs-on: ubuntu-latest
