@@ -190,6 +190,4 @@ def test_postgresql_canonical_http_treats_wildcards_as_literals(
         underscore = client.get("/suppliers/search", params={"query": "_"})
     assert percent.status_code == underscore.status_code == 200
     assert [v["legal_name"] for v in percent.json()["items"]] == ["One 100% Supplier"]
-    assert [v["legal_name"] for v in underscore.json()["items"]] == [
-        "One_name Supplier"
-    ]
+    assert [v["legal_name"] for v in underscore.json()["items"]] == ["One_name Supplier"]
