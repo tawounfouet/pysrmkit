@@ -13,7 +13,7 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 
 ## Cycle 4 - Industrialisation & Integration Qualification
 
-### 0.4.0a4 - Multi-Consumer Integration Qualification (release candidate - 2026-10-29)
+### 0.4.0a4 - Multi-Consumer Integration Qualification (qualified on main - 2026-10-29)
 
 - Characterized overlap and intentional differences between the public Python Supplier search, legacy FastAPI `GET /suppliers` and existing Next.js dashboard (A4-01, PR #40; main CI #257).
 - Added opt-in FastAPI `GET /suppliers/search` delegating to the public Facade, with canonical filtered totals, sorting, bounded pagination and HTTP 422 validation; legacy behavior unchanged (A4-02, PR #41; main CI #259).
@@ -21,7 +21,7 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 - Protected the Next.js dashboard's historical vendor-code/country search and login/refresh browser journey in the full E2E stack (A4-04, PR #43; main CI #265).
 - Added InMemory/SQLite cross-consumer regression for page boundaries, invalid requests, read-only data and separate composition-root stores (A4-05, PR #44; main CI #268).
 - Synchronized package version metadata and import test to `0.4.0a4` and added [qualification evidence](docs/qualification/0.4.0a4.md).
-- **Release-candidate source and post-merge main CI gates remain pending.** No Git tag, GitHub Release or PyPI publication is claimed.
+- Release candidate PR #45 passed CI #269 and was squash-merged as `f8b9f6f`; post-merge main CI #270 passed all three jobs. [Final qualification report](docs/qualification/0.4.0a4.md). No Git tag, GitHub Release or PyPI publication is claimed.
 
 ### 0.4.0a3 - Query Adapter Qualification (qualified on main - 2026-10-29)
 
