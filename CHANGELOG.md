@@ -13,6 +13,16 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 
 ## Cycle 4 - Industrialisation & Integration Qualification
 
+### 0.4.0a3 - Query Adapter Qualification (release candidate - 2026-10-29)
+
+- Qualified 18 named ASCII Supplier search scenarios on 13 deterministic Supplier identities against InMemory, SQLite and real PostgreSQL, using a single inherited contract suite (PR #34 and #35).
+- Preserved legacy UUID-ordered supplier listing and Supplier entity/identifier reconstruction while exercising filtered totals, search text, exact filters, stable sorting, pagination and SQL literal-wildcard handling.
+- Characterized five Unicode probes on all three adapters (PR #36) and accepted an explicit portability policy: ASCII search/ordering is normative; non-ASCII matching and ordering remain backend/locale-dependent, without promising Unicode equivalence.
+- Captured the production SQLAlchemy repository's actual `COUNT` and page-query plans (PR #37), with SQLite `EXPLAIN QUERY PLAN` and PostgreSQL 18 `EXPLAIN (ANALYZE, BUFFERS)`, using 1,200 synthetic Supplier records.
+- Recorded scans, sorting, filter selectivity and candidate index trade-offs without adding any index, schema migration, external search engine, new mandatory runtime dependency or speculative latency SLA.
+- Synchronized package/version metadata and import tests to `0.4.0a3`; added [qualification evidence](docs/qualification/0.4.0a3.md).
+- Baseline A3 implementation PRs #34 through #37 passed their respective PR and post-merge `main` CI jobs. **The final `0.4.0a3` release-candidate PR and post-merge CI still require qualification.** No PyPI or Git tag publication is claimed.
+
 ### 0.4.0a2 - Supplier Query API (qualified on main - 2026-10-29)
 
 - Added immutable `SearchSuppliersQuery` validation for search text, country, supplier type, sorting and bounded pagination.
