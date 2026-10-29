@@ -5,7 +5,7 @@ ASCII cases are normative. Unicode cases are probes until A3 policy is decided.
 """
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Protocol
 from uuid import UUID
 
 from pysrmkit.domain.supplier.entities import Supplier
@@ -158,7 +158,7 @@ UNICODE_PROBES: tuple[UnicodeProbe, ...] = (
 )
 
 
-class SearchableSupplierRepository(SupplierRepository, SupplierSearchService):
+class SearchableSupplierRepository(SupplierRepository, SupplierSearchService, Protocol):
     """Test-only intersecting Protocol; no change to production Ports."""
 
 
