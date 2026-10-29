@@ -84,7 +84,10 @@ def characterize_supplier_search(engine: Engine) -> None:
                 _context: ExecutionContext,
                 _executemany: bool,
             ) -> None:
-                if statement.lstrip().upper().startswith("SELECT") and "FROM suppliers" in statement:
+                if (
+                    statement.lstrip().upper().startswith("SELECT")
+                    and "FROM suppliers" in statement
+                ):
                     captured.append((statement, parameters))
 
             event.listen(engine, "before_cursor_execute", record_supplier_sql)
