@@ -13,6 +13,17 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 
 ## Cycle 4 - Industrialisation & Integration Qualification
 
+### 0.4.0a5 - Final E2E & CI Qualification (source candidate; pending PR and main CI)
+
+- A5-01: Pin external `nextjs-acme-dashboard` source to `11ed240f7e25e3de22304a3fa5b1c4a67f787bf2` and assert checked-out SHA in CI (PR #47; main CI #274).
+- A5-02: Qualify repeat PostgreSQL bootstrap/seed with stable Supplier UUIDs, vendor codes, legal names and Alembic revision (PR #48; main CI #279).
+- A5-03: Test failure-path resource ownership, startup/readiness failures and forced child cleanup (PR #49; main CI #282).
+- A5-04: Collect a source- and CI-traceable final Cycle 4 evidence matrix and remaining limitations in `docs/qualification/0.4.0a5.md`.
+- A5-05: Synchronize `pyproject.toml`, import version and package smoke test to `0.4.0a5`, with final PR/main CI qualification still required.
+- No new mandatory runtime dependency, Domain API change, persistence migration or query index. Source-level candidate does not establish a Git tag, GitHub Release or PyPI publication.
+
+
+
 ### 0.4.0a4 - Multi-Consumer Integration Qualification (qualified on main - 2026-10-29)
 
 - Characterized overlap and intentional differences between the public Python Supplier search, legacy FastAPI `GET /suppliers` and existing Next.js dashboard (A4-01, PR #40; main CI #257).
