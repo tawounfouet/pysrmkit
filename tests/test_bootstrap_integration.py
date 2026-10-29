@@ -1,7 +1,6 @@
 """Qualification for the integration bootstrap routine."""
 
 import pytest
-
 from examples.bootstrap_integration import (
     DEFAULT_NEXT_DASHBOARD_DB_URL,
     DEFAULT_PYSRMKIT_DB_URL,
