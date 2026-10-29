@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a2`
 **Packages:** A2-01 through A2-07
 **Date:** 2026-10-29
-**Status:** Accepted for A2-02/A2-03 contract boundaries; adapter semantics pending A2-06/A3
+**Status:** Accepted and implemented for A2-01 through A2-07 on PR #32; full adapter parity remains deferred to A3
 
 ## Context
 
@@ -20,16 +20,16 @@ domain invariants into HTTP, SQLAlchemy, or a particular dashboard.
 
 1. Keep `SuppliersAPI.list()`, `SupplierQueryService`, and `SupplierPage`
    backwards compatible.
-2. Add a distinct public `suppliers.search(...)` in a later A2 package; it is
-   **not implemented** by the initial DTO/Port work.
+2. Add a distinct public `suppliers.search(...)`, implemented during A2-04 and
+   connected to standard runtimes during A2-06.
 3. Use an immutable internal `SearchSuppliersQuery` DTO, with explicit
    validation, whitespace normalization and a pagination limit of 100.
 4. Introduce an optional `SupplierSearchService` Protocol instead of adding
    an abstract method to `SupplierQueryService`. A consumer that implements
    only the listing port remains valid. This implements Interface Segregation.
 5. Keep the new port in `pysrmkit.ports.queries.supplier`, independent of the
-   internal `public._queries` DTO. A future handler will adapt the public
-   input into the port's typed parameters, including `CountryCode`.
+   internal `public._queries` DTO. `SearchSuppliersHandler` translates the public
+   inputs into typed port parameters, including `CountryCode`.
 6. Reuse `SupplierPage(suppliers, total)` for the internal read result and
    `SupplierPageView(items, total, offset, limit)` at the public boundary.
 7. Require read-only behavior: queries do not change aggregates or emit
@@ -57,16 +57,16 @@ domain invariants into HTTP, SQLAlchemy, or a particular dashboard.
 FastAPI / CLI / Dashboard
          |
          v
-Public SuppliersAPI.search [A2-04]
+Public SuppliersAPI.search [implemented A2-04]
          |
          v
-SearchSuppliersQuery + Handler [A2-05]
+SearchSuppliersQuery + Handler [implemented A2-02/A2-05]
          |
          v
-SupplierSearchService Protocol [A2-03]
+SupplierSearchService Protocol [implemented A2-03]
          |
-         +--> InMemory search adapter [A3-02]
-         +--> SQLAlchemy search adapter [A3-03]
+         +--> InMemory search adapter [implemented A2-06]
+         +--> SQLAlchemy search adapter [implemented A2-06]
 ```
 
 The existing `SuppliersAPI.list` -> `SupplierQueryService` path stays
@@ -78,8 +78,9 @@ independently supported.
   normalization; CI green.
 - A2-03: new optional Protocol, structural-typing test and regression proving
   the existing listing adapter still satisfies its original Protocol; CI green.
-- A2-04/A2-05: public API, handler and immutable view mapping.
-- A2-06/A2-07: complete filtering/pagination/counting and compatibility tests.
+- A2-04/A2-05: public API, handler and immutable view mapping, implemented.
+- A2-06: memory and SQLAlchemy search, composition roots and shared tests, CI-qualified.
+- A2-07: regression tests, public examples and release qualification pending final CI.
 - A3: **shared behavioral suite** over InMemory, SQLite, PostgreSQL,
   including Unicode and deterministic tie-breaking.
 
@@ -100,5 +101,7 @@ domain invariants.
   equivalent observable behavior.
 - **KISS / YAGNI** - no search infrastructure without demonstrated need.
 
-**Delivery note:** This ADR records an accepted *contract design*, not
-completion of the `0.4.0a2` milestone or its adapters.
+**Delivery note:** This ADR records the design and implementation on the
+`0.4.0a2` candidate branch. The milestone can be closed only after all PR
+quality/CI gates, merge and main-branch verification. Unicode/collation
+substitutability and full PostgreSQL search qualification are reserved for A3.
