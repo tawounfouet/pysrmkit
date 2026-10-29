@@ -1,8 +1,6 @@
 """Qualification for the integration bootstrap routine."""
 
 import pytest
-from sqlalchemy import text
-
 from examples.bootstrap_integration import (
     DEFAULT_NEXT_DASHBOARD_DB_URL,
     DEFAULT_PYSRMKIT_DB_URL,
@@ -10,6 +8,8 @@ from examples.bootstrap_integration import (
     ensure_database_exists,
 )
 from examples.seed_suppliers import SOURCE_SYSTEM, SUPPLIERS
+from sqlalchemy import text
+
 from pysrmkit import PySRMKit
 from pysrmkit.adapters.sqlalchemy.engine import create_persistence_engine
 
