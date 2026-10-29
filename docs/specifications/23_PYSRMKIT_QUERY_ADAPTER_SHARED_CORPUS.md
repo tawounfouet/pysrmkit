@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-01 - Deterministic Shared Query Corpus  
 **Date:** 2026-10-29  
-**Status:** A3-01 through A3-07 evidence qualified on main; 0.4.0a3 version-bump qualification pending
+**Status:** A3-01 through A3-07 and the 0.4.0a3 source version qualified on main (CI #251)
 
 ## 1. Context and problem
 
@@ -119,12 +119,12 @@ portable contract. See ADR 24 and main CI #245.
 - [x] PostgreSQL search PR #35 merged and qualified on `main` in CI #240 (all three jobs green).
 - [x] A3-06 Unicode/collation policy and provider results qualified in PR #36 and post-merge main CI #245. [Unicode Policy ADR](24_PYSRMKIT_SUPPLIER_SEARCH_UNICODE_COLLATION_POLICY.md).
 - [x] A3-04/A3-07 SQLite/PostgreSQL actual query plans and index-decision evidence qualified in PR #37 and main CI #249. [Query Plan Report](25_PYSRMKIT_SUPPLIER_QUERY_PLAN_AND_INDEX_QUALIFICATION.md).
-- [ ] Final 0.4.0a3 version and release documentation PR/merged main CI qualified.
+- [x] Final 0.4.0a3 source version and qualification PR #38 / main CI #251 qualified.
 
 The above checklist will be updated only with verified CI evidence.
 All **three adapters** pass the same shared ASCII contract suite. The
-`0.4.0a3` milestone remains open only for the release-candidate version
-synchronization, final PR CI and post-merge main verification.
+`0.4.0a3` source milestone was closed through PR #38, PR CI #250 and
+post-merge main CI #251. See [final qualification evidence](../qualification/0.4.0a3.md).
 
 ## 7. Pedagogical design concepts
 
