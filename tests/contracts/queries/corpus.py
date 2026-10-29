@@ -15,7 +15,7 @@ from pysrmkit.domain.supplier.value_objects import (
     SupplierId,
     SupplierIdentity,
 )
-from pysrmkit.ports.queries.supplier import SupplierSearchService
+from pysrmkit.ports.queries.supplier import SupplierQueryService, SupplierSearchService
 from pysrmkit.ports.repositories.supplier import SupplierRepository
 
 
@@ -158,7 +158,9 @@ UNICODE_PROBES: tuple[UnicodeProbe, ...] = (
 )
 
 
-class SearchableSupplierRepository(SupplierRepository, SupplierSearchService, Protocol):
+class SearchableSupplierRepository(
+    SupplierRepository, SupplierQueryService, SupplierSearchService, Protocol
+):
     """Test-only intersecting Protocol; no change to production Ports."""
 
 
