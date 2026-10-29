@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-01 - Deterministic Shared Query Corpus  
 **Date:** 2026-10-29  
-**Status:** A3-01 and A3-05 qualified on main; A3-06 Unicode policy under PR #36 qualification
+**Status:** A3-01 through A3-07 evidence qualified on main; 0.4.0a3 version-bump qualification pending
 
 ## 1. Context and problem
 
@@ -107,8 +107,8 @@ A3-05 instantiates the same abstract test class with a real PostgreSQL
 repository in `tests/contracts/queries/test_postgresql_supplier_search_contract.py`.
 It uses an isolated fresh schema per case, the existing PostgreSQL CI service,
 and `pytest.mark.postgresql`, without duplicating expected results.
-A3-06 will harden boundaries, Unicode decisions and read-only behavior
-in all three backends.
+A3-06 characterized Unicode differences and adopted an explicit ASCII-only
+portable contract. See ADR 24 and main CI #245.
 
 ## 6. Quality gates
 
@@ -117,11 +117,14 @@ in all three backends.
 - [x] A3-01 PR #34 merged and post-merge `main` qualified in CI #237.
 - [x] PostgreSQL executes the same inherited search suite: PR #35 CI #238 `postgresql` job (65 passed, 381 deselected).
 - [x] PostgreSQL search PR #35 merged and qualified on `main` in CI #240 (all three jobs green).
-- [x] A3-06 Unicode/collation policy defined and provider results captured in PR #36 CI #241. [Unicode Policy ADR](24_PYSRMKIT_SUPPLIER_SEARCH_UNICODE_COLLATION_POLICY.md).
+- [x] A3-06 Unicode/collation policy and provider results qualified in PR #36 and post-merge main CI #245. [Unicode Policy ADR](24_PYSRMKIT_SUPPLIER_SEARCH_UNICODE_COLLATION_POLICY.md).
+- [x] A3-04/A3-07 SQLite/PostgreSQL actual query plans and index-decision evidence qualified in PR #37 and main CI #249. [Query Plan Report](25_PYSRMKIT_SUPPLIER_QUERY_PLAN_AND_INDEX_QUALIFICATION.md).
+- [ ] Final 0.4.0a3 version and release documentation PR/merged main CI qualified.
 
 The above checklist will be updated only with verified CI evidence.
-The full `0.4.0a3` milestone remains open until all **three adapters**
-pass one shared contract suite.
+All **three adapters** pass the same shared ASCII contract suite. The
+`0.4.0a3` milestone remains open only for the release-candidate version
+synchronization, final PR CI and post-merge main verification.
 
 ## 7. Pedagogical design concepts
 
@@ -142,8 +145,8 @@ pass one shared contract suite.
   present from A2-06; now they are subjected to stricter contract evidence.
 - **A3-04:** analyze SQLite qualification and query plan boundaries.
 - **A3-05:** PostgreSQL shared-suite instantiation qualified on `main` in CI #240.
-- **A3-06:** close cross-adapter behavior, null/edge and Unicode policy.
-- **A3-07:** characterize query plans and index needs *only if evidenced*.
+- **A3-06:** Unicode policy qualified on main in CI #245; the non-ASCII behavior remains explicitly backend-dependent.
+- **A3-07:** SQLite/PostgreSQL query plans characterized in PR #37 and qualified on main in CI #249; no unsupported indexes introduced.
 
 **Non-goal:** This document does not claim completion of `0.4.0a3`
 or full Unicode equivalence.
