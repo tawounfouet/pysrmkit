@@ -87,10 +87,10 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
     SearchCase(
         "all-ascending",
         (
+            "asteria",
             "atlas-a",
             "atlas-b",
             "atlas-service",
-            "asteria",
             "boreal-a",
             "boreal-b",
             "cedar",
@@ -112,7 +112,7 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
     ),
     SearchCase(
         "legal-and-trading-name-contains",
-        ("atlas-a", "atlas-b", "atlas-service", "asteria", "zeta"),
+        ("asteria", "atlas-a", "atlas-b", "atlas-service", "zeta"),
         5,
         query="aTlAs",
     ),
@@ -128,7 +128,7 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
     ),
     SearchCase("trading-name-only", ("boreal-b",), 1, query="north"),
     SearchCase(
-        "second-full-page", ("atlas-service", "asteria"), 5, query="atlas", offset=2, limit=2
+        "second-full-page", ("atlas-b", "atlas-service"), 5, query="atlas", offset=2, limit=2
     ),
     SearchCase("last-partial-page", ("zeta",), 5, query="atlas", offset=4, limit=2),
     SearchCase("beyond-final-page", (), 5, query="atlas", offset=100, limit=5),
@@ -138,7 +138,7 @@ SEARCH_CASES: tuple[SearchCase, ...] = (
     SearchCase("supplier-type-exact-case", (), 0, supplier_type="service"),
     SearchCase(
         "supplier-type-service",
-        ("atlas-service", "asteria", "boreal-a", "delta", "nimbus", "percent", "under"),
+        ("asteria", "atlas-service", "boreal-a", "delta", "nimbus", "percent", "under"),
         7,
         supplier_type="SERVICE",
     ),
