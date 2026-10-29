@@ -12,7 +12,11 @@ from pysrmkit.application.relationship.errors import (
 from pysrmkit.domain.qualification.entities import SupplierQualification
 from pysrmkit.domain.supplier.entities import Supplier
 from pysrmkit.domain.supplier.value_objects import CountryCode
-from pysrmkit.ports.queries.supplier import SupplierPage, SupplierQueryService, SupplierSearchService
+from pysrmkit.ports.queries.supplier import (
+    SupplierPage,
+    SupplierQueryService,
+    SupplierSearchService,
+)
 from pysrmkit.ports.repositories.assessment import SupplierAssessmentRepository
 from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.qualification import SupplierQualificationRepository
