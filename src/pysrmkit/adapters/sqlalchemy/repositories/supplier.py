@@ -3,8 +3,8 @@
 from typing import Literal
 
 from sqlalchemy import func, or_, select
-from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.elements import ColumnElement
 
 from pysrmkit.adapters.sqlalchemy.mappers.supplier import (
     apply_supplier_state,
