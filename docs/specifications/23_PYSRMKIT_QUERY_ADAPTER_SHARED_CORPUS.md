@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-01 - Deterministic Shared Query Corpus  
 **Date:** 2026-10-29  
-**Status:** A3-01 qualified on main; PostgreSQL shared contract implemented in PR #35 (CI qualification in progress)
+**Status:** A3-01 and A3-05 qualified on main; A3-06 Unicode policy under PR #36 qualification
 
 ## 1. Context and problem
 
@@ -116,8 +116,8 @@ in all three backends.
 - [x] InMemory and SQLite search and `list_suppliers()` compatibility in CI #236.
 - [x] A3-01 PR #34 merged and post-merge `main` qualified in CI #237.
 - [x] PostgreSQL executes the same inherited search suite: PR #35 CI #238 `postgresql` job (65 passed, 381 deselected).
-- [ ] PostgreSQL search PR #35 complete (`quality`, `postgresql`, `integration` all green), merge and post-merge `main` CI qualification.
-- [ ] A3-06 explicit Unicode/collation policy and divergent behavior handling.
+- [x] PostgreSQL search PR #35 merged and qualified on `main` in CI #240 (all three jobs green).
+- [x] A3-06 Unicode/collation policy defined and provider results captured in PR #36 CI #241. [Unicode Policy ADR](24_PYSRMKIT_SUPPLIER_SEARCH_UNICODE_COLLATION_POLICY.md).
 
 The above checklist will be updated only with verified CI evidence.
 The full `0.4.0a3` milestone remains open until all **three adapters**
@@ -141,7 +141,7 @@ pass one shared contract suite.
 - **A3-02/A3-03:** existing memory and SQL search implementations are already
   present from A2-06; now they are subjected to stricter contract evidence.
 - **A3-04:** analyze SQLite qualification and query plan boundaries.
-- **A3-05:** PostgreSQL shared-suite instantiation implemented in PR #35; full PR and post-merge CI pending.
+- **A3-05:** PostgreSQL shared-suite instantiation qualified on `main` in CI #240.
 - **A3-06:** close cross-adapter behavior, null/edge and Unicode policy.
 - **A3-07:** characterize query plans and index needs *only if evidenced*.
 
