@@ -87,8 +87,12 @@ assert page.total == 1
 - The legacy `suppliers.list()` retains its signature and UUID-based
   ordering; `search()` has its own semantic ordering.
 - No text search over external identifiers or fuzzy matching is promised.
-- Unicode/accent/collation equivalence across Python, SQLite and PostgreSQL
-  is **not guaranteed** until the `0.4.0a3` adapter qualification.
+- The portable contract guarantees ASCII case-insensitive search and
+  deterministic ASCII name sorting. **Non-ASCII matching and ordering remain
+  backend/locale-dependent**: CI Unicode probes show different results for
+  `Straße`, `Étoile` and `İSTANBUL` across InMemory, SQLite and PostgreSQL.
+  This is an explicit alpha limitation, not a promised fix in `0.4.0a3`.
+  See the [Unicode and Collation Policy ADR](docs/specifications/24_PYSRMKIT_SUPPLIER_SEARCH_UNICODE_COLLATION_POLICY.md).
 
 See [Supplier Query Contract ADR](docs/specifications/22_PYSRMKIT_SUPPLIER_QUERY_CONTRACT_ADR.md).
 See [0.4.0a2 qualification evidence](docs/qualification/0.4.0a2.md) for exact commit and CI gates.
