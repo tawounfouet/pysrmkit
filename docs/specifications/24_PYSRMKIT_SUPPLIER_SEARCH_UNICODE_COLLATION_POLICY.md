@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-06 - Unicode & Collation Policy  
 **Date:** 2026-10-29  
-**Status:** Accepted for current alpha behavior; backend observations pending CI evidence
+**Status:** Accepted alpha scope; three-backend Unicode observations verified in PR #36 CI #241
 
 ## 1. Context
 
@@ -77,8 +77,27 @@ CI prints `UNICODE_PROBE backend=<...> case=<...> matched=<...>` for each
 backend and probe. This is observable diagnostic evidence, **not** a
 cross-backend equality assertion.
 
-**Observed comparison matrix:** pending inspection of CI on PR containing
-this ADR; do not substitute predictions for actual SQL engine results.
+### Measured observations - CI #241 (2026-10-29)
+
+| Probe | InMemory | SQLite | PostgreSQL 18 in CI |
+| --- | --- | --- | --- |
+| `sharp-s` | Match | No match | No match |
+| `accented-case` | Match | No match | Match |
+| `accent-insensitivity` | No match | No match | No match |
+| `unicode-normalization` | No match | No match | No match |
+| `turkish-i` | No match | No match | Match |
+
+**Evidence:** [PR #36 CI #241](https://github.com/tawounfouet/pysrmkit/actions/runs/40886646863).
+The `quality` job prints the InMemory/SQLite results (10 diagnostic
+executions). The `postgresql` job prints the five PostgreSQL observations
+against the live PostgreSQL 18 CI service.
+
+These are **observed results for the specific CI environment**, not
+universal assertions about arbitrary PostgreSQL collations, locales,
+extensions or SQLite builds. In particular, `Étoile`/ `étoile` and
+`İSTANBUL`/ `istanbul` differ between SQLite and that PostgreSQL
+environment. They must not become a cross-adapter equality assertion
+without a consciously chosen normalization strategy.
 
 ## 4. Options evaluated
 
@@ -128,9 +147,9 @@ provide linguistic search semantics.
 ## 7. Qualification gates
 
 - [x] Shared ASCII contract on all three adapters - PR #35, main CI #240.
-- [ ] Unicode diagnostic test matrix captured in CI with three providers.
+- [x] Unicode diagnostic matrix captured in PR #36 CI #241 on InMemory, SQLite and live PostgreSQL 18.
 - [ ] All relevant CI gates green on the exact PR head and post-merge main.
-- [ ] Evidence matrix and documentation reconciled with measured outcomes.
+- [x] ADR comparison matrix reconciled with observed outcomes in CI #241.
 
 The `0.4.0a3` milestone as a whole remains open for A3-04/A3-07 query
 plan observations, any remaining regression qualification and release gates.
