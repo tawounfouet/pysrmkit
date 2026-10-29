@@ -29,9 +29,7 @@ def _seed(session: Session) -> None:
             SupplierRecord(
                 supplier_id=UUID(int=index + 100),
                 legal_name=(
-                    f"Atlas Components {index:05d}"
-                    if index % 4 == 0
-                    else f"Vendor {index:05d}"
+                    f"Atlas Components {index:05d}" if index % 4 == 0 else f"Vendor {index:05d}"
                 ),
                 trading_name="Central Atlas" if index % 11 == 0 else None,
                 supplier_type="MANUFACTURER" if index % 3 == 0 else "SERVICE",
