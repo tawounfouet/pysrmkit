@@ -114,14 +114,23 @@ def test_search_rejects_unsupported_sort_without_dispatch() -> None:
     assert spy.calls == []
 
 
-def test_unconfigured_search_is_explicit_and_legacy_listing_still_works() -> None:
+def test_default_memory_runtime_searches_and_keeps_legacy_listing() -> None:
     srm = PySRMKit.in_memory()
     srm.suppliers.register(legal_name="Legacy Supplier")
 
-    result = srm.suppliers.list()
+    listed = srm.suppliers.list()
+    searched = srm.suppliers.search(query="legacy")
 
-    assert result.total == 1
-    assert len(result.items) == 1
-    assert result.items[0].legal_name == "Legacy Supplier"
+    assert listed.total == searched.total == 1
+    assert listed.items[0] == searched.items[0]
+
+
+def test_unconfigured_manual_facade_still_reports_missing_capability() -> None:
+    repository = InMemorySupplierRepository()
+    api = SuppliersAPI(
+        register_supplier=_RegisterSupplierStub(),
+        get_supplier=GetSupplierHandler(repository),
+        list_suppliers=ListSuppliersHandler(repository),
+    )
     with pytest.raises(NotImplementedError, match="Supplier search is not configured"):
-        srm.suppliers.search()
+        api.search()
