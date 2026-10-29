@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-06 - Unicode & Collation Policy  
 **Date:** 2026-10-29  
-**Status:** Accepted alpha scope; three-backend Unicode observations verified in PR #36 CI #241
+**Status:** Accepted and qualified on main (PR #36, CI #245); Unicode portability is explicitly limited
 
 ## 1. Context
 
@@ -148,11 +148,12 @@ provide linguistic search semantics.
 
 - [x] Shared ASCII contract on all three adapters - PR #35, main CI #240.
 - [x] Unicode diagnostic matrix captured in PR #36 CI #241 on InMemory, SQLite and live PostgreSQL 18.
-- [ ] All relevant CI gates green on the exact PR head and post-merge main.
+- [x] PR #36 CI #244 and post-merge main CI #245 fully green across quality, PostgreSQL and integration.
 - [x] ADR comparison matrix reconciled with observed outcomes in CI #241.
 
-The `0.4.0a3` milestone as a whole remains open for A3-04/A3-07 query
-plan observations, any remaining regression qualification and release gates.
+A3-04/A3-07 query plan observations were subsequently qualified on main
+in CI #249 (PR #37). Only the final `0.4.0a3` version/qualification
+candidate release gates remain open at the time of this update.
 
 ## 8. Software design learning concepts
 

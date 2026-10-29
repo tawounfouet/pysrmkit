@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-07 - Query Performance & Index Qualification  
 **Date:** 2026-10-29  
-**Status:** Observed on SQLite and PostgreSQL 18 CI; final PR qualification pending
+**Status:** Implemented, merged and qualified on main (PR #37, CI #249)
 
 ## 1. Objective and scope
 
@@ -101,8 +101,10 @@ unfiltered count is an expected special case. Both engines perform
 explicit name sorting for the requested page. No evidence yet justifies
 an unconditional cross-backend migration or a new runtime dependency.
 
-**Qualification outstanding:** Confirm all jobs of the exact latest
-PR head and run a separate post-merge CI before closing A3-07.
+**Qualification complete:** PR #37 CI #248 and post-merge main CI #249
+passed `quality`, `postgresql` and `integration`. Merge SHA:
+`bef4a5182e82abbcc2811b21d6dfd45cbb39107c`. A3-07 is closed;
+the `0.4.0a3` version-bump PR has separate release qualification gates.
 
 ## 4. Index hypotheses - no change without evidence
 
