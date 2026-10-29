@@ -155,3 +155,119 @@ def test_legacy_http_search_paginates_after_filtering(
     assert response.status_code == 200
     assert response.json()["total"] == 1
     assert response.json()["items"][0]["legal_name"] == "Unique Search Target"
+
+
+@pytest.mark.parametrize(
+    "options",
+    (
+        {"query": "aTlAs", "sort_order": "asc", "offset": 0, "limit": 100},
+        {"query": "aTlAs", "sort_order": "desc", "offset": 1, "limit": 1},
+        {
+            "query": " aTlAs ",
+            "country_code": " fr ",
+            "supplier_type": " MANUFACTURER ",
+            "offset": 0,
+            "limit": 5,
+        },
+        {"country_code": "FR", "sort_order": "desc", "offset": 0, "limit": 2},
+        {"query": "no matching supplier", "offset": 10, "limit": 1},
+        {"sort_order": "asc", "offset": 0, "limit": 2},
+    ),
+    ids=(
+        "name-ascending",
+        "name-descending-paged",
+        "combined-filters-normalized",
+        "country-descending",
+        "empty-page",
+        "unfiltered-canonical-sort",
+    ),
+)
+def test_canonical_http_search_matches_public_python_page(
+    runtime: PySRMKit,
+    options: dict[str, int | str],
+) -> None:
+    """A4-02: one search contract, with HTTP only translating to/from JSON."""
+    _register_corpus(runtime)
+    # Test inputs are deliberately dynamic HTTP query parameters.
+    expected = runtime.suppliers.search(**options)  # type: ignore[arg-type]
+    before = runtime.suppliers.list()
+
+    with TestClient(create_app(runtime)) as raw_client:
+        client = cast(HttpConsumer, raw_client)
+        response = client.get("/suppliers/search", params=options)
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["total"] == expected.total
+    assert payload["offset"] == expected.offset
+    assert payload["limit"] == expected.limit
+    assert [item["supplier_id"] for item in payload["items"]] == [
+        str(supplier.supplier_id) for supplier in expected.items
+    ]
+    assert [item["legal_name"] for item in payload["items"]] == [
+        supplier.legal_name for supplier in expected.items
+    ]
+    assert runtime.suppliers.list() == before
+
+
+def test_canonical_http_search_keeps_legacy_type_and_identifier_semantics(
+    runtime: PySRMKit,
+) -> None:
+    """Canonical search must not accidentally inherit legacy full-scan fields."""
+    _register_corpus(runtime)
+    with TestClient(create_app(runtime)) as raw_client:
+        client = cast(HttpConsumer, raw_client)
+        canonical_type = client.get("/suppliers/search", params={"query": "SERVICE"})
+        legacy_type = client.get("/suppliers", params={"query": "SERVICE"})
+        canonical_identifier = client.get("/suppliers/search", params={"query": "ERP-654"})
+        legacy_identifier = client.get("/suppliers", params={"query": "ERP-654"})
+
+    assert canonical_type.status_code == legacy_type.status_code == 200
+    assert canonical_type.json()["total"] == 0
+    assert legacy_type.json()["total"] == 2
+    assert canonical_identifier.status_code == legacy_identifier.status_code == 200
+    assert canonical_identifier.json()["total"] == 0
+    assert legacy_identifier.json()["total"] == 1
+
+
+@pytest.mark.parametrize(
+    "options",
+    (
+        {"offset": -1},
+        {"limit": 0},
+        {"limit": 101},
+        {"country_code": "FRA"},
+        {"country_code": ""},
+        {"sort_by": "created_at"},
+        {"sort_order": "random"},
+        {"query": "a" * 101},
+        {"supplier_type": "S" * 101},
+    ),
+)
+def test_canonical_http_search_rejects_invalid_parameters(
+    runtime: PySRMKit,
+    options: dict[str, int | str],
+) -> None:
+    """HTTP validation and business DTO validation converge on HTTP 422."""
+    with TestClient(create_app(runtime)) as raw_client:
+        client = cast(HttpConsumer, raw_client)
+        response = client.get("/suppliers/search", params=options)
+    assert response.status_code == 422
+
+
+def test_canonical_http_search_preserves_literal_sql_wildcards(
+    runtime: PySRMKit,
+) -> None:
+    runtime.suppliers.register(legal_name="Supplier 100% Services")
+    runtime.suppliers.register(legal_name="Supplier_name")
+    runtime.suppliers.register(legal_name="Supplier Standard")
+    for literal in ("%", "_"):
+        expected = runtime.suppliers.search(query=literal)
+        with TestClient(create_app(runtime)) as raw_client:
+            client = cast(HttpConsumer, raw_client)
+            response = client.get("/suppliers/search", params={"query": literal})
+        assert response.status_code == 200
+        assert response.json()["total"] == expected.total == 1
+        assert [item["supplier_id"] for item in response.json()["items"]] == [
+            str(item.supplier_id) for item in expected.items
+        ]
