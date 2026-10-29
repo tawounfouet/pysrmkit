@@ -4,7 +4,7 @@
 **Cycle:** 4 - `0.4.0a3` Query Adapter Qualification  
 **Work package:** A3-07 - Query Performance & Index Qualification  
 **Date:** 2026-10-29  
-**Status:** Candidate - empirical results pending CI
+**Status:** Observed on SQLite and PostgreSQL 18 CI; final PR qualification pending
 
 ## 1. Objective and scope
 
@@ -68,8 +68,41 @@ Raw plan output and single-run execution times should be consulted in the
 exact GitHub Actions run. CI output is the evidence, not hard-coded values
 in this document.
 
-**CI evidence status:** Pending the A3-07 PR run. Add exact run ID,
-head SHA and observations after confirming the jobs.
+### Observations from CI (2026-10-29)
+
+| Scenario | Matches / page | SQLite count | SQLite page | PostgreSQL count | PostgreSQL page |
+| --- | --- | --- | --- | --- | --- |
+| `unfiltered` | 1,200 / 25 | Covering PK index scan | Table scan + temporary B-tree ORDER BY | Sequential scan + aggregate | Sequential scan + sort |
+| `substring` | 382 / 25 | Table scan | Table scan + temporary B-tree ORDER BY | Sequential scan + aggregate | Sequential scan + sort |
+| `combined-filters` | 26 / 6 | Table scan | Table scan + temporary B-tree ORDER BY | Sequential scan + aggregate | Sequential scan + sort |
+
+**Actual evidence:**
+- [PR #37 CI #246](https://github.com/tawounfouet/pysrmkit/actions/runs/40911709365) PostgreSQL `postgresql` job: real `EXPLAIN (ANALYZE, BUFFERS)` details.
+  This first CI had a failed **format check** in `quality`, which was corrected in `ea12f24`; the PostgreSQL plan job nevertheless succeeded.
+- [PR #37 CI #247](https://github.com/tawounfouet/pysrmkit/actions/runs/40911818953) `quality` job: SQLite `EXPLAIN QUERY PLAN` and the 389 non-PostgreSQL tests passed.
+
+PostgreSQL 18 reports approximately **0.14/0.94 ms** for the unfiltered
+count/page, **0.43/0.82 ms** for substring count/page, and **0.14/0.19 ms**
+for combined-filter count/page in the **individual EXPLAIN ANALYZE runs**
+on 1,200 rows. These numbers are isolated server-side observations,
+not total API latency or an SLA. The query outputs also include a
+distinct ORM call time and related-object loading.
+
+In the substring scenario, PostgreSQL's optimizer estimated **4** rows
+but observed **382**. For combined filters it estimated **1** and
+observed **26**. This is a query-selectivity estimation issue worth
+testing under more representative workloads; it does **not** itself
+prove that any proposed index would improve latency.
+
+**Interpretation:** The observed access patterns are consistent with
+function-wrapped name columns and `%atlas%` substring predicates on a
+small synthetic corpus. The SQLite primary-key covering scan for the
+unfiltered count is an expected special case. Both engines perform
+explicit name sorting for the requested page. No evidence yet justifies
+an unconditional cross-backend migration or a new runtime dependency.
+
+**Qualification outstanding:** Confirm all jobs of the exact latest
+PR head and run a separate post-merge CI before closing A3-07.
 
 ## 4. Index hypotheses - no change without evidence
 
