@@ -2,10 +2,10 @@
 
 **Document:** `27_PYSRMKIT_CANONICAL_HTTP_SUPPLIER_SEARCH_CONTRACT.md`  
 **Cycle:** 4 - Multi-Consumer Integration Qualification  
-**Milestone:** `0.4.0a4` (work in progress)  
+**Milestone:** `0.4.0a4` - final source-release qualification pending  
 **Lot:** A4-02 - Canonical HTTP Supplier Search  
 **Date:** 2026-10-29  
-**Status:** A4-02 qualified on main (PR #41, CI #259); A4-03 PostgreSQL transport qualification pending
+**Status:** A4-02 through A4-05 source behavior qualified on main (latest CI #268)
 
 ## 1. Motivation
 
@@ -120,8 +120,10 @@ results under both InMemory and file-backed SQLite:
 A4-03 extends the **canonical HTTP transport contract** to real
 PostgreSQL through `tests/consumers/test_postgresql_http_supplier_search.py`:
 HTTP/Python page parity, legacy isolation, 422 validation, literal SQL
-wildcards, and reload through a fresh runtime composition. A4-04 will validate the dashboard's deliberate use of the
-legacy route until an explicit consumer migration is accepted.
+wildcards, and reload through a fresh runtime composition. A4-04
+subsequently qualified the dashboard's deliberate use of the legacy
+route through real-browser E2E (PR #43, CI #265); A4-05 added the
+regression and independent-runtime matrix (PR #44, CI #268).
 
 ## 5. Architecture and design learning
 
@@ -148,6 +150,11 @@ canonical core API.
 - [x] A4-02 PR #41 CI #258 `quality`, `postgresql`, `integration` green.
 - [x] A4-02 merged into `main` as `14a2de0`.
 - [x] A4-02 post-merge main CI #259 green.
-- [ ] A4-03 real PostgreSQL HTTP transport tests pass in CI and on `main`.
+- [x] A4-03 PostgreSQL transport contract PR #42 qualified on main CI #262.
+- [x] A4-04 Next.js legacy consumer PR #43 qualified on main CI #265.
+- [x] A4-05 cross-consumer regression PR #44 qualified on main CI #268.
+- [ ] A4-06 source release-candidate PR and post-merge main CI qualified.
 
-The package remains `0.4.0a3` until the final A4 release gate.
+A4-01 to A4-05 were qualified under source version `0.4.0a3`.
+A4-06 updates the source version to `0.4.0a4`, subject to its own
+qualification gates; no Git tag or PyPI publication is implied.

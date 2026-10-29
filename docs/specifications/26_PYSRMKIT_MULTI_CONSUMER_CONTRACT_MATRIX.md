@@ -5,7 +5,7 @@
 **Milestone:** `0.4.0a4` - Multi-Consumer Integration Qualification (proposed scope)  
 **Work package:** A4-01 - Consumer Contract Inventory and Characterization  
 **Date:** 2026-10-29  
-**Status:** A4-01 qualified on main (CI #257); A4-02 additive HTTP route in PR qualification
+**Status:** A4-01 to A4-05 qualified on main (latest CI #268); A4-06 source release candidate
 
 ## 1. Source of scope and decision status
 
@@ -132,12 +132,16 @@ interface promoted as the canonical Supplier domain API.
 - [x] A4-01 tests pass on InMemory and SQLite under `quality`.
 - [x] A4-01 PR #40 CI #256 `quality`, `postgresql`, `integration` green.
 - [x] A4-01 merged as `5b57e07` and post-merge `main` CI #257 qualified.
-- [ ] A4-02 dedicated `/suppliers/search` route CI and main qualification.
-- [ ] A4-03 onwards separately planned and accepted.
+- [x] A4-02 `/suppliers/search` opt-in route qualified (PR #41, main CI #259).
+- [x] A4-03 real PostgreSQL HTTP parity qualified (PR #42, main CI #262).
+- [x] A4-04 Next.js legacy consumer qualified (PR #43, main CI #265).
+- [x] A4-05 regression and isolation qualified (PR #44, main CI #268).
+- [ ] A4-06 final version-bump PR and post-merge main CI qualified.
 
-**Source-release status:** `0.4.0a3` remains the current version.
-This A4-01 test/documentation work is not a `0.4.0a4` package release
-and implies neither Git tag nor PyPI publication.
+**Source-release status:** A4-01 to A4-05 were qualified while the
+package version was `0.4.0a3`. A4-06 now prepares `0.4.0a4`
+for separate exact-commit CI qualification, with no Git tag or PyPI
+publication implied.
 
 ## 8. A4-04 dashboard consumer decision
 
