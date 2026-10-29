@@ -7,6 +7,7 @@ It does not silently turn a mismatch into a public API guarantee.
 from __future__ import annotations
 
 from collections.abc import Iterator
+from pathlib import Path
 from typing import Protocol, cast
 
 import pytest
@@ -25,13 +26,15 @@ class HttpConsumer(Protocol):
 
 
 @pytest.fixture(params=("memory", "sqlite"))
-def runtime(request: pytest.FixtureRequest) -> Iterator[PySRMKit]:
+def runtime(request: pytest.FixtureRequest, tmp_path: Path) -> Iterator[PySRMKit]:
     """Use the same runtime instance as both the Python and HTTP consumer."""
     if request.param == "memory":
         yield PySRMKit.in_memory()
         return
 
-    engine = create_engine("sqlite+pysqlite:///:memory:")
+    # HTTP TestClient uses a separate thread; a file-backed SQLite database
+    # keeps the same schema visible across thread-local DBAPI connections.
+    engine = create_engine(f"sqlite+pysqlite:///{tmp_path / 'consumer.db'}")
     load_persistence_metadata().create_all(engine)
     try:
         yield PySRMKit.sql(engine)
