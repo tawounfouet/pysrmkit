@@ -13,7 +13,7 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 
 ## Cycle 4 - Industrialisation & Integration Qualification
 
-### 0.4.0a2 - Supplier Query API (release candidate - PR #32)
+### 0.4.0a2 - Supplier Query API (qualified on main - 2026-10-29)
 
 - Added immutable `SearchSuppliersQuery` validation for search text, country, supplier type, sorting and bounded pagination.
 - Added a separate optional `SupplierSearchService` read Port, leaving the original listing-only Port unchanged (Interface Segregation).
@@ -22,7 +22,7 @@ All notable changes to PySRMKit are documented here, grouped by implementation c
 - Wired search handlers into both standard Composition Roots without adding required runtime dependencies.
 - Added cross-runtime InMemory/SQLite behavioral and regression tests: partial matching, trading names, literal SQL wildcard characters, country/type filters, total/page semantics, stability, read-only events, and preservation of `list()`.
 - Documented public API and limitations in README and ADR. Unicode/accent collation equivalence and the full PostgreSQL search contract suite remain scoped to `0.4.0a3`.
-- Qualification status: **pending latest PR CI, merge, and post-merge main verification**. This entry is not proof of publication on PyPI.
+- Qualification: PR #32 CI #230 and post-merge main CI #231 succeeded across quality, PostgreSQL and integration jobs. Merge commit `c84110c`. [Qualification evidence](docs/qualification/0.4.0a2.md). Not a claim of PyPI publication.
 
 ### 0.4.0a1 - Integration Reproducibility
 - Automated idempotent PostgreSQL database provisioning (`pysrmkit` and `next_dashboard`) via `examples/bootstrap_integration.py`.
