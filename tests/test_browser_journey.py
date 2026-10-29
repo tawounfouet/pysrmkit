@@ -6,16 +6,17 @@ from pathlib import Path
 
 import pytest
 from examples.run_stack import run_integration_stack
-from playwright.sync_api import expect, sync_playwright
 
 
-@pytest.mark.postgresql
+@pytest.mark.integration
 def test_nextjs_suppliers_browser_journey() -> None:
     dashboard_root = (
         Path(__file__).resolve().parent.parent.parent / "resources" / "nextjs-acme-dashboard"
     )
     if not (dashboard_root / "app").is_dir():
         pytest.skip("Next.js Acme Dashboard is not present in workspace")
+
+    from playwright.sync_api import expect, sync_playwright
 
     with run_integration_stack(api_port=8000, dashboard_port=3000) as urls:
         with sync_playwright() as p:
