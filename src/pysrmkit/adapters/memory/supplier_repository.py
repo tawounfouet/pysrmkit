@@ -106,9 +106,7 @@ class InMemorySupplierRepository:
             reverse=sort_order == "desc",
         )
         return SupplierPage(
-            suppliers=tuple(
-                self._restore(stored) for stored in matching[offset : offset + limit]
-            ),
+            suppliers=tuple(self._restore(stored) for stored in matching[offset : offset + limit]),
             total=len(matching),
         )
 
