@@ -168,9 +168,7 @@ def test_search_tie_break_is_stable_across_pages_and_repeated_calls(
 
     order = cast(Literal["asc", "desc"], sort_order)
     first = srm.suppliers.search(query="Atlas Components", sort_order=order, limit=1)
-    second = srm.suppliers.search(
-        query="Atlas Components", sort_order=order, offset=1, limit=1
-    )
+    second = srm.suppliers.search(query="Atlas Components", sort_order=order, offset=1, limit=1)
     repeated = srm.suppliers.search(query="Atlas Components", sort_order=order, limit=2)
 
     ids = [item.supplier_id.value for item in (*first.items, *second.items)]
