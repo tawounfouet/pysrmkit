@@ -67,29 +67,33 @@ def run_integration_stack(
         "--port",
         str(api_port),
     ]
-    api_proc = subprocess.Popen(
-        api_cmd,
-        cwd=str(pysrmkit_root),
-        env=api_env,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-
-    # 3. Launch Next.js (use production start for speed and reproducibility unless dev requested)
-    dashboard_cmd = (
-        ["npm", "run", "dev", "--", "-p", str(dashboard_port)]
-        if dev_mode
-        else ["npx", "next", "start", "-p", str(dashboard_port)]
-    )
-    dashboard_proc = subprocess.Popen(
-        dashboard_cmd,
-        cwd=str(dashboard_root),
-        env=dashboard_env,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-
+    # Create both children under one ownership boundary. If launching
+    # Next.js fails, the already-started FastAPI process is still cleaned up.
+    api_proc: subprocess.Popen[bytes] | None = None
+    dashboard_proc: subprocess.Popen[bytes] | None = None
     try:
+        api_proc = subprocess.Popen(
+            api_cmd,
+            cwd=str(pysrmkit_root),
+            env=api_env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+        # Production start is preferred over the development server.
+        dashboard_cmd = (
+            ["npm", "run", "dev", "--", "-p", str(dashboard_port)]
+            if dev_mode
+            else ["npx", "next", "start", "-p", str(dashboard_port)]
+        )
+        dashboard_proc = subprocess.Popen(
+            dashboard_cmd,
+            cwd=str(dashboard_root),
+            env=dashboard_env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
         api_url = f"http://127.0.0.1:{api_port}"
         dashboard_url = f"http://localhost:{dashboard_port}"
 
@@ -105,12 +109,15 @@ def run_integration_stack(
         }
     finally:
         for proc in (dashboard_proc, api_proc):
-            if proc.poll() is None:
-                proc.terminate()
-                try:
-                    proc.wait(timeout=3.0)
-                except subprocess.TimeoutExpired:
-                    proc.kill()
+            if proc is None or proc.poll() is not None:
+                continue
+            proc.terminate()
+            try:
+                proc.wait(timeout=3.0)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                # Reap the child even after escalation; do not leave zombies.
+                proc.wait()
 
 
 def main() -> None:

@@ -2,7 +2,7 @@
 
 **Milestone:** `0.4.0a5` - Cycle 4 Final E2E & CI Qualification  
 **Date:** 2026-10-29  
-**Status:** A5-01 qualified on main (PR #47, CI #274); A5-02 under qualification
+**Status:** A5-01 and A5-02 qualified on main (CI #279); A5-03 candidate under qualification
 
 ## Scope basis
 
@@ -86,7 +86,8 @@ remain compatible forever.
 - [x] The previously qualified `0.4.0a4` source release is on main.
 - [x] A5-01 PR #47 CI #273 passed all three jobs, with exact SHA logged.
 - [x] A5-01 merged as `8ec285b` and post-merge main CI #274 green.
-- [ ] A5-02 repeated PostgreSQL bootstrap and supplier snapshot PR/main CI green.
+- [x] A5-02 repeated PostgreSQL bootstrap and supplier snapshot PR #48 / main CI #279 green.
+- [ ] A5-03 startup failure and process cleanup PR/main CI green.
 - [ ] Remaining A5 lots and final `0.4.0a5` source version qualified.
 
 No Git tag, GitHub Release or PyPI publication is implied.
@@ -118,3 +119,28 @@ seed. No changes to production bootstrap logic or migrations are needed.
 
 **Design concepts:** Idempotency, State-based Regression Testing,
 Reproducible Integration Testing, CQS and Separation of Concerns.
+
+## A5-03 - Startup failure and child cleanup
+
+The integration context manager previously created the FastAPI subprocess
+**before** entering its `try/finally` block. If the Next.js spawn
+raised (e.g. `npm` not found), FastAPI could outlive the failed
+startup. The revised code owns both child launches inside one
+`try/finally` boundary, with optional process handles, and always
+reaps a force-killed child by calling `wait()` after `kill()`.
+
+The executable regression tests in `tests/test_run_stack_cleanup.py`
+exercise failure to spawn the dashboard, FastAPI/Next.js readiness
+timeouts, a consumer exception within the context, forced kill after
+the graceful termination timeout, and a child already exited.
+
+These tests use isolated process mocks to avoid launching background
+servers during the quality job. The existing full Playwright/PostgreSQL
+integration remains responsible for the real successful startup path.
+Process **descendants** created by npm/Next.js are not individually
+tracked by this context manager; this lot does not claim tree-wide
+process-group termination, arbitrary-signal resilience or crash
+recovery.
+
+**Design concepts:** RAII/context-manager resource ownership,
+Exception Safety, Failure-Path Testing, Idempotent Cleanup and SoC.
