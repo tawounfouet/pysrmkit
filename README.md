@@ -19,6 +19,13 @@ Four implementation cycles:
 
 PySRMKit is a reusable **Supplier Domain Engine**, not a complete SRM application. It remains independent of API frameworks, cloud platforms, message brokers and external SRM products. SQLAlchemy is optional.
 
+## Cycle 4 final qualification - `0.4.0a5`
+
+The final source candidate pins the external Next.js dashboard to `11ed240f7e25e3de22304a3fa5b1c4a67f787bf2`, verifies sequential PostgreSQL bootstrap idempotence, and tests integration stack startup failure/child cleanup. CI is still required on the exact candidate head and final merged main commit. This is partial reproducibility, not a hermetic build or a production deployment guarantee.
+
+- [Cycle 4 final qualification plan](docs/specifications/28_PYSRMKIT_CYCLE_4_FINAL_QUALIFICATION_AND_REPRODUCIBILITY.md)
+- [`0.4.0a5` qualification candidate](docs/qualification/0.4.0a5.md)
+
 ## Multi-consumer integration - `0.4.0a4`
 
 The optional FastAPI example provides **two deliberately separate**
