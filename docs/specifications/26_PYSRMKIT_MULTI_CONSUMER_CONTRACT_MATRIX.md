@@ -5,7 +5,7 @@
 **Milestone:** `0.4.0a4` - Multi-Consumer Integration Qualification (proposed scope)  
 **Work package:** A4-01 - Consumer Contract Inventory and Characterization  
 **Date:** 2026-10-29  
-**Status:** Draft ADR and executable characterization; PR CI pending
+**Status:** A4-01 qualified on main (CI #257); A4-02 additive HTTP route in PR qualification
 
 ## 1. Source of scope and decision status
 
@@ -100,10 +100,11 @@ contracts, including drift, rather than asserting unsupported parity.
 | A4-05 | Qualify cross-consumer pagination, validation, errors and data isolation | Regression matrix complete |
 | A4-06 | Finalize `0.4.0a4` version, evidence report and main-branch CI | PR and post-merge all green |
 
-The A4-02 design should prefer a new `GET /suppliers/search` route
-(or another explicitly versioned opt-in endpoint) to avoid breaking
-the existing `GET /suppliers?query` contract. If a different external
-API shape is selected, record the decision first.
+A4-02 selects the additive `GET /suppliers/search` route and preserves
+`GET /suppliers?query` unchanged. The transport contract, 422 mapping,
+pagination defaults and compatibility gates are recorded in
+[ADR 27](27_PYSRMKIT_CANONICAL_HTTP_SUPPLIER_SEARCH_CONTRACT.md).
+The A4-02 implementation and CI are a separate PR.
 
 Non-goals at A4-01: no production API changes, no new SQL index, no
 new domain rules, no mandatory dependency, no public CLI, no HTTP
@@ -128,10 +129,11 @@ interface promoted as the canonical Supplier domain API.
 ## 7. Qualification
 
 - [x] `0.4.0a3` baseline source qualified (main CI #253).
-- [ ] A4-01 tests pass on InMemory and SQLite under `quality`.
-- [ ] A4-01 PR `quality`, `postgresql`, `integration` green.
-- [ ] A4-01 merged and post-merge `main` CI qualified.
-- [ ] A4-02 onwards separately planned and accepted.
+- [x] A4-01 tests pass on InMemory and SQLite under `quality`.
+- [x] A4-01 PR #40 CI #256 `quality`, `postgresql`, `integration` green.
+- [x] A4-01 merged as `5b57e07` and post-merge `main` CI #257 qualified.
+- [ ] A4-02 dedicated `/suppliers/search` route CI and main qualification.
+- [ ] A4-03 onwards separately planned and accepted.
 
 **Source-release status:** `0.4.0a3` remains the current version.
 This A4-01 test/documentation work is not a `0.4.0a4` package release
