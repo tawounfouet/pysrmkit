@@ -1,7 +1,10 @@
 """SQLAlchemy implementation of SupplierRepository."""
 
-from sqlalchemy import func, select
+from typing import Literal
+
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.elements import ColumnElement
 
 from pysrmkit.adapters.sqlalchemy.mappers.supplier import (
     apply_supplier_state,
@@ -13,7 +16,7 @@ from pysrmkit.adapters.sqlalchemy.models.supplier import (
     SupplierRecord,
 )
 from pysrmkit.domain.supplier.entities import Supplier
-from pysrmkit.domain.supplier.value_objects import ExternalIdentifier, SupplierId
+from pysrmkit.domain.supplier.value_objects import CountryCode, ExternalIdentifier, SupplierId
 from pysrmkit.ports.queries.supplier import SupplierPage
 
 
@@ -64,6 +67,58 @@ class SqlAlchemySupplierRepository:
         total = self._session.scalar(select(func.count()).select_from(SupplierRecord)) or 0
         records = self._session.scalars(
             select(SupplierRecord).order_by(SupplierRecord.supplier_id).offset(offset).limit(limit)
+        ).all()
+        return SupplierPage(
+            suppliers=tuple(supplier_from_record(record) for record in records),
+            total=total,
+        )
+
+    def search_suppliers(
+        self,
+        *,
+        query: str | None,
+        country_code: CountryCode | None,
+        supplier_type: str | None,
+        sort_by: Literal["legal_name"],
+        sort_order: Literal["asc", "desc"],
+        offset: int,
+        limit: int,
+    ) -> SupplierPage:
+        """Execute search, count, stable ordering and pagination in the database.
+
+        Filters use bound SQLAlchemy expressions, including escaped literal
+        substring matching (%, _ and / are not wildcard query instructions).
+        Cross-backend Unicode case folding remains an A3 qualification topic.
+        """
+        if sort_by != "legal_name":
+            raise ValueError("sort_by must be 'legal_name'")
+        if sort_order not in ("asc", "desc"):
+            raise ValueError("sort_order must be 'asc' or 'desc'")
+
+        predicates: list[ColumnElement[bool]] = []
+        if query is not None:
+            needle = query.lower()
+            predicates.append(
+                or_(
+                    func.lower(SupplierRecord.legal_name).contains(needle, autoescape=True),
+                    func.lower(SupplierRecord.trading_name).contains(needle, autoescape=True),
+                )
+            )
+        if country_code is not None:
+            predicates.append(SupplierRecord.country_code == country_code.value)
+        if supplier_type is not None:
+            predicates.append(SupplierRecord.supplier_type == supplier_type)
+
+        count_stmt = select(func.count()).select_from(SupplierRecord).where(*predicates)
+        total = self._session.scalar(count_stmt) or 0
+        name_order = func.lower(SupplierRecord.legal_name)
+        name_ordering = name_order.asc() if sort_order == "asc" else name_order.desc()
+        records = self._session.scalars(
+            select(SupplierRecord)
+            .where(*predicates)
+            .order_by(name_ordering, SupplierRecord.supplier_id.asc())
+            .offset(offset)
+            .limit(limit)
         ).all()
         return SupplierPage(
             suppliers=tuple(supplier_from_record(record) for record in records),

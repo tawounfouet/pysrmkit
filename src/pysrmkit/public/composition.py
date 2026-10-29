@@ -51,6 +51,7 @@ from pysrmkit.public.query_handlers import (
     GetSupplierHandler,
     GetSupplierRelationshipHandler,
     ListSuppliersHandler,
+    SearchSuppliersHandler,
 )
 
 
@@ -98,6 +99,7 @@ def compose_in_memory(
         ),
         get_supplier=GetSupplierHandler(suppliers),
         list_suppliers=ListSuppliersHandler(suppliers),
+        search_suppliers=SearchSuppliersHandler(suppliers),
     )
     relationships_api = RelationshipsAPI(
         create_relationship=CreateSupplierRelationshipHandler(

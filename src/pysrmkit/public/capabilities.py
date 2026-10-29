@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pysrmkit.application.assessment.commands import (
     AssessmentQuestionInput,
     CompleteSupplierAssessment,
@@ -61,6 +63,7 @@ from pysrmkit.public._queries import (
     GetSupplier,
     GetSupplierRelationship,
     ListSuppliers,
+    SearchSuppliersQuery,
 )
 from pysrmkit.public.views import (
     AssessmentView,
@@ -81,10 +84,12 @@ class SuppliersAPI:
         register_supplier: Handler[RegisterSupplier, RegisterSupplierResult],
         get_supplier: Handler[GetSupplier, SupplierView],
         list_suppliers: Handler[ListSuppliers, SupplierPageView] | None = None,
+        search_suppliers: Handler[SearchSuppliersQuery, SupplierPageView] | None = None,
     ) -> None:
         self._register_supplier = register_supplier
         self._get_supplier = get_supplier
         self._list_suppliers = list_suppliers
+        self._search_suppliers = search_suppliers
 
     def register(
         self,
@@ -115,6 +120,38 @@ class SuppliersAPI:
         if self._list_suppliers is None:
             raise NotImplementedError("Supplier listing is not configured for this runtime")
         return self._list_suppliers.handle(ListSuppliers(offset=offset, limit=limit))
+
+    def search(
+        self,
+        *,
+        query: str | None = None,
+        country_code: str | None = None,
+        supplier_type: str | None = None,
+        sort_by: Literal["legal_name"] = "legal_name",
+        sort_order: Literal["asc", "desc"] = "asc",
+        offset: int = 0,
+        limit: int = 100,
+    ) -> SupplierPageView:
+        """Request a filtered Supplier page through an optional query handler.
+
+        Design concepts:
+            - Facade: consumers receive a stable, capability-oriented API.
+            - Immutable DTO: validation and normalization are transport-independent.
+            - Dependency Inversion: the facade only knows a typed Handler protocol.
+        """
+        if self._search_suppliers is None:
+            raise NotImplementedError("Supplier search is not configured for this runtime")
+        return self._search_suppliers.handle(
+            SearchSuppliersQuery(
+                query=query,
+                country_code=country_code,
+                supplier_type=supplier_type,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                offset=offset,
+                limit=limit,
+            )
+        )
 
 
 class RelationshipsAPI:

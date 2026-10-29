@@ -6,7 +6,9 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.4.0a1` Integration Reproducibility qualified on `main`.**
+**Early alpha - `0.4.0a2` Supplier Query API candidate in PR #32.**
+
+The previous `0.4.0a1` integration reproducibility milestone was qualified on its PR and merged to `main`; final `0.4.0a2` qualification is pending the new CI and merge.
 
 Four implementation cycles:
 
@@ -34,6 +36,7 @@ srm.relationships.invite(relationship_id=relationship.relationship_id)
 
 supplier_view = srm.suppliers.get(supplier_id=supplier.supplier_id)
 supplier_page = srm.suppliers.list(offset=0, limit=25)
+search_page = srm.suppliers.search(query="Example", country_code="FR", limit=25)
 relationship_view = srm.relationships.get(relationship_id=relationship.relationship_id)
 ```
 
@@ -42,6 +45,53 @@ Five business capabilities are available under `srm.suppliers`, `srm.relationshi
 To use SQL persistence, install the optional `persistence` extra, provision the schema explicitly with Alembic, then construct `PySRMKit.sql(engine)` using an externally managed SQLAlchemy Engine. SQL operations use short-lived transactions; public events are delivered after successful commit. **Event delivery is not durable** and does not provide replay or broker semantics.
 
 Public reads return immutable Views rather than SQLAlchemy records. Domain, Application and Repository Port layers remain persistence-framework agnostic.
+
+## Supplier discovery - `0.4.0a2` candidate
+
+The public `srm.suppliers.search(...)` capability is implemented in both
+`PySRMKit.in_memory()` and `PySRMKit.sql(engine)`. The latter requires the
+optional SQLAlchemy persistence dependency and a provisioned schema.
+
+```python
+from pysrmkit import PySRMKit
+
+srm = PySRMKit.in_memory()
+srm.suppliers.register(
+    legal_name="Atlas Components",
+    trading_name="Atlas",
+    supplier_type="MANUFACTURER",
+    country_code="FR",
+)
+page = srm.suppliers.search(
+    query="atlas",
+    country_code="FR",
+    supplier_type="MANUFACTURER",
+    sort_by="legal_name",
+    sort_order="asc",
+    offset=0,
+    limit=25,
+)
+assert page.total == 1
+```
+
+- The text query is trimmed and searches partial `legal_name` or
+  `trading_name`, case-insensitively for ordinary ASCII text.
+- `country_code` is validated as a two-letter country reference;
+  `supplier_type` uses exact case-sensitive equality.
+- Supported sort is `legal_name` in ascending or descending order.
+  Identical names have an ascending Supplier UUID tie-break.
+- Pagination uses `offset >= 0` and `1 <= limit <= 100`. The
+  `total` count is computed after filtering, before pagination.
+- Results are immutable `SupplierPageView` objects with `items`, `total`,
+  `offset` and `limit`.
+- The legacy `suppliers.list()` retains its signature and UUID-based
+  ordering; `search()` has its own semantic ordering.
+- No text search over external identifiers or fuzzy matching is promised.
+- Unicode/accent/collation equivalence across Python, SQLite and PostgreSQL
+  is **not guaranteed** until the `0.4.0a3` adapter qualification.
+
+See [Supplier Query Contract ADR](docs/specifications/22_PYSRMKIT_SUPPLIER_QUERY_CONTRACT_ADR.md).
+This is candidate documentation until the release PR and main-branch CI are qualified.
 
 ## Core principles
 

@@ -67,6 +67,7 @@ from pysrmkit.public.query_handlers import (
     GetSupplierHandler,
     GetSupplierRelationshipHandler,
     ListSuppliersHandler,
+    SearchSuppliersHandler,
 )
 
 _CommandT = TypeVar("_CommandT")
@@ -162,6 +163,10 @@ def compose_sql(
         list_suppliers=_transactional(
             sessions,
             lambda session: ListSuppliersHandler(supplier_repository(session)),
+        ),
+        search_suppliers=_transactional(
+            sessions,
+            lambda session: SearchSuppliersHandler(supplier_repository(session)),
         ),
     )
     relationships_api = RelationshipsAPI(

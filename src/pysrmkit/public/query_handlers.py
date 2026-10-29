@@ -11,7 +11,12 @@ from pysrmkit.application.relationship.errors import (
 )
 from pysrmkit.domain.qualification.entities import SupplierQualification
 from pysrmkit.domain.supplier.entities import Supplier
-from pysrmkit.ports.queries.supplier import SupplierQueryService
+from pysrmkit.domain.supplier.value_objects import CountryCode
+from pysrmkit.ports.queries.supplier import (
+    SupplierPage,
+    SupplierQueryService,
+    SupplierSearchService,
+)
 from pysrmkit.ports.repositories.assessment import SupplierAssessmentRepository
 from pysrmkit.ports.repositories.onboarding import SupplierOnboardingRepository
 from pysrmkit.ports.repositories.qualification import SupplierQualificationRepository
@@ -25,6 +30,7 @@ from pysrmkit.public._queries import (
     GetSupplier,
     GetSupplierRelationship,
     ListSuppliers,
+    SearchSuppliersQuery,
 )
 from pysrmkit.public.views import (
     AssessmentAnswerView,
@@ -56,12 +62,31 @@ class ListSuppliersHandler:
 
     def handle(self, query: ListSuppliers) -> SupplierPageView:
         page = self._query_service.list_suppliers(offset=query.offset, limit=query.limit)
-        return SupplierPageView(
-            items=tuple(_supplier_view(supplier) for supplier in page.suppliers),
-            total=page.total,
+        return _supplier_page_view(page, offset=query.offset, limit=query.limit)
+
+
+class SearchSuppliersHandler:
+    """Translate a validated public query into a persistence-agnostic search.
+
+    Application Handler + Dependency Inversion: matching and sorting belong to
+    the SupplierSearchService adapter, never to this orchestration boundary.
+    """
+
+    def __init__(self, query_service: SupplierSearchService) -> None:
+        self._query_service = query_service
+
+    def handle(self, query: SearchSuppliersQuery) -> SupplierPageView:
+        country = CountryCode(query.country_code) if query.country_code is not None else None
+        page = self._query_service.search_suppliers(
+            query=query.query,
+            country_code=country,
+            supplier_type=query.supplier_type,
+            sort_by=query.sort_by,
+            sort_order=query.sort_order,
             offset=query.offset,
             limit=query.limit,
         )
+        return _supplier_page_view(page, offset=query.offset, limit=query.limit)
 
 
 class GetSupplierRelationshipHandler:
@@ -192,6 +217,16 @@ def _qualification_view(qualification: SupplierQualification) -> QualificationVi
         reasons=decision.reasons if decision is not None else (),
         failed_requirements=decision.failed_requirements if decision is not None else (),
         decided_at=decision.decided_at if decision is not None else None,
+    )
+
+
+def _supplier_page_view(page: SupplierPage, *, offset: int, limit: int) -> SupplierPageView:
+    """Project one persistence-neutral result into an immutable public page."""
+    return SupplierPageView(
+        items=tuple(_supplier_view(supplier) for supplier in page.suppliers),
+        total=page.total,
+        offset=offset,
+        limit=limit,
     )
 
 
