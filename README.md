@@ -6,9 +6,9 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.4.0a3` Query Adapter Qualification qualified on `main` (CI #251).**
+**Early alpha - `0.4.0a4` Multi-Consumer Integration Qualification release candidate.**
 
-The `0.4.0a3` source version and query adapter qualification were merged through PR #38 and validated by CI #250 on the PR and CI #251 on `main`. Unicode and SQL query plan boundaries are documented. No PyPI publication or Git tag is implied.
+The `0.4.0a4` release candidate consolidates previously qualified A4-01 through A4-05 consumer contracts, the additive canonical FastAPI Supplier search, PostgreSQL parity and Next.js legacy compatibility. The version bump requires separate PR and post-merge main CI gates. No PyPI publication or Git tag is implied.
 
 Four implementation cycles:
 
@@ -18,6 +18,26 @@ Four implementation cycles:
 - **Cycle 4 - `0.4.0a1 → 0.4.0a5` (In Progress):** Industrialisation & Integration Qualification: reproducible multi-service stack (FastAPI + Next.js + PostgreSQL), E2E browser qualification, query contracts and CI gates.
 
 PySRMKit is a reusable **Supplier Domain Engine**, not a complete SRM application. It remains independent of API frameworks, cloud platforms, message brokers and external SRM products. SQLAlchemy is optional.
+
+## Multi-consumer integration - `0.4.0a4` candidate
+
+The optional FastAPI example provides **two deliberately separate**
+Supplier read routes. `GET /suppliers/search` delegates to the public
+Python `srm.suppliers.search()` API, with separate country/type filters
+and name-based deterministic sorting. `GET /suppliers?query=...`
+continues to support historical supplier name, type, country and
+vendor-code lookup with UUID listing order; the Next.js dashboard
+intentionally retains this legacy contract.
+
+The public Python Facade remains the canonical business interface;
+FastAPI and Next.js are optional consumers. Cross-consumer regression
+tests cover InMemory, SQLite, PostgreSQL and full browser E2E.
+Unicode search semantics remain backend-dependent beyond the qualified
+ASCII contract. CI is not a claim of production-scale query latency.
+
+- [Consumer contract matrix](docs/specifications/26_PYSRMKIT_MULTI_CONSUMER_CONTRACT_MATRIX.md)
+- [HTTP search contract ADR](docs/specifications/27_PYSRMKIT_CANONICAL_HTTP_SUPPLIER_SEARCH_CONTRACT.md)
+- [`0.4.0a4` qualification report](docs/qualification/0.4.0a4.md)
 
 ## Public Python API
 
