@@ -6,9 +6,9 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.4.0a2` Supplier Query API candidate in PR #32.**
+**Early alpha - `0.4.0a2` Supplier Query API qualified on `main` (CI #231).**
 
-The previous `0.4.0a1` integration reproducibility milestone was qualified on its PR and merged to `main`; final `0.4.0a2` qualification is pending the new CI and merge.
+The `0.4.0a2` implementation was merged through PR #32 and qualified by CI #230 on the PR and CI #231 on `main`. This does not imply PyPI publication.
 
 Four implementation cycles:
 
@@ -46,7 +46,7 @@ To use SQL persistence, install the optional `persistence` extra, provision the 
 
 Public reads return immutable Views rather than SQLAlchemy records. Domain, Application and Repository Port layers remain persistence-framework agnostic.
 
-## Supplier discovery - `0.4.0a2` candidate
+## Supplier discovery - `0.4.0a2`
 
 The public `srm.suppliers.search(...)` capability is implemented in both
 `PySRMKit.in_memory()` and `PySRMKit.sql(engine)`. The latter requires the
@@ -91,7 +91,7 @@ assert page.total == 1
   is **not guaranteed** until the `0.4.0a3` adapter qualification.
 
 See [Supplier Query Contract ADR](docs/specifications/22_PYSRMKIT_SUPPLIER_QUERY_CONTRACT_ADR.md).
-This is candidate documentation until the release PR and main-branch CI are qualified.
+See [0.4.0a2 qualification evidence](docs/qualification/0.4.0a2.md) for exact commit and CI gates.
 
 ## Core principles
 
