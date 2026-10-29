@@ -113,11 +113,20 @@ jobs:
         with:
           path: pysrmkit
 
-      - name: Checkout dashboard
+      - name: Checkout dashboard at qualified revision
         uses: actions/checkout@v4
         with:
           repository: tawounfouet/nextjs-acme-dashboard
+          ref: 11ed240f7e25e3de22304a3fa5b1c4a67f787bf2
           path: resources/nextjs-acme-dashboard
+
+      - name: Verify dashboard revision
+        working-directory: resources/nextjs-acme-dashboard
+        run: |
+          actual="$(git rev-parse HEAD)"
+          expected="11ed240f7e25e3de22304a3fa5b1c4a67f787bf2"
+          test "$actual" = "$expected"
+          echo "QUALIFIED_DASHBOARD_SHA=$actual"
 
       - name: Set up Python
         uses: actions/setup-python@v5
