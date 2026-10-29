@@ -28,7 +28,7 @@ def _persistent_seed_snapshot() -> tuple[tuple[str, str, str], ...]:
     try:
         page = PySRMKit.sql(engine).suppliers.list(offset=0, limit=100)
         assert page.total == len(SUPPLIERS)
-        result = []
+        result: list[tuple[str, str, str]] = []
         for supplier in page.items:
             identifiers = [
                 identifier.value
