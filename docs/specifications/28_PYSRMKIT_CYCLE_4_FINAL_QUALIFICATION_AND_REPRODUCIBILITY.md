@@ -88,7 +88,8 @@ remain compatible forever.
 - [x] A5-01 merged as `8ec285b` and post-merge main CI #274 green.
 - [x] A5-02 repeated PostgreSQL bootstrap and supplier snapshot PR #48 / main CI #279 green.
 - [ ] A5-03 startup failure and process cleanup PR/main CI green.
-- [ ] Remaining A5 lots and final `0.4.0a5` source version qualified.
+- [x] A5-04 evidence matrix drafted in `docs/qualification/0.4.0a5.md` (qualification candidate, not final certification).
+- [ ] A5-05 exact-head PR CI, merge and post-merge main CI green for `0.4.0a5`.
 
 No Git tag, GitHub Release or PyPI publication is implied.
 
