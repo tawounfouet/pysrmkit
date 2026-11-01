@@ -6,25 +6,26 @@ PySRMKit is intended to provide a reusable Supplier Domain Engine for Python app
 
 ## Status
 
-**Early alpha - `0.4.0a4` Multi-Consumer Integration Qualification qualified on `main` (CI #270).**
+**Early alpha - `0.4.0a5` Cycle 4 source qualified on `main` (PR #50; CI run `41005656322`).**
 
-The `0.4.0a4` source version was merged through PR #45 and qualified by CI #269 on the PR and CI #270 on `main`. It consolidates A4-01 through A4-05 consumer contracts, canonical HTTP search, PostgreSQL parity and Next.js legacy compatibility. No PyPI publication or Git tag is implied.
+The `0.4.0a5` source was merged via [PR #50](https://github.com/tawounfouet/pysrmkit/pull/50) as commit [`4b646546958e5476216446d2a2d088d17a7b99bd`](https://github.com/tawounfouet/pysrmkit/commit/4b646546958e5476216446d2a2d088d17a7b99bd). Its [post-merge CI](https://github.com/tawounfouet/pysrmkit/actions/runs/41005656322) succeeded in `quality`, `postgresql` and `integration`. This is source and integration qualification, **not** a `0.4.0a5` Git tag, GitHub Release, PyPI publication, production certification or security audit. The preceding `0.4.0a4` milestone was separately qualified through PR #45 / main CI #270.
 
 Four implementation cycles:
 
 - **Cycle 1 - `0.1.0a1 → 0.1.0a8`:** Supplier Domain Core, relationships, lifecycle, onboarding, assessment, scoped qualification and InMemory end-to-end journey.
 - **Cycle 2 - `0.2.0a1 → 0.2.0a7`:** SQLAlchemy persistence, SQLite/PostgreSQL repository contracts, explicit transactions and UnitOfWork, Alembic migrations and durable restart/reload qualification.
 - **Cycle 3 - `0.3.0a1 → 0.3.0a6`:** public facade and capability APIs, InMemory/SQL runtime composition, immutable Views, public error boundary, typed Domain Events and public-only runtime qualification.
-- **Cycle 4 - `0.4.0a1 → 0.4.0a5` (In Progress):** Industrialisation & Integration Qualification: reproducible multi-service stack (FastAPI + Next.js + PostgreSQL), E2E browser qualification, query contracts and CI gates.
+- **Cycle 4 - `0.4.0a1 → 0.4.0a5` (source-qualified):** Industrialisation & Integration Qualification: reproducible multi-service stack (FastAPI + Next.js + PostgreSQL), E2E browser qualification, query contracts and CI gates.
 
 PySRMKit is a reusable **Supplier Domain Engine**, not a complete SRM application. It remains independent of API frameworks, cloud platforms, message brokers and external SRM products. SQLAlchemy is optional.
 
 ## Cycle 4 final qualification - `0.4.0a5`
 
-The final source candidate pins the external Next.js dashboard to `11ed240f7e25e3de22304a3fa5b1c4a67f787bf2`, verifies sequential PostgreSQL bootstrap idempotence, and tests integration stack startup failure/child cleanup. CI is still required on the exact candidate head and final merged main commit. This is partial reproducibility, not a hermetic build or a production deployment guarantee.
+The qualified source baseline pins the external Next.js dashboard to `11ed240f7e25e3de22304a3fa5b1c4a67f787bf2`, verifies sequential PostgreSQL bootstrap idempotence, and tests integration stack startup failure/child cleanup. The exact final `main` SHA passed [CI run `41005656322`](https://github.com/tawounfouet/pysrmkit/actions/runs/41005656322) on 2026-10-30. Reproducibility remains partial, not hermetic; no production deployment guarantee is made. Governance and follow-up CI hardening are proposed separately in PTH-002.
 
 - [Cycle 4 final qualification plan](docs/specifications/28_PYSRMKIT_CYCLE_4_FINAL_QUALIFICATION_AND_REPRODUCIBILITY.md)
-- [`0.4.0a5` qualification candidate](docs/qualification/0.4.0a5.md)
+- [`0.4.0a5` qualified source evidence](docs/qualification/0.4.0a5.md)
+- [Branch protection and review policy proposal](docs/governance/BRANCH_PROTECTION_AND_REVIEW_POLICY.md)
 
 ## Multi-consumer integration - `0.4.0a4`
 
@@ -272,7 +273,7 @@ docs/specifications/19_PYSRMKIT_PUBLIC_API_AND_RUNTIME_COMPOSITION_ARCHITECTURE.
 
 ## Release history
 
-See [CHANGELOG.md](CHANGELOG.md) for the three completed cycles and detailed alpha milestones.
+See [CHANGELOG.md](CHANGELOG.md) for historical alpha milestones and four source-qualification cycles. `0.4.0a5` remains an unpublished alpha source baseline.
 
 ## Cycle 3 qualification evidence
 
